@@ -7,9 +7,13 @@
 
 /* harmony import */ var koa__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6709);
 
-var app = new koa__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Z();
+const app = new koa__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Z();
 // response
-app.use(function (ctx) {
+app.use(ctx => {
+    const list = [1, 2, 3];
+    for (let i = 0; i < list.length; i++) {
+        console.log(i);
+    }
     ctx.body = 'Hello Koa';
 });
 app.listen(3000);
