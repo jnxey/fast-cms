@@ -1,10 +1,10 @@
-import {config as configDev} from '@/src/config/dev'
-import {config as configTest} from '@/src/config/test'
-import {config as configProd} from '@/src/config/prod'
-import {type Config} from "@/src/config/_types";
+import { config as configDev } from '@/config/dev'
+import { config as configTest } from '@/config/test'
+import { config as configProd } from '@/config/prod'
+import { type Config } from '@/config/_types'
 
 /// 获取系统配置
-export const getConfig = _getConfig;
+export const getConfig = _getConfig
 
 /// 获取系统配置
 function _getConfig(): Config {

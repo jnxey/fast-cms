@@ -16,7 +16,7 @@ export default {
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname)
+      '@': path.resolve(__dirname, './src')
     },
     extensions: ['*', '.ts', '.js', '.json']
   },
@@ -24,18 +24,16 @@ export default {
     rules: [
       {
         test: /\.ts$/,
-        use: 'ts-loader',
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: ['@babel/preset-env', '@babel/preset-typescript']
+            }
+          },
+          { loader: 'ts-loader' }
+        ],
         exclude: /(node_modules)/
-      },
-      {
-        test: /\.ts$/,
-        exclude: /(node_modules)/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-env', '@babel/preset-typescript']
-          }
-        }
       }
     ]
   },

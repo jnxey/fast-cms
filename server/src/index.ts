@@ -1,13 +1,28 @@
-import Koa, { type ExtendableContext } from 'koa'
-const app: Koa = new Koa()
+import Koa, { type ExtendableContext, type Next } from 'koa'
+import Router from '@koa/router'
+import Boom from '@hapi/boom'
+import { AdminUser } from '@/controller/admin/user'
 
-// response
-app.use((ctx: ExtendableContext) => {
-  const list = [1, 2, 3]
-  for (let i = 0; i < list.length; i++) {
-    console.log(i)
-  }
-  ctx.body = 'Hello Koa'
+const app: Koa = new Koa()
+const router: Router = new Router()
+
+router.get('/params', (ctx: ExtendableContext, next: Next) => {
+  ctx.body = 'hello word'
+  const a: AdminUser = new AdminUser()
+  a.bark()
+  a.write()
 })
+
+app.use(router.routes())
+app.use(
+  router.allowedMethods({
+    throw: true,
+    notImplemented: () => Boom.notImplemented(),
+    methodNotAllowed: () => Boom.methodNotAllowed()
+  })
+)
+
+/// 错误监听
+app.context.onerror = (err: Error) => {}
 
 app.listen(3000)
