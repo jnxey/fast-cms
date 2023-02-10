@@ -14,11 +14,5 @@
       "@/*": ["src/*"]
     }
   },
-  "include": ["**/*.ts"],
-  "ts-node": {
-    "experimentalSpecifierResolution": "node",
-    "esm": true,
-    "files": true,
-    "require": ["tsconfig-paths/register"]
-  }
+  "include": ["**/*.ts"]
 }

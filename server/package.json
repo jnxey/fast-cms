@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "dev": "cross-env NODE_ENV=production EXEC_ENV=test ts-node ./src/index.ts",
+    "dev": "cross-env NODE_ENV=production EXEC_ENV=test node --experimental-specifier-resolution=node --loader ./ts-loader.js ./src/index.ts",
     "build:test": "cross-env NODE_ENV=production EXEC_ENV=test webpack",
     "build:prod": "cross-env NODE_ENV=production EXEC_ENV=prod webpack"
   },
