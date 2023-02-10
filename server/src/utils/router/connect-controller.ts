@@ -11,7 +11,12 @@ export function connectController<T extends ControllerApi>(instance: T, router: 
     if (name === 'constructor') return
     const path: string = '/' + kebabCase(moduleName) + '/' + kebabCase(name)
     router.get(path, (ctx: ExtendableContext, next: Next) => {
-      instance[name](ctx, next)
+      try {
+        instance[name](ctx, next)
+      } catch (err: Error | any) {
+        /// ToDo: 收集错误信息
+        if (err instanceof Error) console.log(err.stack?.toString(), 'err-----------1')
+      }
     })
   })
 }

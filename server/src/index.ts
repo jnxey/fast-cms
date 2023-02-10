@@ -19,6 +19,9 @@ app.use(
 )
 
 /// 错误监听
-app.context.onerror = (err: Error) => {}
+app.context.onerror = (err: Error) => {
+  /// ToDo: 收集错误信息
+  if (err) console.log('err-----------2')
+}
 
 app.listen(3000)
