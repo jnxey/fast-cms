@@ -1,7 +1,9 @@
-import { ControllerApi } from '../../_module/api'
+import { ControllerApi } from '@/controller/_module/api'
+import { ExtendableContext } from 'koa'
 
 export class AdminUser extends ControllerApi {
-  bark(): void {
+  list(ctx: ExtendableContext): void {
     console.log('Woof! Woof!')
+    ctx.body = 'hello word'
   }
 }
