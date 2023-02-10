@@ -9,10 +9,16 @@
     "noImplicitThis": false,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
-    "sourceMap": true,
+    "sourceMap": false,
     "paths": {
       "@/*": ["src/*"]
-    },
-    "outDir": "dev"
+    }
+  },
+  "include": ["**/*.ts"],
+  "ts-node": {
+    "experimentalSpecifierResolution": "node",
+    "esm": true,
+    "files": true,
+    "require": ["tsconfig-paths/register"]
   }
 }
