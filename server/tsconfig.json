@@ -9,6 +9,8 @@
     "noImplicitThis": false,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "sourceMap": false,
     "paths": {
       "@/*": ["src/*"]

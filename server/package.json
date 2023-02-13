@@ -21,7 +21,8 @@
     "koa-compress": "^5.1.0",
     "koa-jwt": "^4.0.4",
     "lru-cache": "^7.14.1",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",

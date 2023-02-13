@@ -1,7 +1,7 @@
 import Router from '@koa/router'
 import { ExtendableContext, Next } from 'koa'
-import { ControllerApi } from '@/controller/_module/api'
-import { kebabCase } from '@/utils'
+import { ControllerApi } from '@/controller/_tools/api'
+import { kebabCase } from '@/tools'
 
 /// 连接controller到router
 export function connectController<T extends ControllerApi>(instance: T, router: Router) {
