@@ -1,5 +1,5 @@
 import { ExtendableContext, Next } from 'koa'
-import { isBoolean, isNumber, isString } from '@/tools'
+import { isBoolean, isString } from '@/tools'
 
 /// 缓存参数配置的键
 const ParamsConfigCache: string = 'PARAMS_CONFIG_CACHE'
@@ -29,7 +29,7 @@ export function Params<T extends ParamsModel>(params: T, type: ParamsSource): Fu
   return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
     const func: Function = descriptor.value
     descriptor.value = function (ctx: ExtendableContext, next: Next): any {
-      const current: object = type === ParamsSource.Query ? ctx.query : ctx.request.toJSON()
+      const current: object = type === ParamsSource.Body ? ctx.request.body : ctx.query
       const result: ParamsModelFillResult = params.fill(current)
       if (result.valid) {
         return func.bind(this)(ctx, next)
@@ -52,7 +52,7 @@ export function Required(message?: string): Function {
 }
 
 /// 添加类型错误提示语
-export function TypeError<T>(type: ParamsType | T, message?: string): Function {
+export function TypeError(type: ParamsType | Function, message?: string): Function {
   return function (target: any, propertyKey: string) {
     _checkParamsConfigExist(target, propertyKey)
     target.constructor[ParamsConfigCache][propertyKey].type = type
@@ -92,13 +92,13 @@ export class ParamsModel {
           return new ParamsModelFillResult(false, paramsConfig[name].typeErrorMessage)
         }
         if (paramsConfig[name].type instanceof ParamsModel) {
-          const result: ParamsModelFillResult = paramsConfig[name].type.fill(map[name])
+          const model = new paramsConfig[name]()
+          const result: ParamsModelFillResult = model.fill(map[name])
           if (!result) return result
         }
         this[name] = map[name]
       }
     }
-    console.log(this)
     return new ParamsModelFillResult(true, '验证通过')
   }
 }

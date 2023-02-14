@@ -2,17 +2,26 @@ import { ControllerApi } from '@/controller/_tools/api'
 import { ExtendableContext, Next } from 'koa'
 import { Params, ParamsSource } from '@/controller/_tools/params'
 import { ParamsList } from '@/controller/admin/user/_models/list'
+import { Get, Json, Post } from '@/controller/_tools/method'
+import { ParamsER } from '@/controller/admin/user/_models/er'
 
 export class AdminUser extends ControllerApi {
   tips: string = '测试参数'
+
+  @Get()
   @Params<ParamsList>(new ParamsList(), ParamsSource.Query)
   public list(ctx: ExtendableContext, next: Next) {
     console.log('--------------r1' + this.tips)
-    ctx.body = 'hello word'
+    ctx.body = 'hello word1'
     return next()
   }
-  private er(ctx: ExtendableContext): void {
+
+  @Post()
+  @Json()
+  @Params<ParamsER>(new ParamsER(), ParamsSource.Body)
+  public er(ctx: ExtendableContext, next: Next) {
     console.log('--------------r2')
-    throw Error('报错了')
+    ctx.body = 'hello word2'
+    return next()
   }
 }
