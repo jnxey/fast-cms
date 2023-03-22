@@ -1,5 +1,5 @@
 declare interface Database {
-  host:string
+  host: string
   user: string
   password: string
   table: string
@@ -8,4 +8,5 @@ declare interface Database {
 export declare interface Config {
   port: number
   database: Database
+  allowOrigin?: string[]
 }
