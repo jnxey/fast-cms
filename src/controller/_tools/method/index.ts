@@ -1,7 +1,8 @@
 /// 请求数据的方法
 export enum RequestMethod {
   Get,
-  Post
+  Post,
+  View
 }
 
 /// 请求数据的数据类型

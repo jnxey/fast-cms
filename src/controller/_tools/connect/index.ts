@@ -28,7 +28,9 @@ export function connectController<T extends ControllerApi>(instance: T, router: 
       } else {
         router.post(path, handler)
       }
-    } else {
+    } else if (instance[name].METHOD === RequestMethod.Get) {
+      router.get(path, handler)
+    } else if(instance[name].METHOD === RequestMethod.View) {
       router.get(path, handler)
     }
   })
