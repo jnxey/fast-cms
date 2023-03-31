@@ -1,5 +1,6 @@
 import Koa from 'koa'
 import Router from '@koa/router'
+import serve from 'koa-static'
 import { connectController } from '@/controller/_tools/connect'
 import { AdminUser } from '@/controller/admin/user'
 
@@ -8,6 +9,7 @@ const router: Router = new Router()
 
 connectController<AdminUser>(new AdminUser(), router)
 
+app.use(serve('./assets'))
 app.use(router.routes())
 app.use(router.allowedMethods())
 

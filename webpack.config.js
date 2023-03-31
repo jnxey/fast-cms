@@ -7,7 +7,7 @@ export default {
   mode: process.env.NODE_ENV,
   target: 'node',
   entry: {
-    index: './src/index.ts'
+    index: './index.ts'
   },
   devtool: false,
   output: {
@@ -16,7 +16,7 @@ export default {
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src')
+      '@': path.resolve(__dirname, './')
     },
     extensions: ['*', '.ts', '.js', '.json']
   },
