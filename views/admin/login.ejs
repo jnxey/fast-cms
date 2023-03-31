@@ -1,1 +1,47 @@
-<h1>login</h1>
+<div class="page-admin-page-login-wrap">
+    <div class="login-box">
+        <form class="layui-form" action="">
+            <div class="title t-ac fz-28 fw-700 mb-32">
+                文档系统登录
+            </div>
+            <div class="layui-form-item">
+                <label>
+                    <input type="text" name="name" required lay-verify="required" placeholder="请输入账号"
+                           autocomplete="off" class="layui-input">
+                </label>
+            </div>
+            <div class="layui-form-item">
+                <label>
+                    <input type="password" name="password" required lay-verify="required" placeholder="请输入密码"
+                           autocomplete="off" class="layui-input">
+                </label>
+            </div>
+            <div class="layui-form-item">
+                <button class="layui-btn layui-btn-fluid layui-btn-lg layui-btn-normal" lay-submit
+                        lay-filter="formDemo">立即提交
+                </button>
+            </div>
+        </form>
+
+        <script>
+          //Demo
+          layui.use('form', function () {
+            var form = layui.form;
+            var url = '/api/admin-login/login'
+            //监听提交
+            form.on('submit(formDemo)', function (data) {
+              layer.load();
+              axios.post(url, data.field).then(function(res) {
+                console.log(res);
+              }).catch(function(err) {
+                console.error(err);
+              }).finally(function() {
+                layer.close();
+              });
+              return false;
+            });
+          });
+        </script>
+    </div>
+</div>
+<%- include ('./style.ejs') -%>

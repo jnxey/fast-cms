@@ -32,7 +32,7 @@ export function Params<T extends ParamsModel>(params: T, type: ParamsSource): Fu
       const current: object = type === ParamsSource.Body ? ctx.request.body : ctx.query
       const result: ParamsModelFillResult = params.fill(current)
       if (result.valid) {
-        return func.bind(this)(ctx, next)
+        return func.bind(this)(ctx, next, params)
       } else {
         ctx.body = result.message
         return next()
@@ -71,7 +71,7 @@ export function Description(text?: string): Function {
 
 /// 参数模型
 export class ParamsModel {
-  public fill(map: object) {
+  public fill<T>(map: object) {
     const paramsConfig = this.constructor[ParamsConfigCache]
     if (!paramsConfig) return new ParamsModelFillResult(true, '无校验')
     for (let name in paramsConfig) {

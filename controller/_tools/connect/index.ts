@@ -11,6 +11,7 @@ export function connectController<T extends ControllerApi>(instance: T, router: 
   const apis: string[] = Object.getOwnPropertyNames(instance.constructor.prototype)
   apis.forEach((name) => {
     if (name === 'constructor') return
+    const resetful = '/api'
     const path: string = '/' + kebabCase(moduleName) + '/' + kebabCase(name)
     const handler: Router.Middleware = (ctx: ExtendableContext, next: Next) => {
       try {
@@ -22,15 +23,15 @@ export function connectController<T extends ControllerApi>(instance: T, router: 
     }
     if (instance[name].METHOD === RequestMethod.Post) {
       if (instance[name].DATA_TYPE === RequestDataType.Json) {
-        router.post(path, koaBody({ json: true }), handler)
+        router.post(resetful + path, koaBody({ json: true }), handler)
       } else if (instance[name].DATA_TYPE === RequestDataType.Text) {
-        router.post(path, koaBody({ text: true }), handler)
+        router.post(resetful + path, koaBody({ text: true }), handler)
       } else {
         router.post(path, handler)
       }
     } else if (instance[name].METHOD === RequestMethod.Get) {
       router.get(path, handler)
-    } else if(instance[name].METHOD === RequestMethod.View) {
+    } else if (instance[name].METHOD === RequestMethod.View) {
       router.get(path, handler)
     }
   })
