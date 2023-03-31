@@ -12,6 +12,13 @@ export enum RequestDataType {
 }
 
 /// get方法
+export function View(): Function {
+  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+    descriptor.value.METHOD = RequestMethod.View
+  }
+}
+
+/// get方法
 export function Get(): Function {
   return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
     descriptor.value.METHOD = RequestMethod.Get
