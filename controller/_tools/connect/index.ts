@@ -30,7 +30,7 @@ export function connectController<T extends ControllerApi>(instance: T, router: 
         router.post(path, handler)
       }
     } else if (instance[name].METHOD === RequestMethod.Get) {
-      router.get(path, handler)
+      router.get(resetful + path, handler)
     } else if (instance[name].METHOD === RequestMethod.View) {
       router.get(path, handler)
     }

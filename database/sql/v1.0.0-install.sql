@@ -7,7 +7,8 @@ fast_cms;
 CREATE TABLE admin_user
 (
   id          INT         NOT NULL AUTO_INCREMENT COMMENT '主键',
-  portrait    VARCHAR(50) NOT NULL COMMENT '画像',
+  admin_name  VARCHAR(50) NOT NULL COMMENT '用户名',
+  admin_pwd   VARCHAR(50) NOT NULL COMMENT '密码',
   system_role INT         NOT NULL COMMENT '角色',
   create_time DATETIME    NOT NULL COMMENT '创建时间',
   PRIMARY KEY (id)
@@ -71,3 +72,5 @@ CREATE TABLE doc_content
   doc_content LONGTEXT NOT NULL COMMENT '文档内容',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB COMMENT='文档空间列表';
+
+INSERT INTO admin_user VALUES (1, 'admin', 'e10adc3949ba59abbe56e057f20f883e', 999, CURRENT_TIMESTAMP);

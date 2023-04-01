@@ -1,5 +1,12 @@
 import { ExtendableContext, Next } from 'koa'
 import { isBoolean, isString } from '@/tools'
+import { Dto, ResponseCode } from '@/controller/_tools/dto'
+
+declare module 'Koa' {
+  interface ExtendableContext {
+    params?: any
+  }
+}
 
 /// 缓存参数配置的键
 const ParamsConfigCache: string = 'PARAMS_CONFIG_CACHE'
@@ -28,13 +35,16 @@ export function Declare(): Function {
 export function Params<T extends ParamsModel>(params: T, type: ParamsSource): Function {
   return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
     const func: Function = descriptor.value
-    descriptor.value = function (ctx: ExtendableContext, next: Next): any {
+    descriptor.value = function (): any {
+      const ctx: ExtendableContext = arguments[0]
+      const next: Next = arguments[1]
       const current: object = type === ParamsSource.Body ? ctx.request.body : ctx.query
       const result: ParamsModelFillResult = params.fill(current)
       if (result.valid) {
-        return func.bind(this)(ctx, next, params)
+        ctx.params = params
+        return func.apply(this, arguments)
       } else {
-        ctx.body = result.message
+        ctx.body = Dto({ ...ResponseCode.error_params, msg: result.message })
         return next()
       }
     }
