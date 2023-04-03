@@ -14,11 +14,11 @@ const router: Router = new Router()
 Controller.connect<AdminLogin>(new AdminLogin(), router)
 Controller.connect<AdminHome>(new AdminHome(), router)
 
+app.use(serve('./assets'))
 Ejs.ejsRender(app)
 app.use(Jwt.error)
 app.use(Jwt.intercept())
 app.use(Headers.setAllowOrigin)
-app.use(serve('./assets'))
 app.use(router.routes())
 app.use(router.allowedMethods())
 

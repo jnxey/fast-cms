@@ -47,7 +47,6 @@ export class Jwt {
 
   /// JWT拦截
   public static intercept() {
-    console.log(Controller.JwtProtectedList, '----------------1')
     return jwt({
       debug: false,
       secret: Jwt.JWT_PRIVATE_KEY,
