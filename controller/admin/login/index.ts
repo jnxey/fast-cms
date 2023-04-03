@@ -7,6 +7,8 @@ import { Dto, ResponseCode } from '@/controller/_tools/dto'
 import { Jwt } from '@/tools/jwt'
 import { Database } from '@/database'
 import { DatabaseQueryResult } from '@/database/_types'
+import { ResultLoginSuccess } from '@/controller/admin/login/_models/login-success-result'
+import { Result } from '@/controller/_tools/result'
 
 export class AdminLogin extends ControllerApi {
   @View()
@@ -19,7 +21,8 @@ export class AdminLogin extends ControllerApi {
 
   @Post()
   @Json()
-  @Params<ParamsLoginForm>(new ParamsLoginForm(), ParamsSource.Body)
+  @Params(ParamsLoginForm, ParamsSource.Body)
+  @Result(ResultLoginSuccess)
   public async login(ctx: ExtendableContext, next: Next) {
     const params: ParamsLoginForm = ctx.params
     const result: DatabaseQueryResult = await Database.execute(
@@ -28,23 +31,23 @@ export class AdminLogin extends ControllerApi {
     if (result.code === Database.result.error) {
       // 查找失败
       ctx.body = Dto(ResponseCode.error_password)
-    } else {
-      if (result.value && result.value.length === 1) {
-        // 查找成功
-        const user = result.value[0]
-        if (user.admin_pwd === params.password) {
-          // 比对成功
-          const payload = { name: params.name }
-          const token = Jwt.sign(payload)
-          ctx.body = Dto(ResponseCode.success, token)
-        } else {
-          // 比对失败
-          ctx.body = Dto(ResponseCode.error_password)
-        }
+    } else if (Boolean(result.value) && Boolean(result.value.length)) {
+      // 查找成功
+      const user = result.value[0]
+      if (user.admin_pwd === params.password) {
+        // 比对成功
+        const payload = { name: params.name }
+        const token = Jwt.sign(payload)
+        const userResult: ResultLoginSuccess = new ResultLoginSuccess()
+        userResult.fill(Object.assign({ token: token }, user))
+        ctx.body = Dto(ResponseCode.success, userResult)
       } else {
-        // 查找失败
+        // 比对失败
         ctx.body = Dto(ResponseCode.error_password)
       }
+    } else {
+      // 查找失败
+      ctx.body = Dto(ResponseCode.error_password)
     }
     return next()
   }

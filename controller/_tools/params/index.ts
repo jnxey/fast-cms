@@ -32,16 +32,17 @@ export function Declare(): Function {
 }
 
 /// 参数检查装饰器
-export function Params<T extends ParamsModel>(params: T, type: ParamsSource): Function {
+export function Params<T extends ParamsModel>(params: { new (): T }, type: ParamsSource): Function {
   return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
     const func: Function = descriptor.value
+    const _params = new params()
     descriptor.value = function (): any {
       const ctx: ExtendableContext = arguments[0]
       const next: Next = arguments[1]
       const current: object = type === ParamsSource.Body ? ctx.request.body : ctx.query
-      const result: ParamsModelFillResult = params.fill(current)
+      const result: ParamsModelFillResult = _params.fill(current)
       if (result.valid) {
-        ctx.params = params
+        ctx.params = _params
         return func.apply(this, arguments)
       } else {
         ctx.body = Dto({ ...ResponseCode.error_params, msg: result.message })
