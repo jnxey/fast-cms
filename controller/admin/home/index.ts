@@ -5,7 +5,7 @@ import { Jwt } from '@/tools/jwt'
 
 export class AdminHome extends ControllerApi {
   @View()
-  @Jwt.decorate()
+  @Jwt.protected()
   public async index(ctx: ExtendableContext, next: Next) {
     const jwt = ctx?.state?.jwtdata || {}
     console.log(jwt, '---------------')

@@ -1,13 +1,15 @@
 import jwt from 'koa-jwt'
-import { ExtendableContext, Next } from 'koa'
+import Koa, { ExtendableContext, Next } from 'koa'
 import { Dto, ResponseCode } from '@/controller/_tools/dto'
 import jsonwebtoken from 'jsonwebtoken'
 import { JD } from 'Koa'
+import { Controller } from '@/tools/controller'
 
 declare module 'Koa' {
   interface JD {
     jwtdata: JwtData
   }
+
   interface ExtendableContext {
     jwt?: boolean
     state?: JD
@@ -18,6 +20,7 @@ class JwtData {
   public id?: number
   public admin_name?: string
   public system_role?: number
+
   constructor(id: number, admin_name: string, system_role: number) {
     this.id = id
     this.admin_name = admin_name
@@ -44,19 +47,43 @@ export class Jwt {
 
   /// JWT拦截
   public static intercept() {
-    const ctx: ExtendableContext = arguments[0]
-    const next: Next = arguments[1]
-    if (!!ctx.jwt) {
-      return jwt({
-        secret: Jwt.JWT_PRIVATE_KEY,
-        algorithms: [Jwt.JWT_ALGORITHMS],
-        getToken(_ctx: ExtendableContext): string | null {
-          return _ctx.cookies.get(Jwt.JWT_GET_KEY) || null
+    console.log(Controller.JwtProtectedList, '----------------1')
+    return jwt({
+      debug: false,
+      secret: Jwt.JWT_PRIVATE_KEY,
+      algorithms: [Jwt.JWT_ALGORITHMS],
+      getToken(_ctx: ExtendableContext): string | null {
+        return _ctx.cookies.get(Jwt.JWT_GET_KEY) || null
+      }
+    }).unless({
+      custom: function (ctx: Koa.Context) {
+        let result = true
+        const url: string = ctx.originalUrl || ''
+        for (let i = 0; i < Controller.JwtProtectedList.length; i++) {
+          const path = Controller.JwtProtectedList[i]
+          if (url.startsWith(path)) {
+            result = false
+            break
+          }
         }
-      })
-    } else {
-      return next()
-    }
+        return result
+      }
+    })
+  }
+
+  /// JWT处理
+  public static error(ctx: ExtendableContext, next: Next) {
+    return next().catch(function (err) {
+      if (err.status === Jwt.JWT_ERROR_STATUS) {
+        ctx.status = Jwt.JWT_ERROR_STATUS
+        ctx.body = Dto(ResponseCode.error_access)
+      } else {
+        /// ToDo: 收集错误信息
+        if (err) {
+          console.log(err.stack?.toString(), 'err-----------4')
+        }
+      }
+    })
   }
 
   /// 生成token
@@ -67,26 +94,10 @@ export class Jwt {
     })
   }
 
-  /// JWT装饰器
-  public static decorate(): Function {
+  /// JWT装饰器-保护
+  public static protected(): Function {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-      const func: Function = descriptor.value
-      descriptor.value = function (): any {
-        const args = arguments
-        const ctx: ExtendableContext = args[0]
-        ctx.jwt = true
-        return func.apply(this, args).catch(function (err) {
-          if (err.status === Jwt.JWT_ERROR_STATUS) {
-            ctx.status = Jwt.JWT_ERROR_STATUS
-            ctx.body = Dto(ResponseCode.error_access)
-          } else {
-            /// ToDo: 收集错误信息
-            if (err) {
-              console.log(err.stack?.toString(), 'err-----------4')
-            }
-          }
-        })
-      }
+      descriptor.value.JWT_PROTECTED = true
     }
   }
 }

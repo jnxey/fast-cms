@@ -55,7 +55,7 @@ export class AdminLogin extends ControllerApi {
 
   @Get()
   @Json()
-  @Jwt.decorate()
+  @Jwt.protected()
   public async get(ctx: ExtendableContext, next: Next) {
     console.log(ctx.jwt, '----------------2')
     ctx.body = Dto(ResponseCode.success, '拉去用户信息成功')

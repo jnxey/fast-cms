@@ -1,8 +1,8 @@
 import Koa from 'koa'
 import Router from '@koa/router'
 import serve from 'koa-static'
-import { connectController } from '@/controller/_tools/connect'
-import { setAllowOrigin } from '@/tools/origin'
+import { Controller } from '@/tools/controller'
+import { Headers } from '@/tools/headers'
 import { Ejs } from '@/tools/ejs'
 import { Jwt } from '@/tools/jwt'
 import { AdminLogin } from '@/controller/admin/login'
@@ -11,12 +11,13 @@ import { AdminHome } from '@/controller/admin/home'
 const app: Koa = new Koa()
 const router: Router = new Router()
 
-connectController<AdminLogin>(new AdminLogin(), router)
-connectController<AdminHome>(new AdminHome(), router)
+Controller.connect<AdminLogin>(new AdminLogin(), router)
+Controller.connect<AdminHome>(new AdminHome(), router)
 
 Ejs.ejsRender(app)
-app.use(Jwt.intercept)
-app.use(setAllowOrigin)
+app.use(Jwt.error)
+app.use(Jwt.intercept())
+app.use(Headers.setAllowOrigin)
 app.use(serve('./assets'))
 app.use(router.routes())
 app.use(router.allowedMethods())
