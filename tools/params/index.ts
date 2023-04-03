@@ -1,6 +1,6 @@
 import { ExtendableContext, Next } from 'koa'
 import { isBoolean, isString } from '@/tools'
-import { Dto, ResponseCode } from '@/controller/_tools/dto'
+import { Dto, ResponseCode } from '@/tools/dto'
 
 declare module 'Koa' {
   interface ExtendableContext {

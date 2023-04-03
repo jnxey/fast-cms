@@ -1,16 +1,16 @@
-import { ControllerApi } from '@/controller/_tools/api'
+import { Controller } from '@/tools/controller'
 import { ExtendableContext, Next } from 'koa'
-import { Get, Json, Post, View } from '@/controller/_tools/method'
-import { Params, ParamsSource } from '@/controller/_tools/params'
+import { Get, Json, Post, View } from '@/tools/method'
+import { Params, ParamsSource } from '@/tools/params'
 import { ParamsLoginForm } from '@/controller/admin/login/_models/login-form'
-import { Dto, ResponseCode } from '@/controller/_tools/dto'
+import { Dto, ResponseCode } from '@/tools/dto'
 import { Jwt } from '@/tools/jwt'
 import { Database } from '@/database'
 import { DatabaseQueryResult } from '@/database/_types'
 import { ResultLoginSuccess } from '@/controller/admin/login/_models/login-success-result'
-import { Result } from '@/controller/_tools/result'
+import { Result } from '@/tools/result'
 
-export class AdminLogin extends ControllerApi {
+export class AdminLogin extends Controller.Api {
   @View()
   public async index(ctx: ExtendableContext, next: Next) {
     await ctx.render('admin/login', {

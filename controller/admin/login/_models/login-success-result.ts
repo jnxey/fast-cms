@@ -1,11 +1,4 @@
-import {
-  Declare,
-  Description,
-  ParamsModel,
-  ParamsType,
-  Required,
-  TypeError
-} from '@/controller/_tools/params'
+import { Declare, Description, ParamsModel, ParamsType, Required, TypeError } from '@/tools/params'
 
 export class ResultLoginSuccess extends ParamsModel {
   @Declare()

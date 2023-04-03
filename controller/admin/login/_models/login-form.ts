@@ -1,11 +1,4 @@
-import {
-  TypeError,
-  Required,
-  ParamsModel,
-  ParamsType,
-  Description,
-  Declare
-} from '@/controller/_tools/params'
+import { TypeError, Required, ParamsModel, ParamsType, Description, Declare } from '@/tools/params'
 
 export class ParamsLoginForm extends ParamsModel {
   @Declare()

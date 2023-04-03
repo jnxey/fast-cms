@@ -1,6 +1,6 @@
 import jwt from 'koa-jwt'
 import Koa, { ExtendableContext, Next } from 'koa'
-import { Dto, ResponseCode } from '@/controller/_tools/dto'
+import { Dto, ResponseCode } from '@/tools/dto'
 import jsonwebtoken from 'jsonwebtoken'
 import { JD } from 'Koa'
 import { Controller } from '@/tools/controller'
@@ -25,6 +25,8 @@ class JwtData {
     this.id = id
     this.admin_name = admin_name
     this.system_role = system_role
+
+    return { id, admin_name, system_role }
   }
 }
 
