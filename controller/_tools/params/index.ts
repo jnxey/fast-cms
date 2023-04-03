@@ -37,13 +37,14 @@ export function Params<T extends ParamsModel>(params: { new (): T }, type: Param
     const func: Function = descriptor.value
     const _params = new params()
     descriptor.value = function (): any {
-      const ctx: ExtendableContext = arguments[0]
-      const next: Next = arguments[1]
+      const args = arguments
+      const ctx: ExtendableContext = args[0]
+      const next: Next = args[1]
       const current: object = type === ParamsSource.Body ? ctx.request.body : ctx.query
       const result: ParamsModelFillResult = _params.fill(current)
       if (result.valid) {
         ctx.params = _params
-        return func.apply(this, arguments)
+        return func.apply(this, args)
       } else {
         ctx.body = Dto({ ...ResponseCode.error_params, msg: result.message })
         return next()

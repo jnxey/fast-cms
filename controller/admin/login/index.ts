@@ -36,10 +36,11 @@ export class AdminLogin extends ControllerApi {
       const user = result.value[0]
       if (user.admin_pwd === params.password) {
         // 比对成功
-        const payload = { name: params.name }
+        const payload = new Jwt.JwtData(user.id, user.admin_name, user.system_role)
         const token = Jwt.sign(payload)
         const userResult: ResultLoginSuccess = new ResultLoginSuccess()
-        userResult.fill(Object.assign({ token: token }, user))
+        userResult.fill(user)
+        ctx.cookies.set(Jwt.JWT_GET_KEY, token, { httpOnly: true })
         ctx.body = Dto(ResponseCode.success, userResult)
       } else {
         // 比对失败
