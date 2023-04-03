@@ -1,6 +1,7 @@
 import jwt from 'koa-jwt'
 import { ExtendableContext, Next } from 'koa'
 import { Dto, ResponseCode } from '@/controller/_tools/dto'
+import jsonwebtoken from 'jsonwebtoken'
 
 declare module 'Koa' {
   interface ExtendableContext {
@@ -10,16 +11,16 @@ declare module 'Koa' {
 
 export class Jwt {
   /// 权限限制错误码
-  static JWT_ERROR_STATUS = 401
+  public static JWT_ERROR_STATUS = 401
 
   /// 编码私钥
-  static JWT_PRIVATE_KEY = 'shared-secret'
+  public static JWT_PRIVATE_KEY = 'shared-secret'
 
   /// 加密方式
-  static JWT_ALGORITHMS = 'HS256'
+  public static JWT_ALGORITHMS = 'HS256'
 
   /// JWT拦截
-  static intercept() {
+  public static intercept() {
     const ctx: ExtendableContext = arguments[0]
     const next: Next = arguments[1]
     if (!!ctx.jwt) {
@@ -29,8 +30,16 @@ export class Jwt {
     }
   }
 
-  /// 标记JWT
-  static decorate(): Function {
+  /// 生成token
+  public static sign(payload: any) {
+    return jsonwebtoken.sign(payload, Jwt.JWT_PRIVATE_KEY, {
+      algorithm: Jwt.JWT_ALGORITHMS,
+      expiresIn: '2h'
+    })
+  }
+
+  /// JWT装饰器
+  public static decorate(): Function {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
       const func: Function = descriptor.value
       descriptor.value = function (): any {

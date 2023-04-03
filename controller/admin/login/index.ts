@@ -5,7 +5,8 @@ import { Params, ParamsSource } from '@/controller/_tools/params'
 import { ParamsLoginForm } from '@/controller/admin/login/_models/login-form'
 import { Dto, ResponseCode } from '@/controller/_tools/dto'
 import { Jwt } from '@/tools/jwt'
-import jsonwebtoken from 'jsonwebtoken'
+import { Database } from '@/database'
+import { DatabaseQueryResult } from '@/database/_types'
 
 export class AdminLogin extends ControllerApi {
   @View()
@@ -21,13 +22,30 @@ export class AdminLogin extends ControllerApi {
   @Params<ParamsLoginForm>(new ParamsLoginForm(), ParamsSource.Body)
   public async login(ctx: ExtendableContext, next: Next) {
     const params: ParamsLoginForm = ctx.params
-    console.log(params, '-------------------')
-    const payload = { name: params.name }
-    const token = jsonwebtoken.sign(payload, Jwt.JWT_PRIVATE_KEY, {
-      algorithm: Jwt.JWT_ALGORITHMS,
-      expiresIn: '2h'
-    })
-    ctx.body = Dto(ResponseCode.success, token)
+    const result: DatabaseQueryResult = await Database.execute(
+      Database.format(Database.query.SelectAdminUser, { name: params.name })
+    )
+    if (result.code === Database.result.error) {
+      // 查找失败
+      ctx.body = Dto(ResponseCode.error_password)
+    } else {
+      if (result.value && result.value.length === 1) {
+        // 查找成功
+        const user = result.value[0]
+        if (user.admin_pwd === params.password) {
+          // 比对成功
+          const payload = { name: params.name }
+          const token = Jwt.sign(payload)
+          ctx.body = Dto(ResponseCode.success, token)
+        } else {
+          // 比对失败
+          ctx.body = Dto(ResponseCode.error_password)
+        }
+      } else {
+        // 查找失败
+        ctx.body = Dto(ResponseCode.error_password)
+      }
+    }
     return next()
   }
 

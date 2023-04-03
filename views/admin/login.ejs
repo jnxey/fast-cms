@@ -50,7 +50,8 @@
             //监听提交
             form.on('submit(formDemo)', function (data) {
               var params = Object.assign({}, data.field);
-              params.password = md5(params.password);
+              var salt = 'fc-salt';
+              params.password = md5(params.password, salt);
               layer.load();
               axios.post(url, params).then(function(res) {
                 console.log(res);
