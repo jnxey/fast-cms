@@ -4,16 +4,16 @@ import serve from 'koa-static'
 import { connectController } from '@/controller/_tools/connect'
 import { AdminLogin } from '@/controller/admin/login'
 import { setAllowOrigin } from '@/tools/origin'
-import { ejsRender } from '@/tools/ejs'
-import { jwtIntercept } from '@/tools/jwt'
+import { Ejs } from '@/tools/ejs'
+import { Jwt } from '@/tools/jwt'
 
 const app: Koa = new Koa()
 const router: Router = new Router()
 
 connectController<AdminLogin>(new AdminLogin(), router)
 
-ejsRender(app)
-app.use(jwtIntercept)
+Ejs.ejsRender(app)
+app.use(Jwt.intercept)
 app.use(setAllowOrigin)
 app.use(serve('./assets'))
 app.use(router.routes())

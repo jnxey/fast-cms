@@ -27,7 +27,7 @@ export function connectController<T extends ControllerApi>(instance: T, router: 
       } else if (instance[name].DATA_TYPE === RequestDataType.Text) {
         router.post(resetful + path, koaBody({ text: true }), handler)
       } else {
-        router.post(path, handler)
+        router.post(resetful + path, handler)
       }
     } else if (instance[name].METHOD === RequestMethod.Get) {
       router.get(resetful + path, handler)

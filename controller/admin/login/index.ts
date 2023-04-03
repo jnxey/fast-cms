@@ -4,7 +4,7 @@ import { Get, Json, Post, View } from '@/controller/_tools/method'
 import { Params, ParamsSource } from '@/controller/_tools/params'
 import { ParamsLoginForm } from '@/controller/admin/login/_models/login-form'
 import { Dto, ResponseCode } from '@/controller/_tools/dto'
-import { Jwt, JWT_ALGORITHMS, JWT_PRIVATE_KEY } from '@/tools/jwt'
+import { Jwt } from '@/tools/jwt'
 import jsonwebtoken from 'jsonwebtoken'
 
 export class AdminLogin extends ControllerApi {
@@ -23,8 +23,8 @@ export class AdminLogin extends ControllerApi {
     const params: ParamsLoginForm = ctx.params
     console.log(params, '-------------------')
     const payload = { name: params.name }
-    const token = jsonwebtoken.sign(payload, JWT_PRIVATE_KEY, {
-      algorithm: JWT_ALGORITHMS,
+    const token = jsonwebtoken.sign(payload, Jwt.JWT_PRIVATE_KEY, {
+      algorithm: Jwt.JWT_ALGORITHMS,
       expiresIn: '2h'
     })
     ctx.body = Dto(ResponseCode.success, token)
@@ -33,7 +33,7 @@ export class AdminLogin extends ControllerApi {
 
   @Get()
   @Json()
-  @Jwt()
+  @Jwt.decorate()
   public async get(ctx: ExtendableContext, next: Next) {
     console.log(ctx.jwt, '----------------2')
     ctx.body = Dto(ResponseCode.success, '拉去用户信息成功')
