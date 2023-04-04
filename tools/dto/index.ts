@@ -25,7 +25,11 @@ export const ResponseCode: ResponseCodeBean = {
   // 账号或密码错误
   error_password: { code: '1002', msg: '账号或密码错误' },
   // 鉴权失败
-  error_access: { code: '1004', msg: '您无权限访问此资源' }
+  error_access: { code: '1004', msg: '您无权限访问此资源' },
+  // 未找到资源
+  error_notfound: { code: '1005', msg: '未找到您访问此资源' },
+  // 服务端异常
+  error_server: { code: '1006', msg: '服务端异常' }
 }
 
 /// Response返回码

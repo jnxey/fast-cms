@@ -45,3 +45,10 @@ export function Text(): Function {
     descriptor.value.DATA_TYPE = RequestDataType.Text
   }
 }
+
+/// 对模块方法进行说明
+export function Summary(text: string): Function {
+  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+    descriptor.value.SUMMARY = text
+  }
+}

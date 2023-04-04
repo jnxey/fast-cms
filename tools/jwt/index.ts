@@ -30,9 +30,6 @@ class JwtUser {
 
 /// Jwt构造函数
 export class Jwt {
-  /// 权限限制错误码
-  public static JWT_ERROR_STATUS = 401
-
   /// 编码私钥
   public static JWT_PRIVATE_KEY = 'shared-secret'
 
@@ -66,26 +63,6 @@ export class Jwt {
           }
         }
         return result
-      }
-    })
-  }
-
-  /// JWT处理
-  public static error(ctx: ExtendableContext, next: Next) {
-    const url: string = ctx.originalUrl || ''
-    return next().catch(function (err) {
-      if (err.status === Jwt.JWT_ERROR_STATUS) {
-        if (url.startsWith(Controller.ApiPrefix)) {
-          ctx.status = Jwt.JWT_ERROR_STATUS
-          ctx.body = Dto(ResponseCode.error_access)
-        } else {
-          ctx.redirect('/admin-login/index')
-        }
-      } else {
-        /// ToDo: 收集错误信息
-        if (err) {
-          console.log(err.stack?.toString(), 'err-----------4')
-        }
       }
     })
   }

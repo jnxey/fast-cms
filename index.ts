@@ -7,6 +7,7 @@ import { Ejs } from '@/tools/ejs'
 import { Jwt } from '@/tools/jwt'
 import { AdminLogin } from '@/controller/admin/login'
 import { AdminHome } from '@/controller/admin/home'
+import { ErrorKoa } from '@/tools/error'
 
 const app: Koa = new Koa()
 const router: Router = new Router()
@@ -16,7 +17,7 @@ Controller.connect<AdminHome>(new AdminHome(), router)
 
 app.use(serve('./assets'))
 Ejs.ejsRender(app)
-app.use(Jwt.error)
+app.use(ErrorKoa.onerror)
 app.use(Jwt.intercept())
 app.use(Headers.setAllowOrigin)
 app.use(router.routes())

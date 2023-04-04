@@ -34,6 +34,13 @@ CREATE TABLE system_auth
   PRIMARY KEY (id)
 ) ENGINE=InnoDB COMMENT='权限表';
 
+CREATE TABLE system_config (
+  id          INT      NOT NULL UNIQUE COMMENT '主键',
+  page_index  INT                      COMMENT '商城首页文档ID',
+  create_time DATETIME NOT NULL        COMMENT '创建时间',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB COMMENT='系统配置';
+
 CREATE TABLE doc_space
 (
   id          INT         NOT NULL UNIQUE AUTO_INCREMENT COMMENT '主键',
@@ -58,12 +65,13 @@ CREATE TABLE doc_menu
 CREATE TABLE doc_content
 (
   id          INT NOT NULL UNIQUE AUTO_INCREMENT COMMENT '主键',
-  doc_type    INT NOT NULL COMMENT '文档显示类型，1-富文本，2-Markdown，3-Iframe，4-SFC',
+  doc_type    INT NOT NULL      COMMENT '文档显示类型，1-富文本，2-Markdown，3-Iframe，4-SFC',
   doc_keyword LONGTEXT NOT NULL COMMENT '文档关键词，可用【，】分开',
   doc_content LONGTEXT NOT NULL COMMENT '文档内容',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB COMMENT='文档空间列表';
 
-INSERT INTO admin_user VALUES (1, 'admin', '698495dad777ebb0be5281f4f44d27c6', 999, CURRENT_TIMESTAMP);
+INSERT INTO admin_user    VALUES (1, 'admin', '698495dad777ebb0be5281f4f44d27c6', 999, CURRENT_TIMESTAMP);
+INSERT INTO system_config VALUES (1, 0, CURRENT_TIMESTAMP);
 
 CREATE INDEX admin_name_index ON admin_user (admin_name);
