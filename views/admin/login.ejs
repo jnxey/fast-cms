@@ -10,12 +10,12 @@
     <link rel="stylesheet" href="/resource/css/index.css"/>
     <script src="/resource/js/md5.min.js"></script>
     <!-- Import style -->
-    <link rel="stylesheet" href="//unpkg.com/element-plus/dist/index.css"/>
+    <link rel="stylesheet" href="/resource/css/element-plus.css"/>
     <!-- Import Vue 3 -->
-    <script src="//unpkg.com/vue@3"></script>
+    <script src="/resource/js/vue.global.js"></script>
     <!-- Import component library -->
-    <script src="//unpkg.com/element-plus"></script>
-    <script src="//unpkg.com/axios@1.1.2/dist/axios.min.js"></script>
+    <script src="/resource/js/element-plus.js"></script>
+    <script src="/resource/js/axios.min.js"></script>
     <%- include ('../_values/global.ejs') -%>
     <%- include ('./_styles/login.ejs') -%>
 </head>
@@ -30,19 +30,19 @@
                 :model="ruleForm"
                 status-icon
                 :rules="rules"
-                label-width="120px"
+                label-width="0"
                 class="demo-ruleForm"
         >
-            <el-form-item prop="name" label-width="0">
+            <el-form-item prop="name">
                 <el-input v-model="ruleForm.name" type="text" placeholder="请输入账号名称" size="large"
                           autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item prop="password" label-width="0">
+            <el-form-item prop="password">
                 <el-input v-model="ruleForm.password" type="password" placeholder="请输入密码" size="large"
                           autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label-width="0">
-                <el-button class="submit-button" type="primary" @click="sumbit" size="large">
+            <el-form-item>
+                <el-button class="submit-button" type="primary" @click="submit(ruleForm)" size="large">
                     立即登录
                 </el-button>
             </el-form-item>
@@ -60,13 +60,14 @@
         }
       };
     },
-    method: {
-      sumbit() {
+    methods: {
+      submit(ruleForm) {
+        if(!this.$refs.ruleFormRef) return;
         this.$refs.ruleFormRef.validate(function (valid) {
           if (!valid) return;
           var salt = 'fc-salt';
           var url = '/api/admin-login/login';
-          var params = Object.assign({}, this.ruleForm);
+          var params = Object.assign({}, ruleForm);
           params.password = md5(params.password, salt);
           var loading = ElementPlus.ElLoading.service({
             lock: true,
