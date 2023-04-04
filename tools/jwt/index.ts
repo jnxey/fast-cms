@@ -2,21 +2,20 @@ import jwt from 'koa-jwt'
 import Koa, { ExtendableContext, Next } from 'koa'
 import { Dto, ResponseCode } from '@/tools/dto'
 import jsonwebtoken from 'jsonwebtoken'
-import { JD } from 'Koa'
 import { Controller } from '@/tools/controller'
 
 declare module 'Koa' {
-  interface JD {
-    jwtdata: JwtData
+  interface User {
+    user: JwtUser
   }
 
   interface ExtendableContext {
     jwt?: boolean
-    state?: JD
+    state?: User
   }
 }
 
-class JwtData {
+class JwtUser {
   public id?: number
   public admin_name?: string
   public system_role?: number
@@ -25,7 +24,6 @@ class JwtData {
     this.id = id
     this.admin_name = admin_name
     this.system_role = system_role
-
     return { id, admin_name, system_role }
   }
 }
@@ -45,7 +43,7 @@ export class Jwt {
   public static JWT_GET_KEY = 'Auth-Token'
 
   /// 设置Token的名字
-  public static JwtData = JwtData
+  public static JwtUser = JwtUser
 
   /// JWT拦截
   public static intercept() {

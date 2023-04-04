@@ -36,7 +36,7 @@ export class AdminLogin extends Controller.Api {
       const user = result.value[0]
       if (user.admin_pwd === params.password) {
         // 比对成功
-        const payload = new Jwt.JwtData(user.id, user.admin_name, user.system_role)
+        const payload = new Jwt.JwtUser(user.id, user.admin_name, user.system_role)
         const token = Jwt.sign(payload)
         const userResult: ResultLoginSuccess = new ResultLoginSuccess()
         userResult.fill(user)
@@ -53,12 +53,12 @@ export class AdminLogin extends Controller.Api {
     return next()
   }
 
-  @Get()
+  @Post()
   @Json()
   @Jwt.protected()
-  public async get(ctx: ExtendableContext, next: Next) {
-    console.log(ctx.jwt, '----------------2')
-    ctx.body = Dto(ResponseCode.success, '拉去用户信息成功')
+  public async loginout(ctx: ExtendableContext, next: Next) {
+    ctx.cookies.set(Jwt.JWT_GET_KEY, '', { httpOnly: true })
+    ctx.body = Dto(ResponseCode.success, '退出成果')
     return next()
   }
 }

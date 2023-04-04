@@ -1,13 +1,8 @@
 <ul class="layui-nav nav-top">
     <li class="layui-nav-item">
-        <a href="">控制台<span class="layui-badge">9</span></a>
-    </li>
-    <li class="layui-nav-item">
-        <a href="">个人中心<span class="layui-badge-dot"></span></a>
-    </li>
-    <li class="layui-nav-item">
         <a href="javascript:;">
-            <svg class="layui-nav-img nav-user-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+            <svg class="layui-nav-img nav-user-icon" viewBox="0 0 1024 1024" version="1.1"
+                 xmlns="http://www.w3.org/2000/svg"
                  width="60" height="60">
                 <path d="M512 929.959184c-230.4 0-417.959184-187.559184-417.959184-417.959184s187.559184-417.959184 417.959184-417.959184 417.959184 187.559184 417.959184 417.959184-187.559184 417.959184-417.959184 417.959184z"
                       fill="#16C4AF"></path>
@@ -16,12 +11,34 @@
                 <path d="M512 532.897959c-62.171429 0-112.326531-50.677551-112.326531-112.32653S449.828571 308.244898 512 308.244898s112.326531 50.677551 112.326531 112.326531S574.171429 532.897959 512 532.897959z"
                       fill="#DCFFFA"></path>
             </svg>
-            我
+            <%= data.user.admin_name %>
         </a>
         <dl class="layui-nav-child">
-            <dd><a href="javascript:;">修改信息</a></dd>
-            <dd><a href="javascript:;">安全管理</a></dd>
-            <dd><a href="javascript:;">退了</a></dd>
+            <dd><a class="t-ac" href="javascript:;">修改密码</a></dd>
+            <dd><a class="t-ac" href="javascript:;" onclick="headerLoginOut()">退出登录</a></dd>
         </dl>
     </li>
 </ul>
+<script>
+  function headerLoginOut() {
+    layer.confirm('is not?', {icon: 3, title: '提示', content: '确认退出登录?'}, function (index) {
+      if (!!index) {
+        var url = '/api/admin-login/loginout'
+        var loadIndex = layer.load();
+        axios.post(url).then(function (response) {
+          var result = response.data;
+          if (result.code === window.RESPONSE_MAP.success.code) {
+            location.href = '/admin-login/index'
+          } else {
+            layer.open({title: '退出失败', content: result.msg});
+          }
+        }).catch(function (err) {
+          layer.open({title: '退出失败', content: err.toString()});
+        }).finally(function () {
+          layer.close(loadIndex);
+        });
+      }
+      layer.close(index);
+    });
+  }
+</script>

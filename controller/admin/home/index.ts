@@ -7,10 +7,10 @@ export class AdminHome extends Controller.Api {
   @View()
   @Jwt.protected()
   public async index(ctx: ExtendableContext, next: Next) {
-    const jwt = ctx?.state?.jwtdata || {}
-    console.log(jwt, '---------------')
+    const user = ctx?.state?.user || {}
     await ctx.render('admin/home', {
-      layout: 'layout/admin'
+      layout: 'layout/admin',
+      data: { user: user }
     })
     return next()
   }
