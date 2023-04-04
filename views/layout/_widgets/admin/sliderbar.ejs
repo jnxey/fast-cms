@@ -1,37 +1,57 @@
-<ul id="admin-nav-left" class="layui-nav layui-nav-tree nav-left" lay-filter="test">
-    <!-- 顶部Logo -->
-    <li class="layui-nav-logo">
-        <img src="/resource/images/admin-nav-left-logo.png" alt=""/>
-    </li>
-    <li class="layui-nav-item"><a href="/admin-home/index">首页</a></li>
-    <li class="layui-nav-item layui-nav-itemed">
-        <a href="javascript:;">文档管理</a>
-        <dl class="layui-nav-child">
-            <dd><a href="/admin-home/space">文档空间</a></dd>
-        </dl>
-    </li>
-    <li class="layui-nav-item layui-nav-itemed">
-        <a href="javascript:;">系统设置</a>
-        <dl class="layui-nav-child">
-            <dd><a href="">成员管理</a></dd>
-            <dd><a href="">角色管理</a></dd>
-            <dd><a href="">权限管理</a></dd>
-        </dl>
-    </li>
-    <li class="layui-nav-item"><a href="/admin-home/person">个人中心</a></li>
-</ul>
+<div id="admin-nav-left">
+    <el-menu
+            class="admin-nav-left"
+            background-color="#545c64"
+            class="el-menu-vertical-demo"
+            text-color="#fff"
+            :default-active="defaultActive"
+    >
+        <el-menu-item index="-1" @click="toPath(homePath)">
+            <img class="layui-nav-logo-img" src="/resource/images/admin-nav-left-logo.png" alt=""/>
+        </el-menu-item>
+        <template v-for="(item, index) in menuList">
+            <template v-if="!item.children">
+                <el-menu-item :key="String(index)" :index="item.path" @click="toPath(item.path)">
+                    <span>{{item.label}}</span>
+                </el-menu-item>
+            </template>
+            <template v-else>
+                <el-sub-menu :key="String(index)" :index="String(index)">
+                    <template #title>
+                        <span>{{item.label}}</span>
+                    </template>
+                    <el-menu-item v-for="(_item, _index) in item.children" :key="String(index)+'_'+String(_index)"
+                                  :index="_item.path" @click="toPath(_item.path)">
+                        {{_item.label}}
+                    </el-menu-item>
+                </el-sub-menu>
+            </template>
+        </template>
+    </el-menu>
+</div>
 <script>
-  (function () {
-    /// 选中当前项
-    var navWrap = document.getElementById('admin-nav-left');
-    var navItems = navWrap ? navWrap.querySelectorAll('a') : [];
-    var orgin = location.pathname;
-    navItems.forEach(function (target) {
-      var href = target.getAttribute('href');
-      if (Boolean(href) && orgin.indexOf(href) === 0) {
-        target.parentElement.classList.add('layui-this');
+  Vue.createApp({
+    data() {
+      return {
+        defaultActive: location.pathname,
+        homePath: '/admin-home/index',
+        menuList: [
+          {label: '首页', path: '/admin-home/index'},
+          {
+            label: '文档管理',
+            children: [
+              {label: '文档空间', path: '/admin-home/space'},
+            ]
+          },
+          {label: '个人中心', path: '/admin-home/person'},
+        ]
       }
-    });
-  })();
+    },
+    methods: {
+      toPath(path) {
+        location.href = path;
+      }
+    }
+  }).use(ElementPlus, {locale: window.ElementPlusLocaleZhCn}).mount("#admin-nav-left");
 </script>
 

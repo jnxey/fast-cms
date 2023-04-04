@@ -15,6 +15,7 @@
     <script src="/resource/js/vue.global.js"></script>
     <!-- Import component library -->
     <script src="/resource/js/element-plus.js"></script>
+    <script src="/resource/js/element-plus-zhCn.js"></script>
     <script src="/resource/js/axios.min.js"></script>
     <%- include ('../_values/global.ejs') -%>
     <%- include ('./_styles/login.ejs') -%>
@@ -62,7 +63,7 @@
     },
     methods: {
       submit(ruleForm) {
-        if(!this.$refs.ruleFormRef) return;
+        if (!this.$refs.ruleFormRef) return;
         this.$refs.ruleFormRef.validate(function (valid) {
           if (!valid) return;
           var salt = 'fc-salt';
@@ -79,17 +80,17 @@
             if (result.code === window.RESPONSE_MAP.success.code) {
               location.href = '/admin-home/index';
             } else {
-              ElementPlus.ElMessageBox.alert(result.msg, '登录失败', {confirmButtonText: '确认'});
+              ElementPlus.ElMessageBox.alert(result.msg, '登录失败');
             }
           }).catch(function (err) {
-            ElementPlus.ElMessageBox.alert(err.toString(), '登录失败', {confirmButtonText: '确认'});
+            ElementPlus.ElMessageBox.alert(err.toString(), '登录失败');
           }).finally(function () {
             loading.close();
           });
         })
       }
     }
-  }).use(ElementPlus).mount("#app");
+  }).use(ElementPlus, { locale: window.ElementPlusLocaleZhCn}).mount("#app");
 </script>
 </body>
 </html>

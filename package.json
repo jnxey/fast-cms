@@ -15,6 +15,7 @@
     "@koa/ejs": "^5.1.0",
     "@koa/router": "^12.0.0",
     "@types/koa__router": "^12.0.0",
+    "element-plus": "^2.3.2",
     "https": "^1.0.0",
     "koa": "^2.14.1",
     "koa-body": "^6.0.1",
