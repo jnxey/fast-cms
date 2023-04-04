@@ -38,9 +38,7 @@ export class AdminHome extends Controller.Api {
     const result: DatabaseQueryResult = await Database.execute(
       Database.format(Database.query.SelectSpaceList)
     )
-    if (result.code !== Database.result.success) {
-      throw Error('拉取空间信息失败')
-    }
+    if (result.code !== Database.result.success) throw Error('拉取空间信息失败')
     const spaces = result.value || []
     await ctx.render('admin/space', {
       layout: 'layout/admin',

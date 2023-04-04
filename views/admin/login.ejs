@@ -6,71 +6,89 @@
           content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,viewport-fit=cover">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>文档中心-后台登录</title>
+    <link rel="stylesheet" href="/resource/css/reset.css"/>
     <link rel="stylesheet" href="/resource/css/index.css"/>
     <script src="/resource/js/md5.min.js"></script>
-    <!-- 引入 layui.css -->
-    <link rel="stylesheet" href="//unpkg.com/layui@2.6.8/dist/css/layui.css"/>
-    <!-- 引入 layui.js -->
-    <script src="//unpkg.com/layui@2.6.8/dist/layui.js"></script>
+    <!-- Import style -->
+    <link rel="stylesheet" href="//unpkg.com/element-plus/dist/index.css"/>
+    <!-- Import Vue 3 -->
+    <script src="//unpkg.com/vue@3"></script>
+    <!-- Import component library -->
+    <script src="//unpkg.com/element-plus"></script>
     <script src="//unpkg.com/axios@1.1.2/dist/axios.min.js"></script>
     <%- include ('../_values/global.ejs') -%>
     <%- include ('./_styles/login.ejs') -%>
 </head>
 <body>
-<div class="page-admin-page-login-wrap">
+<div id="app" class="page-admin-page-login-wrap">
     <div class="login-box">
-        <form class="layui-form" action="">
-            <div class="title t-ac fz-28 fw-700 mb-32">
-                文档系统登录
-            </div>
-            <div class="layui-form-item">
-                <label>
-                    <input type="text" name="name" required lay-verify="required" placeholder="请输入账号"
-                           autocomplete="off" class="layui-input">
-                </label>
-            </div>
-            <div class="layui-form-item">
-                <label>
-                    <input type="password" name="password" required lay-verify="required" placeholder="请输入密码"
-                           autocomplete="off" class="layui-input">
-                </label>
-            </div>
-            <div class="layui-form-item">
-                <button class="layui-btn layui-btn-fluid layui-btn-lg" lay-submit
-                        lay-filter="formDemo">
-                    立即提交
-                </button>
-            </div>
-        </form>
-
-        <script>
-          //Demo
-          layui.use('form', function () {
-            var form = layui.form;
-            var url = '/api/admin-login/login';
-            //监听提交
-            form.on('submit(formDemo)', function (data) {
-              var params = Object.assign({}, data.field);
-              var salt = 'fc-salt';
-              params.password = md5(params.password, salt);
-              var loadIndex = layer.load();
-              axios.post(url, params).then(function (response) {
-                var result = response.data;
-                if (result.code === window.RESPONSE_MAP.success.code) {
-                  location.href = '/admin-home/index'
-                } else {
-                  layer.open({ title: '登录失败', content: result.msg });
-                }
-              }).catch(function (err) {
-                layer.open({ title: '登录失败', content: err.toString() });
-              }).finally(function () {
-                layer.close(loadIndex);
-              });
-              return false;
-            });
-          });
-        </script>
+        <div class="title t-ac fz-28 fw-700 mb-32">
+            文档系统登录
+        </div>
+        <el-form
+                ref="ruleFormRef"
+                :model="ruleForm"
+                status-icon
+                :rules="rules"
+                label-width="120px"
+                class="demo-ruleForm"
+        >
+            <el-form-item prop="name" label-width="0">
+                <el-input v-model="ruleForm.name" type="text" placeholder="请输入账号名称" size="large"
+                          autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item prop="password" label-width="0">
+                <el-input v-model="ruleForm.password" type="password" placeholder="请输入密码" size="large"
+                          autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label-width="0">
+                <el-button class="submit-button" type="primary" @click="sumbit" size="large">
+                    立即登录
+                </el-button>
+            </el-form-item>
+        </el-form>
     </div>
 </div>
+<script>
+  Vue.createApp({
+    data() {
+      return {
+        ruleForm: {name: '', password: ''},
+        rules: {
+          name: [{required: true, message: '请输入账号名称', trigger: 'blur'}],
+          password: [{required: true, message: '请输入密码', trigger: 'blur'}],
+        }
+      };
+    },
+    method: {
+      sumbit() {
+        this.$refs.ruleFormRef.validate(function (valid) {
+          if (!valid) return;
+          var salt = 'fc-salt';
+          var url = '/api/admin-login/login';
+          var params = Object.assign({}, this.ruleForm);
+          params.password = md5(params.password, salt);
+          var loading = ElementPlus.ElLoading.service({
+            lock: true,
+            text: '正在登录...',
+            background: 'rgba(0, 0, 0, 0.7)',
+          });
+          axios.post(url, params).then(function (response) {
+            var result = response.data;
+            if (result.code === window.RESPONSE_MAP.success.code) {
+              location.href = '/admin-home/index';
+            } else {
+              ElementPlus.ElMessageBox.alert(result.msg, '登录失败', {confirmButtonText: '确认'});
+            }
+          }).catch(function (err) {
+            ElementPlus.ElMessageBox.alert(err.toString(), '登录失败', {confirmButtonText: '确认'});
+          }).finally(function () {
+            loading.close();
+          });
+        })
+      }
+    }
+  }).use(ElementPlus).mount("#app");
+</script>
 </body>
 </html>
