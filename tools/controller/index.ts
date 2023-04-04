@@ -6,6 +6,12 @@ import { RequestDataType, RequestMethod } from '@/tools/method'
 
 export class Api {}
 export class Controller {
+  /// Api前缀
+  public static ApiPrefix = '/api/'
+
+  /// 页面前缀
+  public static ViewPrefix = '/'
+
   /// 控制器Api
   public static Api = Api
 
@@ -18,8 +24,9 @@ export class Controller {
     const apis: string[] = Object.getOwnPropertyNames(instance.constructor.prototype)
     apis.forEach((name) => {
       if (name === 'constructor') return
-      const resetful = instance[name].METHOD === RequestMethod.View ? '' : '/api'
-      const path: string = resetful + '/' + kebabCase(moduleName) + '/' + kebabCase(name)
+      const resetful =
+        instance[name].METHOD === RequestMethod.View ? Controller.ViewPrefix : Controller.ApiPrefix
+      const path: string = resetful + kebabCase(moduleName) + '/' + kebabCase(name)
       /// 添加jwt白名单
       if (instance[name].JWT_PROTECTED) {
         Controller.JwtProtectedList.push(path)

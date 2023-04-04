@@ -74,10 +74,15 @@ export class Jwt {
 
   /// JWT处理
   public static error(ctx: ExtendableContext, next: Next) {
+    const url: string = ctx.originalUrl || ''
     return next().catch(function (err) {
       if (err.status === Jwt.JWT_ERROR_STATUS) {
-        ctx.status = Jwt.JWT_ERROR_STATUS
-        ctx.body = Dto(ResponseCode.error_access)
+        if (url.startsWith(Controller.ApiPrefix)) {
+          ctx.status = Jwt.JWT_ERROR_STATUS
+          ctx.body = Dto(ResponseCode.error_access)
+        } else {
+          ctx.redirect('/admin-login/index')
+        }
       } else {
         /// ToDo: 收集错误信息
         if (err) {

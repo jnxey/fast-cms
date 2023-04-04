@@ -6,8 +6,20 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <!-- 引入 layui.css -->
+    <link rel="stylesheet" href="//unpkg.com/layui@2.6.8/dist/css/layui.css"/>
+    <!-- 引入 layui.js -->
+    <script src="//unpkg.com/layui@2.6.8/dist/layui.js"></script>
+    <script src="//unpkg.com/axios@1.1.2/dist/axios.min.js"></script>
+    <%- include ('../_values/global.ejs') -%>
+    <%- include ('./_widgets/admin/style.ejs') -%>
 </head>
 <body>
-<%- body %>
+<%- include ('./_widgets/admin/header.ejs') -%>
+<%- include ('./_widgets/admin/sliderbar.ejs') -%>
+<div class="page-container">
+    <%- body %>
+</div>
+
 </body>
 </html>
