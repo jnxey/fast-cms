@@ -1,4 +1,4 @@
-<el-dialog v-model="visibleMenu" title="添加空间" width="400px">
+<el-dialog v-model="visibleMenu" :title="formMenu.id ? '编辑空间' : '添加空间'" width="400px">
     <el-form :model="formMenu" label-width="100px">
         <el-form-item label="菜单名称">
             <el-input v-model="formMenu.menu_name" placeholder="菜单名称" autocomplete="off"></el-input>
@@ -8,19 +8,20 @@
         </el-form-item>
         <el-form-item label="菜单类型">
             <el-radio-group v-model="formMenu.menu_type">
-                <el-radio :label="TempdataMenuType.menu" size="large">菜单</el-radio>
-                <el-radio :label="TempdataMenuType.page" size="large">页面</el-radio>
+                <el-radio :label="menuType.menu" size="large">菜单</el-radio>
+                <el-radio :label="menuType.page" size="large">页面</el-radio>
             </el-radio-group>
         </el-form-item>
         <el-form-item label="菜单排序">
-            <el-input-number class="space-add-number" v-model="formMenu.sort" :min="0" :step="1" step-strictly></el-input-number>
+            <el-input-number class="space-add-number" v-model="formMenu.sort" :min="0" :step="1"
+                             step-strictly></el-input-number>
         </el-form-item>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="visibleMenu = false">取消</el-button>
         <el-button type="primary" @click="addMenuSubmit()">
-          确认添加
+          确认{{ formMenu.id ? '编辑' : '添加'}}
         </el-button>
       </span>
     </template>

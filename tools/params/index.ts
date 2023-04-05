@@ -41,7 +41,6 @@ export function Params<T extends ParamsModel>(params: { new (): T }, type: Param
       const ctx: ExtendableContext = args[0]
       const next: Next = args[1]
       const current: object = type === ParamsSource.Body ? ctx.request.body : ctx.query
-      console.log(current, '-----------------')
       const result: ParamsModelFillResult = _params.fill(current)
       if (result.valid) {
         ctx.params = _params

@@ -2,10 +2,13 @@
 <div id="page-space" class="page-space-wrap">
     <el-button type="primary" @click="addMenuOpen()">添加新菜单</el-button>
     <%- include ('./_widgets/menu-dialog/index.ejs') -%>
+    <%- include ('./_widgets/menu-list/index.ejs') -%>
 </div>
 
 <script>
-  window.TempdataMenuType = { menu: 1, page: 2 };
+  window.TempdataMenuList = <%- data.menus %>;
+  window.TempdataMenuRoot = 0;
+  window.TempdataMenuType = {menu: 1, page: 2};
   window.TempdataMenuForm = {
     menu_name: '',
     menu_mark: '',
@@ -19,12 +22,27 @@
       return {
         visibleMenu: false,
         formMenu: Object.assign({}, window.TempdataMenuForm),
-        TempdataMenuType: window.TempdataMenuType,
+        menuList: window.TempdataMenuList,
+        menuTree: [],
+        menuProps: {children: 'children', label: 'menu_name'},
+        menuType: window.TempdataMenuType,
       };
     },
+    created() {
+      console.log(this.menuList)
+      this.initTree();
+    },
     methods: {
-      addMenuOpen: function () {
-        this.formMenu = Object.assign({}, window.TempdataMenuForm);
+      initTree: function() {
+        this.menuTree = this.getMenuTree(this.menuList);
+      },
+      addMenuOpen: function (id) {
+        var temp = Boolean(id) ? {parent_id: id} : {};
+        this.formMenu = Object.assign({}, window.TempdataMenuForm, temp);
+        this.visibleMenu = true;
+      },
+      editMenuOpen(data) {
+        this.formMenu = Object.assign({}, window.TempdataMenuForm, data);
         this.visibleMenu = true;
       },
       addMenuSubmit: function () {
@@ -43,6 +61,19 @@
             if (result.code === window.RESPONSE_MAP.success.code) {
               ctx.visibleMenu = false;
               ElementPlus.ElMessage({message: '添加成功', type: 'success'});
+
+              if(Boolean(params.id)) {
+                var key = ctx.menuList.findIndex(function(item) {
+                  return item.id === params.id;
+                });
+                if(key > -1) {
+                  Object.assign(ctx.menuList[key], result.result);
+                  ctx.initTree();
+                }
+              } else {
+                ctx.menuList.push(result.result);
+                ctx.initTree();
+              }
             } else {
               ElementPlus.ElMessageBox.alert(result.msg, '添加失败');
             }
@@ -54,6 +85,25 @@
         } else {
           ElementPlus.ElMessage({message: '请完善表单信息', type: 'warning'});
         }
+      },
+      getMenuTree: function (menus) {
+        var list = JSON.parse(JSON.stringify(menus));
+        function getChildren(id) {
+          var result = [];
+          list.forEach(function (val) {
+            if (val.parent_id === id) {
+              val.children = getChildren(val.id);
+              result.push(val);
+            }
+          });
+          if (result.length > 0) {
+            return result;
+          } else {
+            return null;
+          }
+        }
+
+        return getChildren(window.TempdataMenuRoot);
       }
     }
   }).use(ElementPlus, {locale: window.ElementPlusLocaleZhCn}).mount("#page-space");

@@ -11,7 +11,7 @@ import {
   ParamsMenuFormAdd,
   ParamsMenuFormAddResult
 } from '@/controller/admin/home/_models/menu-form-add'
-import { SelectMenuList } from '@/database/query'
+import { SelectMenuExit, SelectMenuList, UpdateMenuItem } from '@/database/query'
 
 export class AdminHome extends Controller.Api {
   @View()
@@ -47,7 +47,7 @@ export class AdminHome extends Controller.Api {
       Database.format(Database.query.SelectMenuList)
     )
     if (result.code !== Database.result.success) throw Error('拉取空间信息失败')
-    const menus = result.value || []
+    const menus = JSON.stringify(result.value || [])
     await ctx.render('admin/space/index', {
       layout: 'layout/admin',
       data: { user, menus }
@@ -60,31 +60,58 @@ export class AdminHome extends Controller.Api {
   @Jwt.protected()
   @Params(ParamsMenuFormAdd, ParamsSource.Body)
   @Result(ParamsMenuFormAddResult)
-  @Summary('添加菜单')
+  @Summary('添加/编辑菜单')
   public async menuAddOrEdit(ctx: ExtendableContext, next: Next) {
-    const { menu_name, menu_mark, menu_type, parent_id, content_id, sort }: ParamsMenuFormAdd =
+    const { id, menu_name, menu_mark, menu_type, parent_id, content_id, sort }: ParamsMenuFormAdd =
       ctx.params
-    const insertInfo = { menu_name, menu_mark, menu_type, parent_id, content_id, sort }
-    const resultCount: DatabaseQueryResult = await Database.execute(
-      Database.format(Database.query.SelectMenuCount, { parent_id, menu_mark })
-    )
-    if (resultCount.code === Database.result.success) {
-      if (!Boolean(resultCount.value.length)) {
-        const resultInsert: DatabaseQueryResult = await Database.execute(
-          Database.format(Database.query.InsertMenuItem, insertInfo)
-        )
-        if (resultInsert.code === Database.result.error) {
-          ctx.body = Dto(ResponseCode.error_server, null, resultInsert.msg)
+    if (Boolean(id)) {
+      /// 编辑
+      const menuInfo = { id, menu_name, menu_mark, sort }
+      const resultCount: DatabaseQueryResult = await Database.execute(
+        Database.format(Database.query.SelectMenuExit, { id })
+      )
+      if (resultCount.code === Database.result.success) {
+        if (Boolean(resultCount.value.length)) {
+          const resultUpdate: DatabaseQueryResult = await Database.execute(
+            Database.format(Database.query.UpdateMenuItem, menuInfo)
+          )
+          if (resultUpdate.code === Database.result.error) {
+            ctx.body = Dto(ResponseCode.error_server, null, resultUpdate.msg)
+          } else {
+            const updateResult = new ParamsMenuFormAddResult()
+            updateResult.fill(menuInfo)
+            ctx.body = Dto(ResponseCode.success, updateResult)
+          }
         } else {
-          const insertResult = new ParamsMenuFormAddResult()
-          insertResult.fill({ ...insertInfo, id: resultInsert.value.insertId })
-          ctx.body = Dto(ResponseCode.success, insertResult)
+          ctx.body = Dto(ResponseCode.error_server, null, '您要编辑的菜单不存在')
         }
       } else {
-        ctx.body = Dto(ResponseCode.error_server, null, '您提交的菜单标识已存在')
+        ctx.body = Dto(ResponseCode.error_server, null, resultCount.msg)
       }
     } else {
-      ctx.body = Dto(ResponseCode.error_server, null, resultCount.msg)
+      /// 添加
+      const menuInfo = { menu_name, menu_mark, menu_type, parent_id, content_id, sort }
+      const resultCount: DatabaseQueryResult = await Database.execute(
+        Database.format(Database.query.SelectMenuCount, { parent_id, menu_mark })
+      )
+      if (resultCount.code === Database.result.success) {
+        if (!Boolean(resultCount.value.length)) {
+          const resultInsert: DatabaseQueryResult = await Database.execute(
+            Database.format(Database.query.InsertMenuItem, menuInfo)
+          )
+          if (resultInsert.code === Database.result.error) {
+            ctx.body = Dto(ResponseCode.error_server, null, resultInsert.msg)
+          } else {
+            const insertResult = new ParamsMenuFormAddResult()
+            insertResult.fill({ ...menuInfo, id: resultInsert.value.insertId })
+            ctx.body = Dto(ResponseCode.success, insertResult)
+          }
+        } else {
+          ctx.body = Dto(ResponseCode.error_server, null, '您提交的菜单标识已存在')
+        }
+      } else {
+        ctx.body = Dto(ResponseCode.error_server, null, resultCount.msg)
+      }
     }
     return next()
   }

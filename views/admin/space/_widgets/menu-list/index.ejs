@@ -1,0 +1,20 @@
+<div class="space-menu-list-wrap">
+    <el-tree :data="menuTree" :props="menuProps" default-expand-all>
+        <template #default="{ node, data }">
+            <div class="space-tree-node">
+                <span class="space-tree-text">{{ node.label }}</span>
+                <el-dropdown trigger="click">
+                    <span class="space-tree-icon iconfont icon-gengduo"></span>
+                    <template #dropdown>
+                        <el-dropdown-menu>
+                            <template v-if="menuType.menu === data.menu_type">
+                                <el-dropdown-item @click="addMenuOpen(data.id)">添加子项</el-dropdown-item>
+                            </template>
+                            <el-dropdown-item  @click="editMenuOpen(data)">编辑菜单</el-dropdown-item>
+                        </el-dropdown-menu>
+                    </template>
+                </el-dropdown>
+            </div>
+        </template>
+    </el-tree>
+</div>
