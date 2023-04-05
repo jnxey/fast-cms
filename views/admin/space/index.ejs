@@ -1,0 +1,15 @@
+<%- include ('./style.ejs') -%>
+<div id="page-space" class="page-space-wrap">
+    <el-button type="primary">添加新的空间</el-button>
+
+</div>
+
+<script>
+  Vue.createApp({
+    data() {
+      return {};
+    },
+    methods: {
+    }
+  }).use(ElementPlus, { locale: window.ElementPlusLocaleZhCn}).mount("#page-space");
+</script>
