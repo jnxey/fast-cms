@@ -1,29 +1,38 @@
 <%- include ('./style.ejs') -%>
 <div id="page-space" class="page-space-wrap">
-    <el-button type="primary" @click="addSpaceOpen()">添加新的空间</el-button>
-    <%- include ('./_widgets/add-space-dialog/index.ejs') -%>
+    <el-button type="primary" @click="addMenuOpen()">添加新菜单</el-button>
+    <%- include ('./_widgets/menu-dialog/index.ejs') -%>
 </div>
 
 <script>
-  window.TempdataSpaceForm = {space_name: '', space_mark: '', sort: 0}
+  window.TempdataMenuType = { menu: 1, page: 2 };
+  window.TempdataMenuForm = {
+    menu_name: '',
+    menu_mark: '',
+    menu_type: window.TempdataMenuType.menu,
+    parent_id: 0,
+    content_id: 0,
+    sort: 0
+  };
   Vue.createApp({
     data() {
       return {
-        visibleAddSpace: false,
-        formAddSpace: Object.assign({}, window.TempdataSpaceForm)
+        visibleMenu: false,
+        formMenu: Object.assign({}, window.TempdataMenuForm),
+        TempdataMenuType: window.TempdataMenuType,
       };
     },
     methods: {
-      addSpaceOpen: function () {
-        this.formAddSpace = Object.assign({}, window.TempdataSpaceForm);
-        this.visibleAddSpace = true;
+      addMenuOpen: function () {
+        this.formMenu = Object.assign({}, window.TempdataMenuForm);
+        this.visibleMenu = true;
       },
-      addSpaceSubmit: function () {
+      addMenuSubmit: function () {
         var ctx = this;
-        var isValid = ctx.formAddSpace.space_name && ctx.formAddSpace.space_mark;
+        var isValid = ctx.formMenu.menu_name && ctx.formMenu.menu_mark;
         if (isValid) {
-          var url = '/api/admin-home/space-add';
-          var params = Object.assign({}, this.formAddSpace);
+          var url = '/api/admin-home/menu-add-or-edit';
+          var params = Object.assign({}, this.formMenu);
           var loading = ElementPlus.ElLoading.service({
             lock: true,
             text: '正在添加...',
@@ -32,7 +41,7 @@
           axios.post(url, params).then(function (response) {
             var result = response.data;
             if (result.code === window.RESPONSE_MAP.success.code) {
-              ctx.visibleAddSpace = false;
+              ctx.visibleMenu = false;
               ElementPlus.ElMessage({message: '添加成功', type: 'success'});
             } else {
               ElementPlus.ElMessageBox.alert(result.msg, '添加失败');

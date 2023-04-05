@@ -41,25 +41,16 @@ CREATE TABLE system_config (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB COMMENT='系统配置';
 
-CREATE TABLE doc_space
-(
-  id          INT         NOT NULL UNIQUE AUTO_INCREMENT COMMENT '主键',
-  space_name  VARCHAR(50) NOT NULL        COMMENT '空间名称',
-  space_mark  VARCHAR(50) NOT NULL UNIQUE COMMENT '空间标识',
-  sort        INT NOT NULL COMMENT '排序',
-  create_time DATETIME    NOT NULL        COMMENT '创建时间',
-  PRIMARY KEY (id)
-) ENGINE=InnoDB COMMENT='文档空间列表';
-
 CREATE TABLE doc_menu
 (
   id          INT         NOT NULL UNIQUE AUTO_INCREMENT COMMENT '主键',
   menu_name   VARCHAR(50) NOT NULL        COMMENT '菜单名称',
   menu_mark   VARCHAR(50) NOT NULL UNIQUE COMMENT '菜单标识',
+  menu_type   INT NOT NULL COMMENT '菜单类型，1-菜单，2-页面',
   parent_id   INT NOT NULL COMMENT '父级菜单',
-  space_id    INT NOT NULL COMMENT '所属空间',
   content_id  INT NOT NULL COMMENT '文档内容',
   sort        INT NOT NULL COMMENT '排序',
+  create_time DATETIME    NOT NULL        COMMENT '创建时间',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB COMMENT='文档空间列表';
 
@@ -69,6 +60,7 @@ CREATE TABLE doc_content
   doc_type    INT NOT NULL      COMMENT '文档显示类型，1-富文本，2-Markdown，3-Iframe，4-SFC',
   doc_keyword LONGTEXT NOT NULL COMMENT '文档关键词，可用【，】分开',
   doc_content LONGTEXT NOT NULL COMMENT '文档内容',
+  create_time DATETIME NOT NULL        COMMENT '创建时间',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB COMMENT='文档空间列表';
 

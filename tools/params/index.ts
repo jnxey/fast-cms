@@ -89,22 +89,20 @@ export class ParamsModel {
     if (!paramsConfig) return new ParamsModelFillResult(true, '无校验')
     for (let name in paramsConfig) {
       if (paramsConfig.hasOwnProperty(name)) {
-        if (
-          paramsConfig[name].required &&
-          (map[name] === undefined || map[name] === '' || map[name] === null)
-        ) {
+        const hasNull = map[name] === undefined || map[name] === '' || map[name] === null
+        if (paramsConfig[name].required && hasNull) {
           return new ParamsModelFillResult(false, paramsConfig[name].requiredMessage)
         }
-        if (paramsConfig[name].type === ParamsType.Number && isNaN(Number(map[name]))) {
+        if (!hasNull && paramsConfig[name].type === ParamsType.Number && isNaN(Number(map[name]))) {
           return new ParamsModelFillResult(false, paramsConfig[name].typeErrorMessage)
         }
-        if (paramsConfig[name].type === ParamsType.Boolean && !isBoolean(map[name])) {
+        if (!hasNull && paramsConfig[name].type === ParamsType.Boolean && !isBoolean(map[name])) {
           return new ParamsModelFillResult(false, paramsConfig[name].typeErrorMessage)
         }
-        if (paramsConfig[name].type === ParamsType.String && !isString(map[name])) {
+        if (!hasNull && paramsConfig[name].type === ParamsType.String && !isString(map[name])) {
           return new ParamsModelFillResult(false, paramsConfig[name].typeErrorMessage)
         }
-        if (paramsConfig[name].type instanceof ParamsModel) {
+        if (!hasNull && paramsConfig[name].type instanceof ParamsModel) {
           const model = new paramsConfig[name]()
           const result: ParamsModelFillResult = model.fill(map[name])
           if (!result) return result

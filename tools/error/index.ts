@@ -31,6 +31,7 @@ export class ErrorKoa {
           ctx.redirect('/404.html')
         }
       } else {
+        console.log(err, '------123')
         /// 其他错误
         if (isApi) {
           ctx.status = ErrorKoa.NotFound

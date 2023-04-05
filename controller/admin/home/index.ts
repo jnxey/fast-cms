@@ -4,13 +4,14 @@ import { Json, Post, Summary, View } from '@/tools/method'
 import { Jwt } from '@/tools/jwt'
 import { DatabaseQueryResult } from '@/database/_types'
 import { Database } from '@/database'
-import {
-  ParamsSpaceFormAdd,
-  ParamsSpaceFormAddResult
-} from '@/controller/admin/home/_models/space-form-add'
 import { Params, ParamsSource } from '@/tools/params'
 import { Dto, ResponseCode } from '@/tools/dto'
 import { Result } from '@/tools/result'
+import {
+  ParamsMenuFormAdd,
+  ParamsMenuFormAddResult
+} from '@/controller/admin/home/_models/menu-form-add'
+import { SelectMenuList } from '@/database/query'
 
 export class AdminHome extends Controller.Api {
   @View()
@@ -43,13 +44,13 @@ export class AdminHome extends Controller.Api {
   public async space(ctx: ExtendableContext, next: Next) {
     const user = ctx?.state?.user || {}
     const result: DatabaseQueryResult = await Database.execute(
-      Database.format(Database.query.SelectSpaceList)
+      Database.format(Database.query.SelectMenuList)
     )
     if (result.code !== Database.result.success) throw Error('拉取空间信息失败')
-    const spaces = result.value || []
+    const menus = result.value || []
     await ctx.render('admin/space/index', {
       layout: 'layout/admin',
-      data: { user, spaces }
+      data: { user, menus }
     })
     return next()
   }
@@ -57,29 +58,30 @@ export class AdminHome extends Controller.Api {
   @Post()
   @Json()
   @Jwt.protected()
-  @Params(ParamsSpaceFormAdd, ParamsSource.Body)
-  @Result(ParamsSpaceFormAddResult)
-  @Summary('添加文档空间')
-  public async spaceAdd(ctx: ExtendableContext, next: Next) {
-    const { space_name, space_mark, sort }: ParamsSpaceFormAdd = ctx.params
-    const insertInfo = { space_name, space_mark, sort }
+  @Params(ParamsMenuFormAdd, ParamsSource.Body)
+  @Result(ParamsMenuFormAddResult)
+  @Summary('添加菜单')
+  public async menuAddOrEdit(ctx: ExtendableContext, next: Next) {
+    const { menu_name, menu_mark, menu_type, parent_id, content_id, sort }: ParamsMenuFormAdd =
+      ctx.params
+    const insertInfo = { menu_name, menu_mark, menu_type, parent_id, content_id, sort }
     const resultCount: DatabaseQueryResult = await Database.execute(
-      Database.format(Database.query.SelectSpaceCount, { space_mark })
+      Database.format(Database.query.SelectMenuCount, { parent_id, menu_mark })
     )
     if (resultCount.code === Database.result.success) {
-      if (!Boolean(resultCount.value?.length)) {
+      if (!Boolean(resultCount.value.length)) {
         const resultInsert: DatabaseQueryResult = await Database.execute(
-          Database.format(Database.query.InsertSpaceItem, insertInfo)
+          Database.format(Database.query.InsertMenuItem, insertInfo)
         )
         if (resultInsert.code === Database.result.error) {
           ctx.body = Dto(ResponseCode.error_server, null, resultInsert.msg)
         } else {
-          const insertResult = new ParamsSpaceFormAddResult()
+          const insertResult = new ParamsMenuFormAddResult()
           insertResult.fill({ ...insertInfo, id: resultInsert.value.insertId })
           ctx.body = Dto(ResponseCode.success, insertResult)
         }
       } else {
-        ctx.body = Dto(ResponseCode.error_server, null, '您提交的文档空间标识已存在')
+        ctx.body = Dto(ResponseCode.error_server, null, '您提交的菜单标识已存在')
       }
     } else {
       ctx.body = Dto(ResponseCode.error_server, null, resultCount.msg)
