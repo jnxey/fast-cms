@@ -23,7 +23,7 @@
 <script>
   Vue.createApp({
     methods: {
-      headerLoginOut() {
+      headerLoginOut: function () {
         ElementPlus.ElMessageBox.confirm('确定退出登录?')
           .then(() => {
             var url = '/api/admin-login/loginout'

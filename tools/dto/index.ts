@@ -33,6 +33,6 @@ export const ResponseCode: ResponseCodeBean = {
 }
 
 /// Response返回码
-export function Dto(response: ResponseCodeValue, value?: any): DtoBean {
-  return { code: response.code, msg: response.msg, result: value }
+export function Dto(response: ResponseCodeValue, value?: any, msg?: string): DtoBean {
+  return { code: response.code, msg: msg || response.msg, result: value }
 }

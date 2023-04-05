@@ -43,12 +43,8 @@ export class Database {
       pool.query(query, function (error: any, results: any) {
         const result: DatabaseQueryResult = {
           code: error ? Database.result.error : Database.result.success,
-          msg: error ? String(error) : Database.result.success,
+          msg: error ? String(error?.message) : Database.result.success,
           value: results
-        }
-        if (error) {
-          /// ToDo: 收集错误信息
-          console.log(error.stack?.toString(), 'err-----------5')
         }
         resolve(result)
       })

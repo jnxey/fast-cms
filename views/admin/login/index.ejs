@@ -62,7 +62,7 @@
       };
     },
     methods: {
-      submit(ruleForm) {
+      submit: function (ruleForm) {
         if (!this.$refs.ruleFormRef) return;
         this.$refs.ruleFormRef.validate(function (valid) {
           if (!valid) return;

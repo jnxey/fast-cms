@@ -44,16 +44,17 @@ CREATE TABLE system_config (
 CREATE TABLE doc_space
 (
   id          INT         NOT NULL UNIQUE AUTO_INCREMENT COMMENT '主键',
-  space_name  VARCHAR(50) NOT NULL UNIQUE COMMENT '空间名称',
+  space_name  VARCHAR(50) NOT NULL        COMMENT '空间名称',
   space_mark  VARCHAR(50) NOT NULL UNIQUE COMMENT '空间标识',
   sort        INT NOT NULL COMMENT '排序',
+  create_time DATETIME    NOT NULL        COMMENT '创建时间',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB COMMENT='文档空间列表';
 
 CREATE TABLE doc_menu
 (
   id          INT         NOT NULL UNIQUE AUTO_INCREMENT COMMENT '主键',
-  menu_name   VARCHAR(50) NOT NULL UNIQUE COMMENT '菜单名称',
+  menu_name   VARCHAR(50) NOT NULL        COMMENT '菜单名称',
   menu_mark   VARCHAR(50) NOT NULL UNIQUE COMMENT '菜单标识',
   parent_id   INT NOT NULL COMMENT '父级菜单',
   space_id    INT NOT NULL COMMENT '所属空间',
@@ -75,3 +76,5 @@ INSERT INTO admin_user    VALUES (1, 'admin', '698495dad777ebb0be5281f4f44d27c6'
 INSERT INTO system_config VALUES (1, 0, CURRENT_TIMESTAMP);
 
 CREATE INDEX admin_name_index ON admin_user (admin_name);
+-- CREATE INDEX space_mark_index ON doc_space (space_mark);
+-- CREATE INDEX menu_mark_index ON doc_menu (menu_mark);

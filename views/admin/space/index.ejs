@@ -1,15 +1,51 @@
 <%- include ('./style.ejs') -%>
 <div id="page-space" class="page-space-wrap">
-    <el-button type="primary">添加新的空间</el-button>
-
+    <el-button type="primary" @click="addSpaceOpen()">添加新的空间</el-button>
+    <%- include ('./_widgets/add-space-dialog/index.ejs') -%>
 </div>
 
 <script>
+  window.TempdataSpaceForm = {space_name: '', space_mark: '', sort: 0}
   Vue.createApp({
     data() {
-      return {};
+      return {
+        visibleAddSpace: false,
+        formAddSpace: Object.assign({}, window.TempdataSpaceForm)
+      };
     },
     methods: {
+      addSpaceOpen: function () {
+        this.formAddSpace = Object.assign({}, window.TempdataSpaceForm);
+        this.visibleAddSpace = true;
+      },
+      addSpaceSubmit: function () {
+        var ctx = this;
+        var isValid = ctx.formAddSpace.space_name && ctx.formAddSpace.space_mark;
+        if (isValid) {
+          var url = '/api/admin-home/space-add';
+          var params = Object.assign({}, this.formAddSpace);
+          var loading = ElementPlus.ElLoading.service({
+            lock: true,
+            text: '正在添加...',
+            background: 'rgba(0,0,0,0.7)'
+          });
+          axios.post(url, params).then(function (response) {
+            var result = response.data;
+            if (result.code === window.RESPONSE_MAP.success.code) {
+              ctx.visibleAddSpace = false;
+              ElementPlus.ElMessage({message: '添加成功', type: 'success'});
+            } else {
+              ElementPlus.ElMessageBox.alert(result.msg, '添加失败');
+            }
+          }).catch(function (err) {
+            ElementPlus.ElMessageBox.alert(err.toString(), '添加失败');
+          }).finally(function () {
+            loading.close();
+          });
+        } else {
+          ElementPlus.ElMessage({message: '请完善表单信息', type: 'warning'});
+        }
+      }
     }
-  }).use(ElementPlus, { locale: window.ElementPlusLocaleZhCn}).mount("#page-space");
+  }).use(ElementPlus, {locale: window.ElementPlusLocaleZhCn}).mount("#page-space");
 </script>
