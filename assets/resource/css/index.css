@@ -1,3 +1,12 @@
+:root {
+  --el-color-primary: #009688;
+  --el-color-primary-light-3: #14b9aa;
+  --el-color-primary-light-5: #9ef3ea;
+  --el-color-primary-light-7: #d2f6f2;
+  --el-color-primary-light-8: #e4faf7;
+  --el-color-primary-light-9: #f0faf8;
+  --el-color-primary-dark-2: #02544c;
+}
 /* 常见flex布局 */
 .flex-row {
   display: flex;

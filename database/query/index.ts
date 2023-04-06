@@ -6,7 +6,7 @@ export const SelectMenuList = 'SELECT * FROM doc_menu'
 
 /// 查询文档菜单是否存在，BY Mark
 export const SelectMenuCount =
-  'SELECT * FROM doc_menu WHERE id = {parent_id} AND menu_mark = {menu_mark} LIMIT 1'
+  'SELECT * FROM doc_menu WHERE parent_id = {parent_id} AND menu_mark = {menu_mark} LIMIT 1'
 
 /// 查询文档菜单是否存在，BY Id
 export const SelectMenuExit = 'SELECT * FROM doc_menu WHERE id = {id} LIMIT 1'

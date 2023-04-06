@@ -45,7 +45,7 @@ CREATE TABLE doc_menu
 (
   id          INT         NOT NULL UNIQUE AUTO_INCREMENT COMMENT '主键',
   menu_name   VARCHAR(50) NOT NULL        COMMENT '菜单名称',
-  menu_mark   VARCHAR(50) NOT NULL UNIQUE COMMENT '菜单标识',
+  menu_mark   VARCHAR(50) NOT NULL        COMMENT '菜单标识',
   menu_type   INT NOT NULL COMMENT '菜单类型，1-菜单，2-页面',
   parent_id   INT NOT NULL COMMENT '父级菜单',
   content_id  INT NOT NULL COMMENT '文档内容',
