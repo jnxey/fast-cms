@@ -8,12 +8,12 @@ export class ParamsContentEdit extends ParamsModel {
   public id?: number
 
   @Declare()
-  @TypeError(ParamsType.Number, '文档关键词必须为字符串')
+  @TypeError(ParamsType.String, '文档关键词必须为字符串')
   @Description('文档关键词')
   public doc_keyword?: string
 
   @Declare()
-  @TypeError(ParamsType.Number, '文档内容必须为字符串')
+  @TypeError(ParamsType.String, '文档内容必须为字符串')
   @Description('文档内容')
   public doc_content?: string
 }

@@ -32,6 +32,8 @@
       this.menuProps = {children: 'children', label: 'menu_name'};
       this.contentMap = window.CONTENT_TYPE_MAP;
       this.contentInfo = window.CONTENT_TYPE_INFO;
+      this.cacheDocContent = '';
+      this.editorHtml = null;
       return {
         visibleMenu: false,
         formMenu: Object.assign({}, window.TempdataMenuForm),
@@ -82,7 +84,6 @@
             if (result.code === window.RESPONSE_MAP.success.code) {
               ctx.visibleMenu = false;
               ElementPlus.ElMessage({message: tipsSuccess, type: 'success'});
-
               if (Boolean(params.id)) {
                 var key = ctx.menuList.findIndex(function (item) {
                   return item.id === params.id;
@@ -170,30 +171,31 @@
       /// 设置pageContent
       setPageContent(current, pageContent) {
         var ctx = this;
-        this.$nextTick(function () {
+        ctx.$nextTick(function () {
           ctx.currentPage = current;
           ctx.pageContent = pageContent;
           if (!pageContent) return;
-          this.$nextTick(function () {
+          ctx.$nextTick(function () {
+            ctx.cacheDocContent = ctx.pageContent.doc_content
             if (pageContent.doc_type === ctx.contentMap.rich) {
               var createEditor = window.wangEditor.createEditor;
               var createToolbar = window.wangEditor.createToolbar;
               var editorConfig = {
                 placeholder: 'Type here...',
+                scroll: false,
                 onChange: function (editor) {
-                  const html = editor.getHtml()
-                  console.log('editor content', html)
+                  ctx.pageContent.doc_content = editor.getHtml();
                 }
               }
-              var editor = createEditor({
+              ctx.editorHtml = createEditor({
                 selector: '#editor-container',
-                html: '<p><br></p>',
+                html: ctx.pageContent.doc_content,
                 config: editorConfig,
                 mode: 'default'
               })
               var toolbarConfig = {}
               createToolbar({
-                editor: editor, selector: '#toolbar-container', config: toolbarConfig, mode: 'default'
+                editor: ctx.editorHtml, selector: '#toolbar-container', config: toolbarConfig, mode: 'default'
               });
             } else if (pageContent.doc_type === ctx.contentMap.markdown) {
               var target = document.getElementById("content-markdown-box");
@@ -242,6 +244,39 @@
         }).finally(function () {
           loading.close();
         });
+      },
+      /// 编辑文档内容
+      editContentSubmit: function () {
+        var ctx = this;
+        ElementPlus.ElMessageBox.confirm('确认保存您所编辑的内容？', '提示').then(function () {
+          var url = '/api/admin-home/content-edit';
+          var params = Object.assign({}, ctx.pageContent);
+          var tipsSuccess = '提交成功';
+          var tipsError = '提交失败';
+          var tipsLoading = '正在提交...';
+          var loading = ElementPlus.ElLoading.service({
+            lock: true,
+            text: tipsLoading,
+            background: 'rgba(0,0,0,0.7)'
+          });
+          axios.post(url, params).then(function (response) {
+            var result = response.data;
+            if (result.code === window.RESPONSE_MAP.success.code) {
+              ElementPlus.ElMessage({message: tipsSuccess, type: 'success'});
+            } else {
+              ElementPlus.ElMessageBox.alert(result.msg, tipsError);
+            }
+          }).catch(function (err) {
+            ElementPlus.ElMessageBox.alert(err.toString(), tipsError);
+          }).finally(function () {
+            loading.close();
+          });
+        });
+      },
+      /// 撤销已编辑的内容
+      repackContentEdit() {
+        this.pageContent.doc_content = this.cacheDocContent;
+        if (this.editorHtml) this.editorHtml.setHtml(this.cacheDocContent);
       }
     }
   }).use(ElementPlus, {locale: window.ElementPlusLocaleZhCn}).mount("#page-space");

@@ -4,8 +4,8 @@
         <template v-if="pageContent">
             <div class="info">网页类型：{{contentInfo[pageContent.doc_type]}}</div>
             <div class="handler-box">
-                <el-button>撤销</el-button>
-                <el-button type="primary">保存</el-button>
+                <el-button @click="repackContentEdit()">撤销</el-button>
+                <el-button type="primary" @click="editContentSubmit()">保存</el-button>
             </div>
         </template>
         <template v-else>
