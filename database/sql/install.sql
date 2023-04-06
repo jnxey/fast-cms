@@ -58,9 +58,9 @@ CREATE TABLE doc_content
 (
   id          INT NOT NULL UNIQUE AUTO_INCREMENT COMMENT '主键',
   doc_type    INT NOT NULL      COMMENT '文档显示类型，1-富文本，2-Markdown，3-Iframe，4-SFC',
-  doc_keyword LONGTEXT NOT NULL COMMENT '文档关键词，可用【，】分开',
-  doc_content LONGTEXT NOT NULL COMMENT '文档内容',
-  create_time DATETIME NOT NULL        COMMENT '创建时间',
+  doc_keyword LONGTEXT          COMMENT '文档关键词，可用【，】分开',
+  doc_content LONGTEXT          COMMENT '文档内容',
+  create_time DATETIME NOT NULL COMMENT '创建时间',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB COMMENT='文档空间列表';
 

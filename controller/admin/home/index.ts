@@ -1,6 +1,6 @@
 import { Controller } from '@/tools/controller'
 import { ExtendableContext, Next } from 'koa'
-import { Json, Post, Summary, View } from '@/tools/method'
+import { Get, Json, Post, Summary, View } from '@/tools/method'
 import { Jwt } from '@/tools/jwt'
 import { DatabaseQueryResult } from '@/database/_types'
 import { Database } from '@/database'
@@ -11,7 +11,20 @@ import {
   ParamsMenuFormAdd,
   ParamsMenuFormAddResult
 } from '@/controller/admin/home/_models/menu-form-add'
-import { SelectMenuExit, SelectMenuList, UpdateMenuItem } from '@/database/query'
+import {
+  ParamsContentFormAdd,
+  ParamsContentFormAddResult
+} from '@/controller/admin/home/_models/content-form-add'
+import {
+  InsertContentItem,
+  SelectDocContent,
+  SelectMenuExit,
+  UpdateMenuContentId
+} from '@/database/query'
+import {
+  ParamsContentGet,
+  ParamsContentGetResult
+} from '@/controller/admin/home/_models/content-get'
 
 export class AdminHome extends Controller.Api {
   @View()
@@ -73,6 +86,56 @@ export class AdminHome extends Controller.Api {
     return next()
   }
 
+  @Post()
+  @Json()
+  @Jwt.protected()
+  @Params(ParamsContentFormAdd, ParamsSource.Body)
+  @Result(ParamsContentFormAddResult)
+  @Summary('添加文档内容')
+  public async contentAdd(ctx: ExtendableContext, next: Next) {
+    const { menu_id, doc_type }: ParamsContentFormAdd = ctx.params
+    const resultInsert: DatabaseQueryResult = await Database.execute(
+      Database.format(Database.query.InsertContentItem, { doc_type })
+    )
+    if (resultInsert.code === Database.result.success) {
+      const contentId = resultInsert.value.insertId
+      const resultUpdate: DatabaseQueryResult = await Database.execute(
+        Database.format(Database.query.UpdateMenuContentId, { id: menu_id, content_id: contentId })
+      )
+      console.log(resultUpdate, '-------------------------')
+      if (resultUpdate.code === Database.result.success) {
+        const updateResult = new ParamsContentFormAddResult()
+        updateResult.fill({ id: contentId, menu_id, doc_type, doc_keyword: '', doc_content: '' })
+        ctx.body = Dto(ResponseCode.success, updateResult)
+      } else {
+        ctx.body = Dto(ResponseCode.error_server, null, resultUpdate.msg)
+      }
+    } else {
+      ctx.body = Dto(ResponseCode.error_server, null, resultInsert.msg)
+    }
+    return next()
+  }
+
+  @Get()
+  @Jwt.protected()
+  @Params(ParamsContentGet, ParamsSource.Query)
+  @Result(ParamsContentGetResult)
+  @Summary('获取文档内容')
+  public async contentGet(ctx: ExtendableContext, next: Next) {
+    const { id }: ParamsContentGet = ctx.params
+    const resultSelect: DatabaseQueryResult = await Database.execute(
+      Database.format(Database.query.SelectDocContent, { id })
+    )
+    if (resultSelect.code === Database.result.success) {
+      const selectResult = new ParamsContentGetResult()
+      selectResult.fill(resultSelect.value[0] || {})
+      ctx.body = Dto(ResponseCode.success, selectResult)
+    } else {
+      ctx.body = Dto(ResponseCode.error_server, null, resultSelect.msg)
+    }
+    return next()
+  }
+
   /// 添加菜单
   async addMenu(ctx: ExtendableContext, params: ParamsMenuFormAdd) {
     const { menu_name, menu_mark, menu_type, parent_id, content_id, sort } = params
@@ -85,12 +148,12 @@ export class AdminHome extends Controller.Api {
         const resultInsert: DatabaseQueryResult = await Database.execute(
           Database.format(Database.query.InsertMenuItem, menuInfo)
         )
-        if (resultInsert.code === Database.result.error) {
-          ctx.body = Dto(ResponseCode.error_server, null, resultInsert.msg)
-        } else {
+        if (resultInsert.code === Database.result.success) {
           const insertResult = new ParamsMenuFormAddResult()
           insertResult.fill({ ...menuInfo, id: resultInsert.value.insertId })
           ctx.body = Dto(ResponseCode.success, insertResult)
+        } else {
+          ctx.body = Dto(ResponseCode.error_server, null, resultInsert.msg)
         }
       } else {
         ctx.body = Dto(ResponseCode.error_server, null, '您提交的菜单标识已存在')

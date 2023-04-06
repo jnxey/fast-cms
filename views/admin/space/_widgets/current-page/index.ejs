@@ -1,10 +1,16 @@
 <template v-if="currentPage">
-    <el-page-header :icon="null">
-        <template #content>
-            <span class="text-large font-600 mr-3"> {{currentPage.menu_name}} </span>
+    <div class="current-page-wrap">
+        <div class="current-page-title">《{{currentPage.menu_name}}》</div>
+        <template v-if="pageContent">
+            <div class="info">网页类型：{{contentInfo[pageContent.doc_type]}}</div>
         </template>
-    </el-page-header>
+        <template v-else>
+            <el-button type="primary" @click="addContentOpen()">点击添加网页内容</el-button>
+        </template>
+    </div>
+    <el-divider></el-divider>
 </template>
 <template v-else>
     <el-empty description="请在左侧选中页面"></el-empty>
 </template>
+<%- include ('./_widgets/add-page/index.ejs') -%>

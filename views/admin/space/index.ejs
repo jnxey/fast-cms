@@ -15,35 +15,41 @@
 
 <script>
   window.TempdataMenuList = <%- data.menus %>;
-  window.TempdataMenuRoot = 0;
-  window.TempdataMenuType = {menu: 1, page: 2};
   window.TempdataMenuForm = {
     menu_name: '',
     menu_mark: '',
-    menu_type: window.TempdataMenuType.menu,
-    parent_id: 0,
+    menu_type: window.MENU_TYPE.menu,
+    parent_id: window.MENU_ROOT,
     content_id: 0,
     sort: 0
   };
+  window.TempdataContentForm = {
+    menu_id: 0,
+    doc_type: window.CONTENT_TYPE_MAP.rich,
+  };
   Vue.createApp({
     data() {
+      this.menuType = window.MENU_TYPE;
+      this.menuProps = {children: 'children', label: 'menu_name'};
+      this.contentMap = window.CONTENT_TYPE_MAP;
+      this.contentInfo = window.CONTENT_TYPE_INFO;
       return {
         visibleMenu: false,
         formMenu: Object.assign({}, window.TempdataMenuForm),
         menuList: window.TempdataMenuList,
         menuTree: [],
-        menuProps: {children: 'children', label: 'menu_name'},
-        menuType: window.TempdataMenuType,
-        currentPage: null
+        currentPage: null,
+        visibleContent: false,
+        formContent: Object.assign({}, window.TempdataContentForm),
+        pageContent: null,
       };
     },
     created() {
-      console.log(this.menuList)
       this.initTree();
     },
     methods: {
       /// 初始化菜单树
-      initTree: function() {
+      initTree: function () {
         this.menuTree = this.getMenuTree(this.menuList);
       },
       /// 添加菜单弹窗
@@ -66,9 +72,10 @@
           var params = Object.assign({}, this.formMenu);
           var tipsSuccess = params.id ? '编辑成功' : '添加成功';
           var tipsError = params.id ? '编辑失败' : '添加失败';
+          var tipsLoading = params.id ? '正在编辑...' : '正在添加...';
           var loading = ElementPlus.ElLoading.service({
             lock: true,
-            text: '正在添加...',
+            text: tipsLoading,
             background: 'rgba(0,0,0,0.7)'
           });
           axios.post(url, params).then(function (response) {
@@ -77,11 +84,11 @@
               ctx.visibleMenu = false;
               ElementPlus.ElMessage({message: tipsSuccess, type: 'success'});
 
-              if(Boolean(params.id)) {
-                var key = ctx.menuList.findIndex(function(item) {
+              if (Boolean(params.id)) {
+                var key = ctx.menuList.findIndex(function (item) {
                   return item.id === params.id;
                 });
-                if(key > -1) {
+                if (key > -1) {
                   Object.assign(ctx.menuList[key], result.result);
                   ctx.initTree();
                 }
@@ -104,6 +111,7 @@
       /// 获取菜单树
       getMenuTree: function (menus) {
         var list = JSON.parse(JSON.stringify(menus));
+
         function getChildren(id) {
           var result = [];
           list.forEach(function (val) {
@@ -119,12 +127,74 @@
           }
         }
 
-        return getChildren(window.TempdataMenuRoot);
+        return getChildren(window.MENU_ROOT);
       },
       /// 设置当前页面
-      setCurrentPage: function(menu) {
-        if(menu.menu_type === this.menuType.menu) return;
-        this.currentPage = Object.assign({}, menu);
+      setCurrentPage: function (menu) {
+        if (menu.menu_type === this.menuType.menu) return;
+        if (!Boolean(menu.content_id)) {
+          this.pageContent = null;
+          this.currentPage = Object.assign({}, menu);
+        } else {
+          var ctx = this;
+          var tipsError = '查询失败';
+          var tipsLoading = '正在加载...';
+          var loading = ElementPlus.ElLoading.service({
+            lock: true,
+            text: tipsLoading,
+            background: 'rgba(0,0,0,0.7)'
+          });
+          var url = '/api/admin-home/content-get';
+          var params = {id: menu.content_id};
+          axios.get(url, {params: params}).then(function (response) {
+            var result = response.data;
+            if (result.code === window.RESPONSE_MAP.success.code) {
+              ctx.pageContent = result.result;
+              console.log(ctx.pageContent, '-------------')
+            } else {
+              ElementPlus.ElMessageBox.alert(result.msg, tipsError);
+            }
+          }).catch(function (err) {
+            ElementPlus.ElMessageBox.alert(err.toString(), tipsError);
+          }).finally(function () {
+            loading.close();
+            ctx.currentPage = Object.assign({}, menu);
+          });
+        }
+      },
+      /// 添加文档内容弹窗
+      addContentOpen: function () {
+        const menu_id = this.currentPage.id;
+        this.formContent = Object.assign({}, window.TempdataContentForm, {menu_id: menu_id});
+        this.visibleContent = true;
+      },
+      /// 添加文档内容
+      addContentSubmit: function () {
+        var ctx = this;
+        var url = '/api/admin-home/content-add';
+        var params = Object.assign({}, this.formContent);
+        var tipsSuccess = '添加成功';
+        var tipsError = '添加失败';
+        var tipsLoading = '正在添加...';
+        var loading = ElementPlus.ElLoading.service({
+          lock: true,
+          text: tipsLoading,
+          background: 'rgba(0,0,0,0.7)'
+        });
+        axios.post(url, params).then(function (response) {
+          var result = response.data;
+          if (result.code === window.RESPONSE_MAP.success.code) {
+            ctx.visibleContent = false;
+            ElementPlus.ElMessage({message: tipsSuccess, type: 'success'});
+            ctx.pageContent = result.result || {};
+          } else {
+            ElementPlus.ElMessageBox.alert(result.msg, tipsError);
+          }
+        }).catch(function (err) {
+          ElementPlus.ElMessageBox.alert(err.toString(), tipsError);
+        }).finally(function () {
+          loading.close();
+        });
       }
     }
   }).use(ElementPlus, {locale: window.ElementPlusLocaleZhCn}).mount("#page-space");

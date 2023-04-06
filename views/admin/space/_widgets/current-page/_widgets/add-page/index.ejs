@@ -1,0 +1,20 @@
+<el-dialog v-model="visibleContent" title="选择文档类型" width="400px">
+    <el-form :model="formContent">
+        <el-form-item label="文档类型">
+            <el-radio-group v-model="formContent.doc_type">
+                <el-radio class="form-content-radio" border :label="contentMap.rich" size="large">{{contentInfo[contentMap.rich]}}</el-radio>
+                <el-radio class="form-content-radio" border :label="contentMap.markdown" size="large">{{contentInfo[contentMap.markdown]}}</el-radio>
+                <el-radio class="form-content-radio" border :label="contentMap.website" size="large">{{contentInfo[contentMap.website]}}</el-radio>
+                <el-radio class="form-content-radio" border :label="contentMap.assets" size="large">{{contentInfo[contentMap.assets]}}</el-radio>
+            </el-radio-group>
+        </el-form-item>
+    </el-form>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="visibleContent = false">取消</el-button>
+        <el-button type="primary" @click="addContentSubmit()">
+          确认添加
+        </el-button>
+      </span>
+    </template>
+</el-dialog>

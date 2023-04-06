@@ -1,4 +1,5 @@
 <script>
+    // 返回结果
     window.RESPONSE_MAP = {
       // 成功
       success: { code: '1000', msg: '成功' },
@@ -9,4 +10,12 @@
       // 鉴权失败
       error_access: { code: '1004', msg: '您无权限访问此资源' }
     };
+    // 菜单根ID
+    window.MENU_ROOT = 0;
+    // 菜单类型
+    window.MENU_TYPE = {menu: 1, page: 2};
+    // 文档类型，1-富文本，2-Markdown，3-Iframe，4-资源
+    window.CONTENT_TYPE_MAP = {rich: 1, markdown:2, website: 3, assets: 4}
+    // 文档对应，1-富文本，2-Markdown，3-Iframe，4-资源
+    window.CONTENT_TYPE_INFO = {1: '富文本', 2: 'Markdown', 3: '外部网站', 4: '静态资源'}
 </script>
