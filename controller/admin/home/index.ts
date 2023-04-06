@@ -14,11 +14,12 @@ import {
 import {
   ParamsContentFormAdd,
   ParamsContentFormAddResult
-} from '@/controller/admin/home/_models/content-form-add'
+} from '@/controller/admin/home/_models/content-add'
 import {
   ParamsContentGet,
   ParamsContentGetResult
 } from '@/controller/admin/home/_models/content-get'
+import { ParamsContentEdit } from '@/controller/admin/home/_models/content-edit'
 
 export class AdminHome extends Controller.Api {
   @View()
@@ -105,6 +106,24 @@ export class AdminHome extends Controller.Api {
       }
     } else {
       ctx.body = Dto(ResponseCode.error_server, null, resultInsert.msg)
+    }
+    return next()
+  }
+
+  @Post()
+  @Json()
+  @Jwt.protected()
+  @Params(ParamsContentEdit, ParamsSource.Body)
+  @Summary('编辑文档内容')
+  public async contentEdit(ctx: ExtendableContext, next: Next) {
+    const { id, doc_keyword, doc_content }: ParamsContentEdit = ctx.params
+    const resultUpdate: DatabaseQueryResult = await Database.execute(
+      Database.format(Database.query.UpdateDocContent, { id, doc_keyword, doc_content })
+    )
+    if (resultUpdate.code === Database.result.success) {
+      ctx.body = Dto(ResponseCode.success)
+    } else {
+      ctx.body = Dto(ResponseCode.error_server, null, resultUpdate.msg)
     }
     return next()
   }

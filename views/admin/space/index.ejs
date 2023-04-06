@@ -10,7 +10,6 @@
             <%- include ('./_widgets/current-page/index.ejs') -%>
         </el-main>
     </el-container>
-
 </div>
 
 <script>
@@ -170,27 +169,35 @@
       },
       /// 设置pageContent
       setPageContent(current, pageContent) {
-        this.$nextTick(() => {
-          this.currentPage = current;
-          this.pageContent = pageContent;
+        var ctx = this;
+        this.$nextTick(function () {
+          ctx.currentPage = current;
+          ctx.pageContent = pageContent;
           if (!pageContent) return;
-          this.$nextTick(() => {
-            if (pageContent.doc_type === this.contentMap.rich) {
-              tinymce.init({
-                selector: '#content-rich-box',
-                language: 'zh_CN',
-                plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss',
-                toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
-                tinycomments_mode: 'embedded',
-                tinycomments_author: 'Author name',
-                mergetags_list: [
-                  {value: 'First.Name', title: 'First Name'},
-                  {value: 'Email', title: 'Email'},
-                ]
+          this.$nextTick(function () {
+            if (pageContent.doc_type === ctx.contentMap.rich) {
+              var createEditor = window.wangEditor.createEditor;
+              var createToolbar = window.wangEditor.createToolbar;
+              var editorConfig = {
+                placeholder: 'Type here...',
+                onChange: function (editor) {
+                  const html = editor.getHtml()
+                  console.log('editor content', html)
+                }
+              }
+              var editor = createEditor({
+                selector: '#editor-container',
+                html: '<p><br></p>',
+                config: editorConfig,
+                mode: 'default'
+              })
+              var toolbarConfig = {}
+              createToolbar({
+                editor: editor, selector: '#toolbar-container', config: toolbarConfig, mode: 'default'
               });
-            } else if(pageContent.doc_type === this.contentMap.markdown) {
+            } else if (pageContent.doc_type === ctx.contentMap.markdown) {
               var target = document.getElementById("content-markdown-box");
-              new SimpleMDE({ element: target });
+              new SimpleMDE({element: target});
             }
           });
         });

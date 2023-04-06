@@ -28,3 +28,7 @@ export const UpdateMenuContentId = 'UPDATE doc_menu SET content_id={content_id} 
 
 /// 查询文档内容，BY Id
 export const SelectDocContent = 'SELECT * FROM doc_content WHERE id = {id} LIMIT 1'
+
+/// 更新文档内容，BY Id
+export const UpdateDocContent =
+  'UPDATE doc_content SET doc_keyword={doc_keyword},doc_content={doc_content} WHERE id = {id}'
