@@ -17,4 +17,4 @@ export const InsertMenuItem =
 
 /// 查询文档菜单是否存在，BY Id
 export const UpdateMenuItem =
-  'UPDATE doc_menu SET menu_name={menu_name},menu_mark={menu_mark},sort={sort} WHERE id = {id}'
+  'UPDATE doc_menu SET menu_name={menu_name},menu_mark={menu_mark},menu_type={menu_type},sort={sort} WHERE id = {id}'

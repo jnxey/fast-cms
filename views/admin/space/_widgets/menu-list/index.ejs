@@ -1,10 +1,10 @@
 <div class="space-menu-list-wrap">
-    <el-tree :data="menuTree" :props="menuProps" default-expand-all>
+    <el-tree ref="menuTree" :data="menuTree" :props="menuProps" default-expand-all :expand-on-click-node="false" node-key="id">
         <template #default="{ node, data }">
-            <div class="space-tree-node">
+            <div class="space-tree-node" :class="{active: currentPage && currentPage.id === data.id}" @click="setCurrentPage(data)">
                 <span class="space-tree-text">{{ node.label }}</span>
                 <el-dropdown trigger="click">
-                    <span class="space-tree-icon iconfont icon-gengduo"></span>
+                    <span class="space-tree-icon iconfont icon-gengduo" @click.stop></span>
                     <template #dropdown>
                         <el-dropdown-menu>
                             <template v-if="menuType.menu === data.menu_type">

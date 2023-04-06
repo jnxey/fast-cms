@@ -1,0 +1,10 @@
+<template v-if="currentPage">
+    <el-page-header :icon="null">
+        <template #content>
+            <span class="text-large font-600 mr-3"> {{currentPage.menu_name}} </span>
+        </template>
+    </el-page-header>
+</template>
+<template v-else>
+    <el-empty description="请在左侧选中页面"></el-empty>
+</template>
