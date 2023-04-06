@@ -41,7 +41,7 @@
         currentPage: null,
         visibleContent: false,
         formContent: Object.assign({}, window.TempdataContentForm),
-        pageContent: null,
+        pageContent: false
       };
     },
     created() {
@@ -132,9 +132,11 @@
       /// 设置当前页面
       setCurrentPage: function (menu) {
         if (menu.menu_type === this.menuType.menu) return;
+        var current = Object.assign({}, menu);
+        var pageContent = null;
+        this.clearPageContent();
         if (!Boolean(menu.content_id)) {
-          this.pageContent = null;
-          this.currentPage = Object.assign({}, menu);
+          this.setPageContent(current, pageContent);
         } else {
           var ctx = this;
           var tipsError = '查询失败';
@@ -149,8 +151,7 @@
           axios.get(url, {params: params}).then(function (response) {
             var result = response.data;
             if (result.code === window.RESPONSE_MAP.success.code) {
-              ctx.pageContent = result.result;
-              console.log(ctx.pageContent, '-------------')
+              pageContent = result.result;
             } else {
               ElementPlus.ElMessageBox.alert(result.msg, tipsError);
             }
@@ -158,9 +159,41 @@
             ElementPlus.ElMessageBox.alert(err.toString(), tipsError);
           }).finally(function () {
             loading.close();
-            ctx.currentPage = Object.assign({}, menu);
+            ctx.setPageContent(current, pageContent);
           });
         }
+      },
+      /// 清空pageContent
+      clearPageContent() {
+        this.currentPage = null;
+        this.pageContent = null;
+      },
+      /// 设置pageContent
+      setPageContent(current, pageContent) {
+        this.$nextTick(() => {
+          this.currentPage = current;
+          this.pageContent = pageContent;
+          if (!pageContent) return;
+          this.$nextTick(() => {
+            if (pageContent.doc_type === this.contentMap.rich) {
+              tinymce.init({
+                selector: '#content-rich-box',
+                language: 'zh_CN',
+                plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss',
+                toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+                tinycomments_mode: 'embedded',
+                tinycomments_author: 'Author name',
+                mergetags_list: [
+                  {value: 'First.Name', title: 'First Name'},
+                  {value: 'Email', title: 'Email'},
+                ]
+              });
+            } else if(pageContent.doc_type === this.contentMap.markdown) {
+              var target = document.getElementById("content-markdown-box");
+              new SimpleMDE({ element: target });
+            }
+          });
+        });
       },
       /// 添加文档内容弹窗
       addContentOpen: function () {
@@ -187,6 +220,13 @@
             ctx.visibleContent = false;
             ElementPlus.ElMessage({message: tipsSuccess, type: 'success'});
             ctx.pageContent = result.result || {};
+            var key = ctx.menuList.findIndex(function (item) {
+              return item.id === params.menu_id;
+            });
+            if (key > -1) {
+              Object.assign(ctx.menuList[key], {content_id: ctx.pageContent.id});
+              ctx.initTree();
+            }
           } else {
             ElementPlus.ElMessageBox.alert(result.msg, tipsError);
           }

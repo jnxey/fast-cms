@@ -16,12 +16,6 @@ import {
   ParamsContentFormAddResult
 } from '@/controller/admin/home/_models/content-form-add'
 import {
-  InsertContentItem,
-  SelectDocContent,
-  SelectMenuExit,
-  UpdateMenuContentId
-} from '@/database/query'
-import {
   ParamsContentGet,
   ParamsContentGetResult
 } from '@/controller/admin/home/_models/content-get'
@@ -102,7 +96,6 @@ export class AdminHome extends Controller.Api {
       const resultUpdate: DatabaseQueryResult = await Database.execute(
         Database.format(Database.query.UpdateMenuContentId, { id: menu_id, content_id: contentId })
       )
-      console.log(resultUpdate, '-------------------------')
       if (resultUpdate.code === Database.result.success) {
         const updateResult = new ParamsContentFormAddResult()
         updateResult.fill({ id: contentId, menu_id, doc_type, doc_keyword: '', doc_content: '' })
@@ -168,10 +161,10 @@ export class AdminHome extends Controller.Api {
     const { id, menu_name, menu_mark, menu_type, sort } = params
     const menuInfo = { id, menu_name, menu_mark, menu_type, sort }
     const resultCount: DatabaseQueryResult = await Database.execute(
-      Database.format(Database.query.SelectMenuExit, { id })
+      Database.format(Database.query.SelectMenuCount, { parent_id: params.parent_id, menu_mark })
     )
     if (resultCount.code === Database.result.success) {
-      if (Boolean(resultCount.value.length)) {
+      if (!Boolean(resultCount.value.length)) {
         const resultUpdate: DatabaseQueryResult = await Database.execute(
           Database.format(Database.query.UpdateMenuItem, menuInfo)
         )
@@ -183,7 +176,7 @@ export class AdminHome extends Controller.Api {
           ctx.body = Dto(ResponseCode.success, updateResult)
         }
       } else {
-        ctx.body = Dto(ResponseCode.error_server, null, '您要编辑的菜单不存在')
+        ctx.body = Dto(ResponseCode.error_server, null, '您提交的菜单标识已存在')
       }
     } else {
       ctx.body = Dto(ResponseCode.error_server, null, resultCount.msg)

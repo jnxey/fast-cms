@@ -9,8 +9,34 @@
         </template>
     </div>
     <el-divider></el-divider>
+    <template v-if="pageContent">
+        <template v-if="pageContent.doc_type === contentMap.rich">
+            <div id="content-rich-box"></div>
+        </template>
+        <template v-if="pageContent.doc_type === contentMap.markdown">
+            <label for="content-markdown-box"></label><textarea id="content-markdown-box"></textarea>
+        </template>
+        <template v-if="pageContent.doc_type === contentMap.website">
+            <div id="content-website-box">
+                <el-input type="text" placeholder="请输入网站地址"></el-input>
+            </div>
+        </template>
+        <template v-if="pageContent.doc_type === contentMap.assets">
+            <div id="content-assets-box">
+                <el-upload class="upload-demo" drag>
+                    <span class="el-icon--upload iconfont icon-yunshangchuan"></span>
+                    <div class="el-upload__text">
+                        拉取图片到这里或者 <em>点击上传</em>
+                    </div>
+                    <template #tip>
+                        <div class="el-upload__tip">仅支持ZIP格式文件，最大不能超过5M</div>
+                    </template>
+                </el-upload>
+            </div>
+        </template>
+    </template>
 </template>
-<template v-else>
+<template v-if="pageContent === false">
     <el-empty description="请在左侧选中页面"></el-empty>
 </template>
 <%- include ('./_widgets/add-page/index.ejs') -%>

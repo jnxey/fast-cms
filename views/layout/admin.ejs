@@ -8,7 +8,7 @@
     <title>文档中心</title>
     <!-- Import style -->
     <link rel="stylesheet" href="/resource/css/element-plus.css"/>
-    <link rel="stylesheet" href="//at.alicdn.com/t/c/font_2560346_x5gq2f9hby.css" />
+    <link rel="stylesheet" href="//at.alicdn.com/t/c/font_2560346_anzdo11w0oo.css" />
     <!-- Import Vue 3 -->
     <script src="/resource/js/vue.global.js"></script>
     <!-- Import component library -->
@@ -20,13 +20,18 @@
     <link rel="stylesheet" href="/resource/css/index.css"/>
     <script src="/resource/js/md5.min.js"></script>
 
+    <link rel="stylesheet" href="/resource/css/simplemade.min.css"/>
+    <script src="/resource/js/simplemde.min.js"></script>
+
+    <script src="https://cdn.tiny.cloud/1/c4b13lj9ixku9lud30qaz5n5uxkd0t05ihhkka8lix9l94zy/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+
     <%- include ('../_values/global.ejs') -%>
     <%- include ('./_widgets/admin/_styles/index.ejs') -%>
 </head>
 <body>
 <%- include ('./_widgets/admin/header.ejs') -%>
 <%- include ('./_widgets/admin/sliderbar.ejs') -%>
-<div class="page-container">
+<div id="page-container" class="page-container">
     <%- body %>
 </div>
 </body>

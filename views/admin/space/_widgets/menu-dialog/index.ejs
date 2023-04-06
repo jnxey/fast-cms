@@ -7,7 +7,7 @@
             <el-input v-model="formMenu.menu_mark" placeholder="菜单标识" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="菜单类型">
-            <el-radio-group v-model="formMenu.menu_type">
+            <el-radio-group v-model="formMenu.menu_type" :disabled="Boolean(formMenu.id)">
                 <el-radio :label="menuType.menu" size="large">菜单</el-radio>
                 <el-radio :label="menuType.page" size="large">页面</el-radio>
             </el-radio-group>
