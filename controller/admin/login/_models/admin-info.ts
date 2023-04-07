@@ -1,6 +1,6 @@
 import { Declare, Description, ParamsModel, ParamsType, Required, TypeError } from '@/tools/params'
 
-export class ResultLoginSuccess extends ParamsModel {
+export class ResultAdminInfo extends ParamsModel {
   @Declare()
   @Required('管理员名称不能为空')
   @TypeError(ParamsType.String, '管理员名称必须是字符串类型')

@@ -2,12 +2,11 @@ import { Controller } from '@/tools/controller'
 import { ExtendableContext, Next } from 'koa'
 import { Get, Json, Post, View } from '@/tools/method'
 import { Params, ParamsSource } from '@/tools/params'
-import { ParamsLoginForm } from '@/controller/admin/login/_models/login-form'
+import { ParamsLogin, ResultLogin } from '@/controller/admin/login/_models/login-form'
 import { Dto, ResponseCode } from '@/tools/dto'
 import { Jwt } from '@/tools/jwt'
 import { Database } from '@/database'
 import { DatabaseQueryResult } from '@/database/_types'
-import { ResultLoginSuccess } from '@/controller/admin/login/_models/login-success-result'
 import { Result } from '@/tools/result'
 
 export class AdminLogin extends Controller.Api {
@@ -21,10 +20,10 @@ export class AdminLogin extends Controller.Api {
 
   @Post()
   @Json()
-  @Params(ParamsLoginForm, ParamsSource.Body)
-  @Result(ResultLoginSuccess)
+  @Params(ParamsLogin, ParamsSource.Body)
+  @Result(ResultLogin)
   public async login(ctx: ExtendableContext, next: Next) {
-    const params: ParamsLoginForm = ctx.params
+    const params: ParamsLogin = ctx.params
     const result: DatabaseQueryResult = await Database.execute(
       Database.format(Database.query.SelectAdminUser, { name: params.name })
     )
@@ -38,7 +37,7 @@ export class AdminLogin extends Controller.Api {
         // 比对成功
         const payload = new Jwt.JwtUser(user.id, user.admin_name, user.system_role)
         const token = Jwt.sign(payload)
-        const userResult: ResultLoginSuccess = new ResultLoginSuccess()
+        const userResult: ResultLogin = new ResultLogin()
         userResult.fill(user)
         ctx.cookies.set(Jwt.JWT_GET_KEY, token, { httpOnly: true })
         ctx.body = Dto(ResponseCode.success, userResult)

@@ -1,6 +1,6 @@
 import { Declare, Description, ParamsModel, ParamsType, Required, TypeError } from '@/tools/params'
 
-export class ParamsContentFormAdd extends ParamsModel {
+export class ParamsContentAdd extends ParamsModel {
   @Declare()
   @Required('文档类型不能为空')
   @TypeError(ParamsType.Number, '文档类型必须为数字')
@@ -14,7 +14,7 @@ export class ParamsContentFormAdd extends ParamsModel {
   public menu_id?: number
 }
 
-export class ParamsContentFormAddResult extends ParamsModel {
+export class ResultContentAdd extends ParamsModel {
   @Declare()
   @Required('菜单ID不能为空')
   @TypeError(ParamsType.Number, '菜单ID必须为数字')

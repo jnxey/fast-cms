@@ -7,18 +7,9 @@ import { Database } from '@/database'
 import { Params, ParamsSource } from '@/tools/params'
 import { Dto, ResponseCode } from '@/tools/dto'
 import { Result } from '@/tools/result'
-import {
-  ParamsMenuFormAdd,
-  ParamsMenuFormAddResult
-} from '@/controller/admin/home/_models/menu-form-add'
-import {
-  ParamsContentFormAdd,
-  ParamsContentFormAddResult
-} from '@/controller/admin/home/_models/content-add'
-import {
-  ParamsContentGet,
-  ParamsContentGetResult
-} from '@/controller/admin/home/_models/content-get'
+import { ParamsMenuAdd, ResultMenuAdd } from '@/controller/admin/home/_models/menu-add'
+import { ParamsContentAdd, ResultContentAdd } from '@/controller/admin/home/_models/content-add'
+import { ParamsContentGet, ResultContentGet } from '@/controller/admin/home/_models/content-get'
 import { ParamsContentEdit } from '@/controller/admin/home/_models/content-edit'
 
 export class AdminHome extends Controller.Api {
@@ -66,11 +57,11 @@ export class AdminHome extends Controller.Api {
   @Post()
   @Json()
   @Jwt.protected()
-  @Params(ParamsMenuFormAdd, ParamsSource.Body)
-  @Result(ParamsMenuFormAddResult)
+  @Params(ParamsMenuAdd, ParamsSource.Body)
+  @Result(ResultMenuAdd)
   @Summary('添加/编辑菜单')
   public async menuAddOrEdit(ctx: ExtendableContext, next: Next) {
-    const { id }: ParamsMenuFormAdd = ctx.params
+    const { id }: ParamsMenuAdd = ctx.params
     if (Boolean(id)) {
       /// 编辑
       await this.editMenu(ctx, ctx.params)
@@ -84,11 +75,11 @@ export class AdminHome extends Controller.Api {
   @Post()
   @Json()
   @Jwt.protected()
-  @Params(ParamsContentFormAdd, ParamsSource.Body)
-  @Result(ParamsContentFormAddResult)
+  @Params(ParamsContentAdd, ParamsSource.Body)
+  @Result(ResultContentAdd)
   @Summary('添加文档内容')
   public async contentAdd(ctx: ExtendableContext, next: Next) {
-    const { menu_id, doc_type }: ParamsContentFormAdd = ctx.params
+    const { menu_id, doc_type }: ParamsContentAdd = ctx.params
     const resultInsert: DatabaseQueryResult = await Database.execute(
       Database.format(Database.query.InsertContentItem, { doc_type })
     )
@@ -98,7 +89,7 @@ export class AdminHome extends Controller.Api {
         Database.format(Database.query.UpdateMenuContentId, { id: menu_id, content_id: contentId })
       )
       if (resultUpdate.code === Database.result.success) {
-        const updateResult = new ParamsContentFormAddResult()
+        const updateResult = new ResultContentAdd()
         updateResult.fill({ id: contentId, menu_id, doc_type, doc_keyword: '', doc_content: '' })
         ctx.body = Dto(ResponseCode.success, updateResult)
       } else {
@@ -131,7 +122,7 @@ export class AdminHome extends Controller.Api {
   @Get()
   @Jwt.protected()
   @Params(ParamsContentGet, ParamsSource.Query)
-  @Result(ParamsContentGetResult)
+  @Result(ResultContentGet)
   @Summary('获取文档内容')
   public async contentGet(ctx: ExtendableContext, next: Next) {
     const { id }: ParamsContentGet = ctx.params
@@ -139,7 +130,7 @@ export class AdminHome extends Controller.Api {
       Database.format(Database.query.SelectDocContent, { id })
     )
     if (resultSelect.code === Database.result.success) {
-      const selectResult = new ParamsContentGetResult()
+      const selectResult = new ResultContentGet()
       selectResult.fill(resultSelect.value[0] || {})
       ctx.body = Dto(ResponseCode.success, selectResult)
     } else {
@@ -149,7 +140,7 @@ export class AdminHome extends Controller.Api {
   }
 
   /// 添加菜单
-  async addMenu(ctx: ExtendableContext, params: ParamsMenuFormAdd) {
+  async addMenu(ctx: ExtendableContext, params: ParamsMenuAdd) {
     const { menu_name, menu_mark, menu_type, parent_id, content_id, sort } = params
     const menuInfo = { menu_name, menu_mark, menu_type, parent_id, content_id, sort }
     const resultCount: DatabaseQueryResult = await Database.execute(
@@ -161,7 +152,7 @@ export class AdminHome extends Controller.Api {
           Database.format(Database.query.InsertMenuItem, menuInfo)
         )
         if (resultInsert.code === Database.result.success) {
-          const insertResult = new ParamsMenuFormAddResult()
+          const insertResult = new ResultMenuAdd()
           insertResult.fill({ ...menuInfo, id: resultInsert.value.insertId })
           ctx.body = Dto(ResponseCode.success, insertResult)
         } else {
@@ -176,7 +167,7 @@ export class AdminHome extends Controller.Api {
   }
 
   /// 编辑菜单
-  async editMenu(ctx: ExtendableContext, params: ParamsMenuFormAdd) {
+  async editMenu(ctx: ExtendableContext, params: ParamsMenuAdd) {
     const { id, menu_name, menu_mark, menu_type, sort } = params
     const menuInfo = { id, menu_name, menu_mark, menu_type, sort }
     const resultCount: DatabaseQueryResult = await Database.execute(
@@ -190,7 +181,7 @@ export class AdminHome extends Controller.Api {
         if (resultUpdate.code === Database.result.error) {
           ctx.body = Dto(ResponseCode.error_server, null, resultUpdate.msg)
         } else {
-          const updateResult = new ParamsMenuFormAddResult()
+          const updateResult = new ResultMenuAdd()
           updateResult.fill(menuInfo)
           ctx.body = Dto(ResponseCode.success, updateResult)
         }

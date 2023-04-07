@@ -8,7 +8,7 @@ export class ParamsContentGet extends ParamsModel {
   public id?: number
 }
 
-export class ParamsContentGetResult extends ParamsModel {
+export class ResultContentGet extends ParamsModel {
   @Declare()
   @Required('文档ID不能为空')
   @TypeError(ParamsType.Number, '菜单ID必须为数字')
