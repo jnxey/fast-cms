@@ -11,11 +11,19 @@
     <title>文档中心</title>
 </head>
 <body>
-<% if (data.content.doc_type === data.docTypeMap.rich) { %>
-    <%- include('./_editor/rich.ejs') %>
-<% } %>
-<% if (data.content.doc_type === data.docTypeMap.markdown) { %>
-    <%- include('./_editor/markdown.ejs') %>
-<% } %>
+<%- include('./_widgets/header.ejs') %>
+<div class="home-container">
+    <% if (data.content.doc_type === data.docTypeMap.rich) { %>
+        <%- include('./_editor/rich.ejs') %>
+    <% } %>
+    <% if (data.content.doc_type === data.docTypeMap.markdown) { %>
+        <%- include('./_editor/markdown.ejs') %>
+    <% } %>
+</div>
+<style>
+    .home-container {
+      margin-top: 60px;
+    }
+</style>
 </body>
 </html>
