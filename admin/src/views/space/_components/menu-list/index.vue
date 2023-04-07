@@ -138,7 +138,10 @@ onBeforeUnmount(() => {
           :class="{ active: currentPage && currentPage.id === data.id }"
           @click="setCurrentPage(data)"
         >
-          <span class="space-tree-text">{{ node.label }}</span>
+          <span class="space-tree-text">
+            <el-icon v-if="!Boolean(data.parent_id)"><Files /></el-icon>
+            {{ node.label }}
+          </span>
           <el-dropdown trigger="click">
             <el-icon class="space-tree-icon" @click.stop><MoreFilled /></el-icon>
             <template #dropdown>

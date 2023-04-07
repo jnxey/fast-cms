@@ -1,10 +1,16 @@
 <script setup>
 import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { ElMessageBox, ElMessage, ElLoading } from 'element-plus'
-import { Http } from '@/tools/http'
+import AddContent from './_components/add-content/index.vue'
+import { Http, HttpApis } from '@/tools/http'
 import { SystemValues } from '@/tools/values'
 import eventManager from '@/tools/event-manager'
-import { EVENT_CONTENT_CLEAR, EVENT_CONTENT_RESET, EVENT_MENU_CHANGE } from '@/views/space/_values'
+import {
+  EVENT_CONTENT_ADD,
+  EVENT_CONTENT_CHANGE,
+  EVENT_CONTENT_CLEAR,
+  EVENT_CONTENT_RESET
+} from '@/views/space/_values'
 
 let cacheDocContent = ''
 let richEditor = null
@@ -45,7 +51,9 @@ const repackEdit = () => {
 }
 
 /// 创建网页内容
-const addContent = () => {}
+const addContent = () => {
+  eventManager.emit(EVENT_CONTENT_ADD, currentPage.value)
+}
 
 /// 清空网页内容
 const clearContent = () => {
@@ -53,11 +61,22 @@ const clearContent = () => {
   pageContent.value = null
 }
 
+/// 添加网页内容
+const changeContent = (content) => {
+  pageContent.value = content
+  initEditor(content)
+}
+
 /// 设置网页内容
 const setContent = ({ page, content }) => {
   currentPage.value = page
   pageContent.value = content
   if (!content) return
+  initEditor(content)
+}
+
+/// 初始化文档编辑器
+const initEditor = (content) => {
   nextTick(() => {
     cacheDocContent = content.doc_content
     if (content.doc_type === docTypeMap.rich) {
@@ -93,15 +112,18 @@ const setContent = ({ page, content }) => {
 onMounted(() => {
   eventManager.on(EVENT_CONTENT_CLEAR, clearContent)
   eventManager.on(EVENT_CONTENT_RESET, setContent)
+  eventManager.on(EVENT_CONTENT_CHANGE, changeContent)
 })
 
 onBeforeUnmount(() => {
   eventManager.off(EVENT_CONTENT_CLEAR, clearContent)
   eventManager.off(EVENT_CONTENT_RESET, setContent)
+  eventManager.off(EVENT_CONTENT_CHANGE, changeContent)
 })
 </script>
 <template>
   <template v-if="currentPage">
+    <AddContent />
     <div class="current-page-wrap">
       <div class="current-page-title">《{{ currentPage.menu_name }}》</div>
       <template v-if="pageContent">

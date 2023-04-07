@@ -28,5 +28,6 @@ export const HttpApis = {
   menuAddOrEdit: '/api/admin-home/menu-add-or-edit',
   getDocMenuList: '/api/admin-home/get-doc-menu-list',
   getDocContent: '/api/admin-home/content-get',
-  editDocContent: '/api/admin-home/content-edit'
+  editDocContent: '/api/admin-home/content-edit',
+  addDocContent: '/api/admin-home/content-add'
 }
