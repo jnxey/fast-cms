@@ -1,11 +1,12 @@
 <script setup>
-import { onBeforeMount, ref } from 'vue'
+import { onBeforeMount, onBeforeUnmount, ref } from 'vue'
 import { SystemValues } from '@/tools/values'
 import { Http, HttpApis } from '@/tools/http'
 import eventManager from '@/tools/event-manager'
 import {
   EVENT_CONTENT_CLEAR,
   EVENT_CONTENT_RESET,
+  EVENT_MENU_CHANGE,
   EVENT_MENU_DIALOG_ADD,
   EVENT_MENU_DIALOG_EDIT
 } from '@/views/space/_values'
@@ -98,8 +99,29 @@ const setCurrentPage = (menu) => {
   }
 }
 
+/// 处理菜单树变更
+const handlerMenuList = (params) => {
+  console.log(params, '-----------1')
+  if (Boolean(params.id)) {
+    var key = menuList.findIndex((item) => item.id === params.id)
+    if (key > -1) {
+      menuList[key] = { ...menuList[key], ...params.value }
+      console.log(menuList, '---------2')
+      initTree()
+    }
+  } else {
+    menuList.push(params.value)
+    initTree()
+  }
+}
+
 onBeforeMount(() => {
   loadMenuList()
+  eventManager.on(EVENT_MENU_CHANGE, handlerMenuList)
+})
+
+onBeforeUnmount(() => {
+  eventManager.off(EVENT_MENU_CHANGE, handlerMenuList)
 })
 </script>
 <template>

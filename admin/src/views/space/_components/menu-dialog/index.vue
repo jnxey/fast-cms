@@ -1,8 +1,8 @@
 <script setup>
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { SystemValues } from '@/tools/values'
-import { ElLoading, ElMessageBox } from 'element-plus'
-import { Http } from '@/tools/http'
+import { ElLoading, ElMessageBox, ElMessage } from 'element-plus'
+import { Http, HttpApis } from '@/tools/http'
 import eventManager from '@/tools/event-manager'
 import {
   EVENT_MENU_CHANGE,
@@ -33,7 +33,7 @@ const add = (id) => {
 
 /// 编辑菜单弹窗
 const edit = (data) => {
-  formMenu.value = { ...tempenuForm, ...data }
+  formMenu.value = { ...tempenuForm, ...data, children: null }
   visibleMenu.value = true
 }
 
@@ -53,9 +53,7 @@ const addOrEditMenu = () => {
         if (res.code === SystemValues.responseMap.success.code) {
           visibleMenu.value = false
           ElMessage({ message: tipsSuccess, type: 'success' })
-          if (Boolean(params.id)) {
-            eventManager.emit(EVENT_MENU_CHANGE, { id: params.id, value: res.result })
-          }
+          eventManager.emit(EVENT_MENU_CHANGE, { id: params.id, value: res.result })
         } else {
           ElMessageBox.alert(res.msg, tipsError)
         }

@@ -1,10 +1,12 @@
 <script setup>
 import { computed, onBeforeMount, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 const close = ref(false)
 
 const route = useRoute()
+
+const router = useRouter()
 
 const closeBodyStyle = 'close-slider'
 
@@ -19,7 +21,7 @@ const menuList = [
 ]
 
 const toPath = (path) => {
-  location.href = path
+  router.push({ path })
 }
 
 const initClose = () => {

@@ -186,7 +186,8 @@ export class AdminHome extends Controller.Api {
       Database.format(Database.query.SelectMenuCount, { parent_id: params.parent_id, menu_mark })
     )
     if (resultCount.code === Database.result.success) {
-      if (!Boolean(resultCount.value.length)) {
+      const matchResult = resultCount.value
+      if (!Boolean(matchResult.length) || matchResult[0].id === id) {
         const resultUpdate: DatabaseQueryResult = await Database.execute(
           Database.format(Database.query.UpdateMenuItem, menuInfo)
         )
