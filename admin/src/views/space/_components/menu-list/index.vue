@@ -101,12 +101,10 @@ const setCurrentPage = (menu) => {
 
 /// 处理菜单树变更
 const handlerMenuList = (params) => {
-  console.log(params, '-----------1')
   if (Boolean(params.id)) {
     var key = menuList.findIndex((item) => item.id === params.id)
     if (key > -1) {
       menuList[key] = { ...menuList[key], ...params.value }
-      console.log(menuList, '---------2')
       initTree()
     }
   } else {

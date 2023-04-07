@@ -27,5 +27,6 @@ export const HttpApis = {
   getAdminInfo: '/api/admin-login/get-admin-info',
   menuAddOrEdit: '/api/admin-home/menu-add-or-edit',
   getDocMenuList: '/api/admin-home/get-doc-menu-list',
-  getDocContent: '/api/admin-home/content-get'
+  getDocContent: '/api/admin-home/content-get',
+  editDocContent: '/api/admin-home/content-edit'
 }
