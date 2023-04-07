@@ -3,6 +3,7 @@ import { ElLoading, ElMessageBox } from 'element-plus'
 import { Http, HttpApis } from '@/tools/http'
 import { SystemValues } from '@/tools/values'
 import { onMounted, ref } from 'vue'
+import { toLogin } from '@/tools'
 
 const user = ref(null)
 
@@ -23,13 +24,10 @@ const headerLoginOut = () => {
         .then(function (response) {
           var res = response.data
           if (res.code === SystemValues.responseMap.success.code) {
-            router.push({ path: '/login' })
+            toLogin()
           } else {
             ElMessageBox.alert(res.msg, '退出失败')
           }
-        })
-        .catch(function (err) {
-          ElMessageBox.alert(err.toString(), '退出失败')
         })
         .finally(function () {
           loading.close()

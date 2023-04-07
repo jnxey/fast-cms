@@ -1,6 +1,8 @@
 export const SystemValues = {
   /// md5盐值
   salt: 'fc-salt',
+  /// 无权限状态码
+  noAuth: 401,
   /// 返回状态信息
   responseMap: {
     // 成功

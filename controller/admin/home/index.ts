@@ -54,6 +54,18 @@ export class AdminHome extends Controller.Api {
     return next()
   }
 
+  @Get()
+  @Jwt.protected()
+  @Summary('获取文档菜单列表')
+  public async getDocMenuList(ctx: ExtendableContext, next: Next) {
+    const result: DatabaseQueryResult = await Database.execute(
+      Database.format(Database.query.SelectMenuList)
+    )
+    if (result.code !== Database.result.success) throw Error('拉取菜单信息失败')
+    ctx.body = Dto(ResponseCode.success, result.value || [])
+    return next()
+  }
+
   @Post()
   @Json()
   @Jwt.protected()
