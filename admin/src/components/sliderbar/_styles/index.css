@@ -32,14 +32,9 @@
   background-color: #262d34;
 }
 
-.admin-nav-left .close-button .iconfont {
+.admin-nav-left .close-button .icon {
   font-size: 25px;
   color: #ffffff;
-  transform: rotate(90deg);
-}
-
-.admin-nav-left.close .close-button .iconfont {
-  transform: rotate(270deg);
 }
 
 .admin-nav-left .admin-nav-left-menu {

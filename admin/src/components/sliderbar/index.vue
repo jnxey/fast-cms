@@ -22,17 +22,17 @@ const toPath = (path) => {
   location.href = path
 }
 
-const toogleClose = () => {
-  close.value = !this.close
-  this.initClose()
-  localStorage.setItem(closeCacheKey, close.value ? closeCacheValue.close : closeCacheValue.open)
-}
-
 const initClose = () => {
   if (document.body) {
     if (close.value) document.body.classList.add(closeBodyStyle)
     else document.body.classList.remove(closeBodyStyle)
   }
+}
+
+const toogleClose = () => {
+  close.value = !close.value
+  initClose()
+  localStorage.setItem(closeCacheKey, close.value ? closeCacheValue.close : closeCacheValue.open)
 }
 
 const activeIndex = computed(() => {
@@ -79,7 +79,8 @@ onBeforeMount(() => {
       </template>
     </template>
     <div class="close-button" @click="toogleClose()">
-      <span class="iconfont icon-arrow-down"></span>
+      <el-icon class="icon" v-if="!close"><DArrowLeft /></el-icon>
+      <el-icon class="icon" v-else><DArrowRight /></el-icon>
     </div>
   </el-menu>
 </template>
