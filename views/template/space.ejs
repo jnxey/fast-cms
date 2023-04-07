@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,viewport-fit=cover">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="cache-control" content="max-age=0">
+    <link rel="stylesheet" href="/resource/css/reset.css"/>
+    <link rel="stylesheet" href="/resource/css/index.css"/>
+    <script src="/resource/js/petite-vue.js"></script>
+    <title>文档中心</title>
+    <%- include('../_values/global.ejs') %>
+    <script>
+      (function() {
+        window.menuRoot = 0;
+        window.MenuList = <%- data.menuList %>;
+        window.MenuTree = getMenuTree(window.MenuList);
+        window.MenuHome = <%- data.menuHome %>;
+        /// 获取菜单树
+        function getMenuTree(menus) {
+          var list = JSON.parse(JSON.stringify(menus));
+          var getChildren = function(id) {
+            var result = [];
+            list.forEach(function(val) {
+              if (val.parent_id === id) {
+                val.children = getChildren(val.id)
+                result.push(val)
+              }
+            });
+            if (result.length > 0) return result;
+            else return null;
+          }
+          return getChildren(window.menuRoot);
+        }
+      })();
+
+    </script>
+</head>
+<body>
+<%- include('./_widgets/header.ejs') %>
+<%- include('./_widgets/sliderbar.ejs') %>
+<div class="home-container">
+    <% if (data.content.doc_type === data.docTypeMap.rich) { %>
+        <%- include('./_editor/rich.ejs') %>
+    <% } %>
+    <% if (data.content.doc_type === data.docTypeMap.markdown) { %>
+        <%- include('./_editor/markdown.ejs') %>
+    <% } %>
+</div>
+<style>
+  .home-container {
+    margin-top: 60px;
+    margin-left: 200px;
+  }
+</style>
+</body>
+</html>

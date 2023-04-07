@@ -1,0 +1,79 @@
+<div id="sliderbar" class="sliderbar-left">
+    <div v-for="(item, index) in menuTree" :key="index" v-scope="SliderbarItem({ content: item })">
+    </div>
+</div>
+<template id="sliderbar-item-template">
+    <div class="sliderbar-item"
+         :class="{hide: isHome, active: isActive, page: isPage}" @click="toPath(content)">
+        {{content.menu_name}}
+        <div class="sliderbar-item-children" v-if="content.children">
+            <div v-for="(_item, _index) in content.children" :key="_index" v-scope="SliderbarItem({ content: _item })">
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+  (function () {
+    var pathname = window.location.pathname;
+    var contentKey = pathname.lastIndexOf('/');
+    var contentId = Number(pathname.slice(contentKey + 1));
+    console.log(contentId, '---------------')
+
+    function SliderbarItem(props) {
+      return {
+        $template: '#sliderbar-item-template',
+        content: props.content,
+        menuHome: window.MenuHome,
+        isActive: contentId === props.content.content_id,
+        isHome: window.MenuHome === props.content.content_id,
+        isPage: window.MENU_TYPE.page === props.content.menu_type,
+        toPath: function (content) {
+          if (contentId === content.content_id) return;
+          if (window.MENU_TYPE.page !== content.menu_type) return;
+          location.href = '/space/' + content.content_id;
+        }
+      }
+    }
+
+    PetiteVue.createApp({
+      SliderbarItem: SliderbarItem,
+      menuTree: window.MenuTree,
+    }).mount('#sliderbar')
+  })();
+</script>
+<style>
+  .sliderbar-left {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 200px;
+    height: 100%;
+    padding-top: 60px;
+    z-index: 90;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background-color: #ffffff;
+    border-right: 1px solid rgba(60, 60, 60, 0.12);
+  }
+
+  .sliderbar-left .sliderbar-item {
+    height: 50px;
+    line-height: 50px;
+    padding-left: 10px;
+    cursor: pointer;
+    color: #000000;
+    font-size: 14px;
+  }
+
+  .sliderbar-left .sliderbar-item.page:hover {
+    background-color: #eeeeee;
+  }
+
+  .sliderbar-left .sliderbar-item.active {
+    color: #6334e9;
+  }
+
+  .sliderbar-left .sliderbar-item.hide {
+    display: none;
+  }
+</style>
