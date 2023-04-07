@@ -10,14 +10,6 @@ import { DatabaseQueryResult } from '@/database/_types'
 import { Result } from '@/tools/result'
 
 export class AdminLogin extends Controller.Api {
-  @View()
-  public async index(ctx: ExtendableContext, next: Next) {
-    await ctx.render('admin/login/index', {
-      layout: 'layout/empty'
-    })
-    return next()
-  }
-
   @Post()
   @Json()
   @Params(ParamsLogin, ParamsSource.Body)

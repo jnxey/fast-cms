@@ -13,47 +13,6 @@ import { ParamsContentGet, ResultContentGet } from '@/controller/admin/home/_mod
 import { ParamsContentEdit } from '@/controller/admin/home/_models/content-edit'
 
 export class AdminHome extends Controller.Api {
-  @View()
-  @Jwt.protected()
-  @Summary('后台首页')
-  public async index(ctx: ExtendableContext, next: Next) {
-    const user = ctx?.state?.user || {}
-    await ctx.render('admin/home/index', {
-      layout: 'layout/admin',
-      data: { user }
-    })
-    return next()
-  }
-
-  @View()
-  @Jwt.protected()
-  @Summary('后台个人中心页')
-  public async person(ctx: ExtendableContext, next: Next) {
-    const user = ctx?.state?.user || {}
-    await ctx.render('admin/person/index', {
-      layout: 'layout/admin',
-      data: { user }
-    })
-    return next()
-  }
-
-  @View()
-  @Jwt.protected()
-  @Summary('后台文档空间')
-  public async space(ctx: ExtendableContext, next: Next) {
-    const user = ctx?.state?.user || {}
-    const result: DatabaseQueryResult = await Database.execute(
-      Database.format(Database.query.SelectMenuList)
-    )
-    if (result.code !== Database.result.success) throw Error('拉取空间信息失败')
-    const menus = JSON.stringify(result.value || [])
-    await ctx.render('admin/space/index', {
-      layout: 'layout/admin',
-      data: { user, menus }
-    })
-    return next()
-  }
-
   @Get()
   @Jwt.protected()
   @Summary('获取文档菜单列表')
