@@ -11,15 +11,21 @@ import { AdminHome } from '@/controller/admin/home'
 import { Home } from '@/controller/home'
 import { Space } from '@/controller/space'
 
+const pathHome = '/home/index'
+const pathAssets = './assets'
+
 const app: Koa = new Koa()
 const router: Router = new Router()
 
+router.get('/', (ctx) => {
+  ctx.redirect(pathHome)
+})
 Controller.connect<AdminLogin>(new AdminLogin(), router)
 Controller.connect<AdminHome>(new AdminHome(), router)
 Controller.connect<Home>(new Home(), router)
 Controller.connect<Space>(new Space(), router)
 
-app.use(serve('./assets'))
+app.use(serve(pathAssets))
 Ejs.ejsRender(app)
 app.use(ErrorKoa.onerror)
 app.use(Jwt.intercept())

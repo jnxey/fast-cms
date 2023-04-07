@@ -12,7 +12,6 @@ import { ParamsContentAdd, ResultContentAdd } from '@/controller/admin/home/_mod
 import { ParamsContentGet, ResultContentGet } from '@/controller/admin/home/_models/content-get'
 import { ParamsContentEdit } from '@/controller/admin/home/_models/content-edit'
 import { ParamsContentHome, ResultContentHome } from '@/controller/admin/home/_models/content-home'
-import { SelectDocContentHome, UpdateDocContentHome } from '@/database/query'
 
 export class AdminHome extends Controller.Api {
   @Get()
@@ -116,15 +115,13 @@ export class AdminHome extends Controller.Api {
   @Result(ResultContentHome)
   @Summary('获取网站首页')
   public async contentHomeGet(ctx: ExtendableContext, next: Next) {
-    const { id }: ParamsContentEdit = ctx.params
     const resultSelect: DatabaseQueryResult = await Database.execute(
-      Database.format(Database.query.SelectDocContentHome, { page_index: id })
+      Database.format(Database.query.SelectDocContentHome)
     )
     if (resultSelect.code === Database.result.success) {
       const value = resultSelect.value[0] || {}
       const homeResult = new ResultContentHome()
       homeResult.fill({ id: value.page_index })
-      console.log(homeResult, '---------------')
       ctx.body = Dto(ResponseCode.success, homeResult)
     } else {
       ctx.body = Dto(ResponseCode.error_server, null, resultSelect.msg)

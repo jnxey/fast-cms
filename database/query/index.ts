@@ -40,4 +40,4 @@ export const UpdateDocContent =
 export const UpdateDocContentHome = 'UPDATE system_config SET page_index={page_index} WHERE id = 1'
 
 /// 查询当前文档内容首页
-export const SelectDocContentHome = 'SELECT * FROM system_config WHERE id = 1'
+export const SelectDocContentHome = 'SELECT * FROM system_config WHERE id = 1 LIMIT 1'
