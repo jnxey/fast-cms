@@ -4,8 +4,10 @@ import { Http, HttpApis } from '@/tools/http'
 import { SystemValues } from '@/tools/values'
 import { onMounted, ref } from 'vue'
 import { toLogin } from '@/tools'
+import {useRouter} from "vue-router";
 
 const user = ref(null)
+const router = useRouter()
 
 const getAdminInfo = () => {
   Http.get(HttpApis.getAdminInfo).then(function (response) {
@@ -14,6 +16,10 @@ const getAdminInfo = () => {
       user.value = res.result
     }
   })
+}
+
+const toResetPwd = () => {
+  router.push({path:'/reset-pwd'})
 }
 
 const headerLoginOut = () => {
@@ -51,8 +57,8 @@ onMounted(() => {
           <img class="nav-user-icon" src="@/assets/images/user-avatar.png" alt="" />
           <span>{{ user.admin_name }}</span>
         </template>
-        <el-menu-item index="1-1">修改密码</el-menu-item>
-        <el-menu-item index="1-2" @click="headerLoginOut()">退出登录</el-menu-item>
+        <el-menu-item index="1-1" @click="toResetPwd">修改密码</el-menu-item>
+        <el-menu-item index="1-2" @click="headerLoginOut">退出登录</el-menu-item>
       </el-sub-menu>
     </el-menu>
   </div>

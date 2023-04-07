@@ -24,6 +24,7 @@ export const Http = instance
 export const HttpApis = {
   login: '/api/admin-login/login',
   logout: '/api/admin-login/logout',
+  resetPwd: '/api/admin-login/reset-pwd',
   getAdminInfo: '/api/admin-login/get-admin-info',
   menuAddOrEdit: '/api/admin-home/menu-add-or-edit',
   getDocMenuList: '/api/admin-home/get-doc-menu-list',

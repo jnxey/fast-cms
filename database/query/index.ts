@@ -1,6 +1,9 @@
 /// 查询用户
 export const SelectAdminUser = 'SELECT * FROM admin_user WHERE admin_name = {name}'
 
+/// 修改密码
+export const UpdateAdminPwd = 'UPDATE admin_user SET admin_pwd={admin_pwd} WHERE id = {id}'
+
 /// 查询文档菜单列表
 export const SelectMenuList = 'SELECT * FROM doc_menu'
 

@@ -96,16 +96,16 @@
 }
 
 /* 常见字体大小 */
-.fz-24 {
-  font-size: 24px;
+.fz-12 {
+  font-size: 12px;
 }
 
-.fz-28 {
-  font-size: 28px;
+.fz-14 {
+  font-size: 14px;
 }
 
-.fz-32 {
-  font-size: 32px;
+.fz-16 {
+  font-size: 16px;
 }
 
 /* 常见行高 */
