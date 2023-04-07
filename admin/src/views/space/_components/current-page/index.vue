@@ -11,6 +11,8 @@ import {
   EVENT_CONTENT_CLEAR,
   EVENT_CONTENT_RESET
 } from '@/views/space/_values'
+import { homeId } from '@/views/space/_values/home'
+import { UploadFilled } from '@element-plus/icons-vue'
 
 let cacheDocContent = ''
 let richEditor = null
@@ -43,11 +45,13 @@ const editSubmit = () => {
 
 /// 撤销已编辑的内容
 const repackEdit = () => {
-  const content = pageContent.value
-  content.doc_content = cacheDocContent
-  if (content.doc_type === docTypeMap.rich) {
-    if (richEditor) richEditor.setHtml(cacheDocContent)
-  }
+  ElMessageBox.confirm('确认撤销您的编辑？', '提示').then(() => {
+    const content = pageContent.value
+    content.doc_content = cacheDocContent
+    if (content.doc_type === docTypeMap.rich) {
+      if (richEditor) richEditor.setHtml(cacheDocContent)
+    }
+  })
 }
 
 /// 创建网页内容
@@ -109,6 +113,29 @@ const initEditor = (content) => {
   })
 }
 
+const setHome = () => {
+  ElMessageBox.confirm('确认将当前页设置为网站首页？', '提示').then(() => {
+    const params = { id: pageContent.value.id }
+    const tipsSuccess = '提交成功'
+    const tipsError = '提交失败'
+    const tipsLoading = '正在提交...'
+    const loading = ElLoading.service({ lock: true, text: tipsLoading })
+    Http.post(HttpApis.setDocContentHome, params)
+      .then(function (response) {
+        const res = response.data
+        if (res.code === SystemValues.responseMap.success.code) {
+          homeId.value = params.id
+          ElMessage({ message: tipsSuccess, type: 'success' })
+        } else {
+          ElMessageBox.alert(result.msg, tipsError)
+        }
+      })
+      .finally(() => {
+        loading.close()
+      })
+  })
+}
+
 onMounted(() => {
   eventManager.on(EVENT_CONTENT_CLEAR, clearContent)
   eventManager.on(EVENT_CONTENT_RESET, setContent)
@@ -125,10 +152,16 @@ onBeforeUnmount(() => {
   <template v-if="currentPage">
     <AddContent />
     <div class="current-page-wrap">
-      <div class="current-page-title">《{{ currentPage.menu_name }}》</div>
+      <div class="current-page-title lh-1-5">
+        <span>《{{ currentPage.menu_name }}》</span>
+        <el-tag v-if="pageContent.id === homeId">首页</el-tag>
+      </div>
       <template v-if="pageContent">
         <div class="info">网页类型：{{ docTypeInfo[pageContent.doc_type] }}</div>
         <div class="handler-box">
+          <template v-if="!Boolean(currentPage.parent_id) && pageContent.id !== homeId">
+            <el-button @click="setHome">设置首页</el-button>
+          </template>
           <el-button @click="repackEdit">撤销</el-button>
           <el-button type="primary" @click="editSubmit">保存</el-button>
         </div>

@@ -35,3 +35,9 @@ export const SelectDocContent = 'SELECT * FROM doc_content WHERE id = {id} LIMIT
 /// 更新文档内容，BY Id
 export const UpdateDocContent =
   'UPDATE doc_content SET doc_keyword={doc_keyword},doc_content={doc_content} WHERE id = {id}'
+
+/// 设置文档内容为首页
+export const UpdateDocContentHome = 'UPDATE system_config SET page_index={page_index} WHERE id = 1'
+
+/// 查询当前文档内容首页
+export const SelectDocContentHome = 'SELECT * FROM system_config WHERE id = 1'

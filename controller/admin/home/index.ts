@@ -1,6 +1,6 @@
 import { Controller } from '@/tools/controller'
 import { ExtendableContext, Next } from 'koa'
-import { Get, Json, Post, Summary, View } from '@/tools/method'
+import { Get, Json, Post, Summary } from '@/tools/method'
 import { Jwt } from '@/tools/jwt'
 import { DatabaseQueryResult } from '@/database/_types'
 import { Database } from '@/database'
@@ -11,6 +11,8 @@ import { ParamsMenuAdd, ResultMenuAdd } from '@/controller/admin/home/_models/me
 import { ParamsContentAdd, ResultContentAdd } from '@/controller/admin/home/_models/content-add'
 import { ParamsContentGet, ResultContentGet } from '@/controller/admin/home/_models/content-get'
 import { ParamsContentEdit } from '@/controller/admin/home/_models/content-edit'
+import { ParamsContentHome, ResultContentHome } from '@/controller/admin/home/_models/content-home'
+import { SelectDocContentHome, UpdateDocContentHome } from '@/database/query'
 
 export class AdminHome extends Controller.Api {
   @Get()
@@ -86,6 +88,46 @@ export class AdminHome extends Controller.Api {
       ctx.body = Dto(ResponseCode.success)
     } else {
       ctx.body = Dto(ResponseCode.error_server, null, resultUpdate.msg)
+    }
+    return next()
+  }
+
+  @Post()
+  @Json()
+  @Jwt.protected()
+  @Params(ParamsContentHome, ParamsSource.Body)
+  @Summary('设置文档内容为网站首页')
+  public async contentHome(ctx: ExtendableContext, next: Next) {
+    const { id }: ParamsContentEdit = ctx.params
+    const resultUpdate: DatabaseQueryResult = await Database.execute(
+      Database.format(Database.query.UpdateDocContentHome, { page_index: id })
+    )
+    if (resultUpdate.code === Database.result.success) {
+      ctx.body = Dto(ResponseCode.success)
+    } else {
+      ctx.body = Dto(ResponseCode.error_server, null, resultUpdate.msg)
+    }
+    return next()
+  }
+
+  @Get()
+  @Json()
+  @Jwt.protected()
+  @Result(ResultContentHome)
+  @Summary('获取网站首页')
+  public async contentHomeGet(ctx: ExtendableContext, next: Next) {
+    const { id }: ParamsContentEdit = ctx.params
+    const resultSelect: DatabaseQueryResult = await Database.execute(
+      Database.format(Database.query.SelectDocContentHome, { page_index: id })
+    )
+    if (resultSelect.code === Database.result.success) {
+      const value = resultSelect.value[0] || {}
+      const homeResult = new ResultContentHome()
+      homeResult.fill({ id: value.page_index })
+      console.log(homeResult, '---------------')
+      ctx.body = Dto(ResponseCode.success, homeResult)
+    } else {
+      ctx.body = Dto(ResponseCode.error_server, null, resultSelect.msg)
     }
     return next()
   }

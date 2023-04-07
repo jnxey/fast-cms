@@ -8,12 +8,16 @@ import { Ejs } from '@/tools/ejs'
 import { Jwt } from '@/tools/jwt'
 import { AdminLogin } from '@/controller/admin/login'
 import { AdminHome } from '@/controller/admin/home'
+import { Home } from '@/controller/home'
+import { Space } from '@/controller/space'
 
 const app: Koa = new Koa()
 const router: Router = new Router()
 
 Controller.connect<AdminLogin>(new AdminLogin(), router)
 Controller.connect<AdminHome>(new AdminHome(), router)
+Controller.connect<Home>(new Home(), router)
+Controller.connect<Space>(new Space(), router)
 
 app.use(serve('./assets'))
 Ejs.ejsRender(app)

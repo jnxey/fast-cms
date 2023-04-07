@@ -4,10 +4,16 @@ import MenuList from './_components/menu-list/index.vue'
 import CurrentPage from './_components/current-page/index.vue'
 import eventManager from '@/tools/event-manager'
 import { EVENT_MENU_DIALOG_ADD } from '@/views/space/_values'
+import { onBeforeMount } from 'vue'
+import { loadHome } from './_values/home'
 
 const addMenu = () => {
   eventManager.emit(EVENT_MENU_DIALOG_ADD)
 }
+
+onBeforeMount(() => {
+  loadHome()
+})
 </script>
 <template>
   <div class="page-space-wrap">
