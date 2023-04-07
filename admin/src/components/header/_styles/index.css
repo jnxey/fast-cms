@@ -1,0 +1,22 @@
+.admin-nav-top {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  text-align: right;
+  z-index: 50;
+}
+
+.admin-nav-top .el-menu {
+  height: 59px;
+}
+
+.admin-nav-top .nav-user-icon {
+  width: 40px;
+  height: 40px;
+  display: inline-block;
+  vertical-align: middle;
+}
+.admin-nav-top .flex-grow-place {
+  flex-grow: 1;
+}

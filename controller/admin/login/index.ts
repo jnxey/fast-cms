@@ -53,6 +53,15 @@ export class AdminLogin extends Controller.Api {
     return next()
   }
 
+  @Get()
+  @Json()
+  @Jwt.protected()
+  public async getAdminInfo(ctx: ExtendableContext, next: Next) {
+    const user = ctx?.state?.user || {}
+    ctx.body = Dto(ResponseCode.success, user)
+    return next()
+  }
+
   @Post()
   @Json()
   @Jwt.protected()
