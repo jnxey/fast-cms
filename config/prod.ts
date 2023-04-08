@@ -6,7 +6,7 @@ export const config: Config = {
     host: 'localhost',
     user: 'root',
     password: '846046',
-    table: 'fast_cms',
+    name: 'nr_document',
     port: 3306
   },
   salt: 'fc-salt'

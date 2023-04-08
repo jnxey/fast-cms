@@ -46,6 +46,17 @@ export class Controller {
           router.post(path, koaBody({ json: true }), handler)
         } else if (instance[name].DATA_TYPE === RequestDataType.Text) {
           router.post(path, koaBody({ text: true }), handler)
+        } else if (instance[name].DATA_TYPE === RequestDataType.FormData) {
+          router.post(
+            path,
+            koaBody({
+              multipart: true,
+              formidable: {
+                maxFileSize: 500 * 1024 * 1024 // 设置上传文件大小最大限制，默认5M
+              }
+            }),
+            handler
+          )
         } else {
           router.post(path, handler)
         }

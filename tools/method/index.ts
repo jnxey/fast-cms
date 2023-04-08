@@ -8,7 +8,8 @@ export enum RequestMethod {
 /// 请求数据的数据类型
 export enum RequestDataType {
   Json,
-  Text
+  Text,
+  FormData
 }
 
 /// get方法
@@ -43,6 +44,13 @@ export function Json(): Function {
 export function Text(): Function {
   return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
     descriptor.value.DATA_TYPE = RequestDataType.Text
+  }
+}
+
+/// post方法，获取的body的数据结构为Form表单
+export function FormData(): Function {
+  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+    descriptor.value.DATA_TYPE = RequestDataType.FormData
   }
 }
 

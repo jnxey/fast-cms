@@ -2,7 +2,7 @@ declare interface Database {
   host: string
   user: string
   password: string
-  table: string
+  name: string
   port: number
 }
 

@@ -146,6 +146,10 @@ const setHome = () => {
   })
 }
 
+const uploadSuccess = (e) => {
+  console.log(e, '--------------------')
+}
+
 const jumpPage = () => {
   window.open('/space/' + pageContent.value?.id)
 }
@@ -207,9 +211,15 @@ onBeforeUnmount(() => {
       </template>
       <template v-if="pageContent.doc_type === docTypeMap.assets">
         <div id="content-assets-box">
-          <el-upload class="upload-demo" drag>
+          <el-upload
+            class="upload-demo"
+            drag
+            multiple
+            :action="HttpApis.fileSave"
+            @onSuccess="uploadSuccess"
+          >
             <el-icon class="el-icon--upload"><upload-filled /></el-icon>
-            <div class="el-upload__text">拉取图片到这里或者 <em>点击上传</em></div>
+            <div class="el-upload__text">拉取ZIP文件到这里或者 <em>点击上传</em></div>
             <template #tip>
               <div class="el-upload__tip">仅支持ZIP格式文件，最大不能超过5M</div>
             </template>

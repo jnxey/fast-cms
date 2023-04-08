@@ -11,7 +11,7 @@ const pool = mysql.createPool({
   port: config.port,
   user: config.user,
   password: config.password,
-  database: config.table
+  database: config.name
 })
 
 export class Database {
