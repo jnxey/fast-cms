@@ -16,6 +16,7 @@ import { UploadFilled } from '@element-plus/icons-vue'
 
 let cacheDocContent = ''
 let richEditor = null
+let markdownEditor = null
 const { docTypeMap, docTypeInfo } = SystemValues
 const currentPage = ref(null)
 const pageContent = ref(false)
@@ -50,6 +51,8 @@ const repackEdit = () => {
     content.doc_content = cacheDocContent
     if (content.doc_type === docTypeMap.rich) {
       if (richEditor) richEditor.setHtml(cacheDocContent)
+    } else if (content.doc_type === docTypeMap.markdown) {
+      if (markdownEditor) markdownEditor.setMarkdown(cacheDocContent)
     }
   })
 }
@@ -107,8 +110,15 @@ const initEditor = (content) => {
         mode: 'default'
       })
     } else if (content.doc_type === docTypeMap.markdown) {
-      const target = document.getElementById('content-markdown-box')
-      new SimpleMDE({ element: target })
+      markdownEditor = editormd('content-markdown-box', {
+        width: '100%',
+        height: '500px',
+        markdown: content.doc_content,
+        path: './editor/editor.md/lib/',
+        onchange: () => {
+          pageContent.value.doc_content = markdownEditor.getMarkdown()
+        }
+      })
     }
   })
 }
@@ -154,7 +164,7 @@ onBeforeUnmount(() => {
     <div class="current-page-wrap">
       <div class="current-page-title lh-1-5">
         <span>《{{ currentPage.menu_name }}》</span>
-        <el-tag v-if="pageContent.id === homeId">首页</el-tag>
+        <el-tag v-if="pageContent && pageContent.id === homeId">首页</el-tag>
       </div>
       <template v-if="pageContent">
         <div class="info">网页类型：{{ docTypeInfo[pageContent.doc_type] }}</div>
@@ -179,7 +189,7 @@ onBeforeUnmount(() => {
         </div>
       </template>
       <template v-if="pageContent.doc_type === docTypeMap.markdown">
-        <label for="content-markdown-box"></label><textarea id="content-markdown-box"></textarea>
+        <div id="content-markdown-box"></div>
       </template>
       <template v-if="pageContent.doc_type === docTypeMap.website">
         <div id="content-website-box">

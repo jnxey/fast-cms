@@ -10,7 +10,6 @@ export const loadHome = () => {
     const res = response.data
     if (res.code === SystemValues.responseMap.success.code) {
       homeId.value = res.result?.id
-      console.log(homeId.value, '-----------')
     }
   })
 }
