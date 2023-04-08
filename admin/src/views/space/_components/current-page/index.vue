@@ -215,7 +215,14 @@ onBeforeUnmount(() => {
       </template>
       <template v-if="pageContent.doc_type === docTypeMap.assets">
         <div id="content-assets-box">
-          <el-upload class="upload-demo" drag :action="HttpApis.fileSave" @success="uploadSuccess">
+          <div class="mb-25">当前文件：{{ pageContent.doc_content }}</div>
+          <el-upload
+            class="upload-demo"
+            drag
+            :limit="1"
+            :action="HttpApis.fileSave"
+            @success="uploadSuccess"
+          >
             <el-icon class="el-icon--upload"><upload-filled /></el-icon>
             <div class="el-upload__text">拉取ZIP文件到这里或者 <em>点击上传</em></div>
             <template #tip>
