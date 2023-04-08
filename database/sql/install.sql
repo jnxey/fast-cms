@@ -69,7 +69,7 @@ CREATE TABLE file_save
 (
   id          INT NOT NULL UNIQUE AUTO_INCREMENT COMMENT '主键',
   file_type   INT          NOT NULL              COMMENT '文件类型，1-文档内容，2-资源库',
-  file_tag    VINT         NOT NULL              COMMENT '文件标签，1-图片，2-视频',
+  file_tag    INT         NOT NULL              COMMENT '文件标签，1-图片，2-视频',
   file_hash   VARCHAR(50)  NOT NULL              COMMENT '文件Hash',
   file_blob   BLOB         NOT NULL              COMMENT '文件内容',
   create_time DATETIME     NOT NULL              COMMENT '创建时间',
