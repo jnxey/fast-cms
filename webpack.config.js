@@ -1,6 +1,7 @@
 import path from 'path'
 import { CleanWebpackPlugin } from 'clean-webpack-plugin'
 import CopyWebpackPlugin from 'copy-webpack-plugin'
+import { FixHexoidError } from './webpack.plugin.js'
 
 const __dirname = path.resolve()
 
@@ -14,7 +15,7 @@ export default {
   },
   devtool: false,
   output: {
-    filename: '[name].' + process.env.EXEC_ENV + '.js',
+    filename: '[name].js',
     path: __buildpath
   },
   resolve: {
@@ -69,6 +70,7 @@ export default {
           to: path.resolve(__buildpath, 'package[ext]')
         }
       ]
-    })
+    }),
+    new FixHexoidError({ file: path.resolve(__buildpath, 'vendors.js') })
   ]
 }

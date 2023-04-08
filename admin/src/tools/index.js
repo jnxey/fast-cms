@@ -1,3 +1,5 @@
+import { SystemValues } from '@/tools/values'
+
 export const toLogin = () => {
-  location.href = '/login'
+  location.href = SystemValues.base + '#/login'
 }

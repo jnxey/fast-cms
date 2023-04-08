@@ -5,6 +5,7 @@ import vue from '@vitejs/plugin-vue'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: '/resource-space/admin/',
   plugins: [vue()],
   resolve: {
     alias: {
@@ -19,5 +20,8 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/api/, '')
       }
     }
+  },
+  build: {
+    outDir: fileURLToPath(new URL('../assets/resource-space/admin/', import.meta.url))
   }
 })
