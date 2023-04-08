@@ -10,7 +10,6 @@ import { DatabaseQueryResult } from '@/database/_types'
 import { Result } from '@/tools/result'
 import { ResultAdminInfo } from '@/controller/admin/login/_models/admin-info'
 import { ParamsResetPwd } from '@/controller/admin/login/_models/reset-pwd'
-import { UpdateAdminPwd } from '@/database/query'
 
 export class AdminLogin extends Controller.Api {
   @Post()

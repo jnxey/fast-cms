@@ -26,8 +26,9 @@ export class Controller {
       if (name === 'constructor') return
       const resetful =
         instance[name].METHOD === RequestMethod.View ? Controller.ViewPrefix : Controller.ApiPrefix
+      const extn = name.indexOf('$') === 0 ? ':' : '/:'
       const module = kebabCase(moduleName)
-      const func = kebabCase(name).replace('$', ':')
+      const func = kebabCase(name).replace('$', extn)
       const path: string = resetful + module + '/' + func
       /// 添加jwt白名单
       if (instance[name].JWT_PROTECTED) {

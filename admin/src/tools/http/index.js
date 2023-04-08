@@ -33,5 +33,5 @@ export const HttpApis = {
   addDocContent: '/api/admin-home/content-add',
   getDocContentHome: '/api/admin-home/content-home-get',
   setDocContentHome: '/api/admin-home/content-home',
-  fileSave: '/api/file/save'
+  fileSave: '/api/file-manager/save'
 }

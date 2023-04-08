@@ -10,7 +10,7 @@ import { AdminLogin } from '@/controller/admin/login'
 import { AdminHome } from '@/controller/admin/home'
 import { Home } from '@/controller/home'
 import { Space } from '@/controller/space'
-import { File } from '@/controller/file'
+import { FileManager } from '@/controller/file'
 
 const pathHome = '/home/index'
 const pathAssets = './assets'
@@ -25,7 +25,7 @@ Controller.connect<AdminLogin>(new AdminLogin(), router)
 Controller.connect<AdminHome>(new AdminHome(), router)
 Controller.connect<Home>(new Home(), router)
 Controller.connect<Space>(new Space(), router)
-Controller.connect<File>(new File(), router)
+Controller.connect<FileManager>(new FileManager(), router)
 
 app.use(serve(pathAssets))
 Ejs.ejsRender(app)

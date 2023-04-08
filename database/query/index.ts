@@ -41,3 +41,10 @@ export const UpdateDocContentHome = 'UPDATE system_config SET page_index={page_i
 
 /// 查询当前文档内容首页
 export const SelectDocContentHome = 'SELECT * FROM system_config WHERE id = 1 LIMIT 1'
+
+/// 将Blob插入文件列表中
+export const InsertBlobToFile =
+  'INSERT INTO file_save(file_type,file_tag,file_hash,file_blob,create_time) VALUES({file_type},{file_tag},{file_hash},{file_blob},CURRENT_TIMESTAMP)'
+
+/// 查询文件Blob
+export const SelectBlobFromFile = 'SELECT * FROM file_save WHERE file_hash = {file_hash} LIMIT 1'

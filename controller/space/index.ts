@@ -10,10 +10,10 @@ export class Space extends Controller.Api {
   @View()
   @Summary('首页')
   public async $index(ctx: ExtendableContext, next: Next) {
+    let { index } = ctx.params
     let content = { id: -1 }
     let menuList = '[]'
     let menuHome = null
-    let { index } = ctx.params
     //
     const resultContent = await Database.execute(
       Database.format(Database.query.SelectDocContent, { id: index })
