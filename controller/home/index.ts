@@ -10,7 +10,7 @@ export class Home extends Controller.Api {
   @View()
   @Summary('首页')
   public async index(ctx: ExtendableContext, next: Next) {
-    let content = {}
+    let content = { id: -1 }
     const resultSelect: DatabaseQueryResult = await Database.execute(
       Database.format(Database.query.SelectDocContentHome)
     )
@@ -20,8 +20,10 @@ export class Home extends Controller.Api {
         Database.format(Database.query.SelectDocContent, { id: page_index })
       )
       if (resultContent.code === Database.result.success) {
-        content = resultContent.value[0] || {}
+        content = resultContent.value[0] || content
         content['doc_content'] = Space.getContent(content, ctx)
+      } else {
+        ctx.redirect('/404.html')
       }
     }
     await ctx.render('template/home', {

@@ -10,7 +10,7 @@ export class Space extends Controller.Api {
   @View()
   @Summary('首页')
   public async $index(ctx: ExtendableContext, next: Next) {
-    let content = {}
+    let content = { id: -1 }
     let menuList = '[]'
     let menuHome = null
     let { index } = ctx.params
@@ -19,8 +19,10 @@ export class Space extends Controller.Api {
       Database.format(Database.query.SelectDocContent, { id: index })
     )
     if (resultContent.code === Database.result.success) {
-      content = resultContent.value[0] || {}
+      content = resultContent.value[0] || content
       content['doc_content'] = Space.getContent(content, ctx)
+    } else {
+      ctx.redirect('/404.html')
     }
     //
     const resultMenuList: DatabaseQueryResult = await Database.execute(

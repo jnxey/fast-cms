@@ -15,8 +15,8 @@
       (function() {
         window.ContentId =  <%- data.content.id %>;
         window.menuRoot = 0;
-        window.MenuHome = <%- data.menuHome %>;
-        window.MenuList = <%- data.menuList %>;
+        window.MenuHome = <%- data.menuHome || '' %>;
+        window.MenuList = <%- data.menuList || [] %>;
         window.MenuTree = getMenuTree(window.MenuList);
         window.MenuId = null;
         /// 获取菜单树
