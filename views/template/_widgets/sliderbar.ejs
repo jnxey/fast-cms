@@ -4,7 +4,7 @@
 </div>
 <template id="sliderbar-item-template">
     <div class="sliderbar-item"
-         :class="{hide: isHome, active: isActive, page: isPage}" @click="toPath(content)">
+         :class="{active: isActive, page: isPage}" @click="toPath(content)">
         {{content.menu_name}}
         <div class="sliderbar-item-children" v-if="content.children">
             <div v-for="(_item, _index) in content.children" :key="_index" v-scope="SliderbarItem({ content: _item })">
@@ -14,21 +14,14 @@
 </template>
 <script>
   (function () {
-    var pathname = window.location.pathname;
-    var contentKey = pathname.lastIndexOf('/');
-    var contentId = Number(pathname.slice(contentKey + 1));
-    console.log(contentId, '---------------')
-
     function SliderbarItem(props) {
       return {
         $template: '#sliderbar-item-template',
         content: props.content,
-        menuHome: window.MenuHome,
-        isActive: contentId === props.content.content_id,
-        isHome: window.MenuHome === props.content.content_id,
+        isActive: window.ContentId === props.content.content_id,
         isPage: window.MENU_TYPE.page === props.content.menu_type,
         toPath: function (content) {
-          if (contentId === content.content_id) return;
+          if (window.ContentId === content.content_id) return;
           if (window.MENU_TYPE.page !== content.menu_type) return;
           location.href = '/space/' + content.content_id;
         }

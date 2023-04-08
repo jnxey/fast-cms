@@ -4,8 +4,7 @@ import { Summary, View } from '@/tools/method'
 import { Database } from '@/database'
 import { docTypeMap } from '@/tools/values'
 import { DatabaseQueryResult } from '@/database/_types'
-import { ResultContentHome } from '@/controller/admin/home/_models/content-home'
-import { Dto, ResponseCode } from '@/tools/dto'
+import MarkdownIt from 'markdown-it'
 
 export class Space extends Controller.Api {
   @View()
@@ -21,6 +20,10 @@ export class Space extends Controller.Api {
     )
     if (resultContent.code === Database.result.success) {
       content = resultContent.value[0] || {}
+      if (content['doc_type'] === docTypeMap.markdown) {
+        const md = new MarkdownIt()
+        content['doc_content'] = md.render(content['doc_content'])
+      }
     }
     //
     const resultMenuList: DatabaseQueryResult = await Database.execute(

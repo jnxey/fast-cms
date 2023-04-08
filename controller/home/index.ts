@@ -4,6 +4,7 @@ import { Summary, View } from '@/tools/method'
 import { DatabaseQueryResult } from '@/database/_types'
 import { Database } from '@/database'
 import { docTypeMap } from '@/tools/values'
+import MarkdownIt from 'markdown-it'
 
 export class Home extends Controller.Api {
   @View()
@@ -20,6 +21,10 @@ export class Home extends Controller.Api {
       )
       if (resultContent.code === Database.result.success) {
         content = resultContent.value[0] || {}
+        if (content['doc_type'] === docTypeMap.markdown) {
+          const md = new MarkdownIt()
+          content['doc_content'] = md.render(content['doc_content'])
+        }
       }
     }
     await ctx.render('template/home', {

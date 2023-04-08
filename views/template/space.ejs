@@ -13,25 +13,38 @@
     <%- include('../_values/global.ejs') %>
     <script>
       (function() {
+        window.ContentId =  <%- data.content.id %>;
         window.menuRoot = 0;
+        window.MenuHome = <%- data.menuHome %>;
         window.MenuList = <%- data.menuList %>;
         window.MenuTree = getMenuTree(window.MenuList);
-        window.MenuHome = <%- data.menuHome %>;
+        window.MenuId = null;
         /// 获取菜单树
-        function getMenuTree(menus) {
+        function getMenuTree(menus, root) {
           var list = JSON.parse(JSON.stringify(menus));
           var getChildren = function(id) {
             var result = [];
             list.forEach(function(val) {
+              if(!val.parent_id) root = val.id;
               if (val.parent_id === id) {
-                val.children = getChildren(val.id)
+                val.children = getChildren(val.id, root)
                 result.push(val)
+              }
+              if(val.content_id === window.ContentId) {
+                window.MenuId = root;
               }
             });
             if (result.length > 0) return result;
             else return null;
           }
-          return getChildren(window.menuRoot);
+          var result = []
+          var menuTree = getChildren(window.menuRoot) || [];
+          menuTree.forEach(function(menu) {
+            if(menu.id === window.MenuId) {
+              result = menu.children || [];
+            }
+          });
+          return result;
         }
       })();
 
@@ -50,8 +63,10 @@
 </div>
 <style>
   .home-container {
-    margin-top: 60px;
-    margin-left: 200px;
+    margin-top: 75px;
+    margin-right: 15px;
+    margin-left: 215px;
+    margin-bottom: 15px;
   }
 </style>
 </body>

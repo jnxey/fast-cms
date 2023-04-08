@@ -433,3 +433,7 @@
 .pb-48 {
   padding-bottom: 48px;
 }
+
+.editormd-fullscreen {
+  z-index: 100;
+}
