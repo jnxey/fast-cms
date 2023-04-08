@@ -61,6 +61,10 @@ export default {
           to: path.resolve(__buildpath, 'assets')
         },
         {
+          from: path.resolve(__dirname, 'views'),
+          to: path.resolve(__buildpath, 'views')
+        },
+        {
           from: path.resolve(__dirname, 'assets/project.json'),
           to: path.resolve(__buildpath, 'package[ext]')
         }
