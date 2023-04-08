@@ -30,7 +30,10 @@ export class FileManager extends Controller.Api {
           })
         )
         if (insertResult.code === Database.result.success) {
-          ctx.body = Dto(ResponseCode.success, { hash: hash, url: '/file-manager/read/' + hash })
+          ctx.body = Dto(ResponseCode.success, {
+            hash: hash,
+            url: '/api/file-manager/read/' + hash
+          })
         } else {
           ctx.body = Dto(ResponseCode.error_params, null, insertResult.msg)
         }

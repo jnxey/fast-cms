@@ -64,9 +64,9 @@ export class Space extends Controller.Api {
       ctx.redirect(content.doc_content)
     } else if (content.doc_type === docTypeMap.assets) {
       const root = path.resolve()
-      const pathFile = path.resolve(root, resourcePosition + resourceSpace + content.id)
+      const extName = 'space-' + content.id
+      const pathFile = path.resolve(root, resourcePosition + resourceSpace + extName)
       const hasFile = fs.existsSync(pathFile)
-      console.log(hasFile, '---------------1')
       if (!hasFile) {
         const selectResult = await Database.execute(
           Database.format(Database.query.SelectBlobFromFile, { file_hash: content.doc_content })
@@ -79,7 +79,7 @@ export class Space extends Controller.Api {
         }
       }
       // 静态资源
-      ctx.redirect(resourceSpace + content.id)
+      ctx.redirect(resourceSpace + extName)
     }
     return result
   }
