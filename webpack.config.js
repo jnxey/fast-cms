@@ -1,7 +1,10 @@
 import path from 'path'
 import { CleanWebpackPlugin } from 'clean-webpack-plugin'
+import CopyWebpackPlugin from 'copy-webpack-plugin'
 
 const __dirname = path.resolve()
+
+const __buildpath = path.resolve(__dirname, 'build')
 
 export default {
   mode: process.env.NODE_ENV,
@@ -12,7 +15,7 @@ export default {
   devtool: false,
   output: {
     filename: '[name].' + process.env.EXEC_ENV + '.js',
-    path: path.resolve(__dirname, 'build')
+    path: __buildpath
   },
   resolve: {
     alias: {
@@ -49,5 +52,19 @@ export default {
       }
     }
   },
-  plugins: [new CleanWebpackPlugin()]
+  plugins: [
+    new CleanWebpackPlugin(),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: path.resolve(__dirname, 'assets'),
+          to: path.resolve(__buildpath, 'assets')
+        },
+        {
+          from: path.resolve(__dirname, 'assets/project.json'),
+          to: path.resolve(__buildpath, 'package[ext]')
+        }
+      ]
+    })
+  ]
 }
