@@ -21,13 +21,12 @@ export class FileManager extends Controller.Api {
       const buffer = await FileManager.getBlobByPath(file.filepath)
       if (buffer) {
         const base64 = buffer.toString('base64')
-        const prefix = 'data:' + mimetype + ';base64,'
         const insertResult: DatabaseQueryResult = await Database.execute(
           Database.format(Database.query.InsertBlobToFile, {
             file_type: mimetype,
             file_tag: -1,
             file_hash: hash,
-            file_blob: prefix + base64
+            file_blob: base64
           })
         )
         if (insertResult.code === Database.result.success) {
@@ -52,9 +51,10 @@ export class FileManager extends Controller.Api {
       Database.format(Database.query.SelectBlobFromFile, { file_hash: hash })
     )
     if (selectResult.code === Database.result.success) {
-      const base64 = selectResult.value[0]?.file_blob || ''
-      const buffer = Buffer.from(base64, 'base64')
-      ctx.body = fs.createReadStream(buffer)
+      const file = selectResult.value[0] || {}
+      const base64 = file.file_blob || ''
+      ctx.response.set('content-type', file.file_type)
+      ctx.body = Buffer.from(base64, 'base64')
     } else {
       ctx.body = Dto(ResponseCode.error_params, null, selectResult.msg)
     }
