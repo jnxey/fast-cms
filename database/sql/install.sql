@@ -58,11 +58,23 @@ CREATE TABLE doc_content
 (
   id          INT NOT NULL UNIQUE AUTO_INCREMENT COMMENT '主键',
   doc_type    INT NOT NULL      COMMENT '文档显示类型，1-富文本，2-Markdown，3-Iframe，4-SFC',
-  doc_keyword LONGTEXT          COMMENT '文档关键词，可用【，】分开',
+  doc_title   VARCHAR(50)       COMMENT '文档标题',
+  doc_keyword VARCHAR(50)       COMMENT '文档关键词',
   doc_content LONGTEXT          COMMENT '文档内容',
   create_time DATETIME NOT NULL COMMENT '创建时间',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB COMMENT='文档空间列表';
+
+CREATE TABLE file_save
+(
+  id          INT NOT NULL UNIQUE AUTO_INCREMENT COMMENT '主键',
+  file_type   INT          NOT NULL              COMMENT '文件类型，1-文档内容，2-资源库',
+  file_tag    VINT         NOT NULL              COMMENT '文件标签，1-图片，2-视频',
+  file_hash   VARCHAR(50)  NOT NULL              COMMENT '文件Hash',
+  file_blob   BLOB         NOT NULL              COMMENT '文件内容',
+  create_time DATETIME     NOT NULL              COMMENT '创建时间',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB COMMENT='文件存储';
 
 INSERT INTO admin_user    VALUES (1, 'admin', '698495dad777ebb0be5281f4f44d27c6', 999, CURRENT_TIMESTAMP);
 INSERT INTO system_config VALUES (1, 0, CURRENT_TIMESTAMP);
@@ -70,3 +82,5 @@ INSERT INTO system_config VALUES (1, 0, CURRENT_TIMESTAMP);
 CREATE INDEX admin_name_index ON admin_user (admin_name);
 -- CREATE INDEX space_mark_index ON doc_space (space_mark);
 -- CREATE INDEX menu_mark_index ON doc_menu (menu_mark);
+
+
