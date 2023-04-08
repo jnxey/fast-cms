@@ -1,3 +1,5 @@
+/// 绝对位置
+export const resourcePosition = 'assets'
 /// 菜单类型信息
 export const resourceSpace = '/resource-space/'
 /// 菜单类型信息

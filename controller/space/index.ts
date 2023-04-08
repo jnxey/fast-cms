@@ -2,9 +2,11 @@ import { Controller } from '@/tools/controller'
 import { ExtendableContext, Next } from 'koa'
 import { Summary, View } from '@/tools/method'
 import { Database } from '@/database'
-import { docTypeMap, resourceSpace } from '@/tools/values'
+import { docTypeMap, resourcePosition, resourceSpace } from '@/tools/values'
 import { DatabaseQueryResult } from '@/database/_types'
 import MarkdownIt from 'markdown-it'
+import fs from 'fs'
+import path from 'path'
 
 export class Space extends Controller.Api {
   @View()
@@ -20,7 +22,7 @@ export class Space extends Controller.Api {
     )
     if (resultContent.code === Database.result.success) {
       content = resultContent.value[0] || content
-      content['doc_content'] = Space.getContent(content, ctx)
+      content['doc_content'] = await Space.getContent(content, ctx)
     } else {
       ctx.redirect('/404.html')
     }
@@ -47,7 +49,7 @@ export class Space extends Controller.Api {
   }
 
   /// 获取Content内容
-  public static getContent(content: any, ctx: ExtendableContext) {
+  public static async getContent(content: any, ctx: ExtendableContext) {
     let result = ''
     if (!content) return result
     if (content.doc_type === docTypeMap.rich) {
@@ -61,6 +63,21 @@ export class Space extends Controller.Api {
       // 第三方网站
       ctx.redirect(content.doc_content)
     } else if (content.doc_type === docTypeMap.assets) {
+      const root = path.resolve()
+      const pathFile = path.resolve(root, resourcePosition + resourceSpace + content.id)
+      const hasFile = fs.existsSync(pathFile)
+      console.log(hasFile, '---------------1')
+      if (!hasFile) {
+        const selectResult = await Database.execute(
+          Database.format(Database.query.SelectBlobFromFile, { file_hash: content.doc_content })
+        )
+        if (selectResult.code === Database.result.success) {
+          const file = selectResult.value[0] || {}
+          const base64 = file.file_blob || ''
+          fs.mkdirSync(pathFile)
+          fs.writeFileSync(path.resolve(pathFile, file.file_hash), Buffer.from(base64, 'base64'))
+        }
+      }
       // 静态资源
       ctx.redirect(resourceSpace + content.id)
     }

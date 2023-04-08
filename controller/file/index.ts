@@ -53,7 +53,6 @@ export class FileManager extends Controller.Api {
     if (selectResult.code === Database.result.success) {
       const file = selectResult.value[0] || {}
       const base64 = file.file_blob || ''
-      ctx.response.set('content-type', file.file_type)
       ctx.body = Buffer.from(base64, 'base64')
     } else {
       ctx.body = Dto(ResponseCode.error_params, null, selectResult.msg)

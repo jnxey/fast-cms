@@ -21,7 +21,7 @@ export class Home extends Controller.Api {
       )
       if (resultContent.code === Database.result.success) {
         content = resultContent.value[0] || content
-        content['doc_content'] = Space.getContent(content, ctx)
+        content['doc_content'] = await Space.getContent(content, ctx)
       } else {
         ctx.redirect('/404.html')
       }

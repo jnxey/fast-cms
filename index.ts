@@ -11,6 +11,7 @@ import { AdminHome } from '@/controller/admin/home'
 import { Home } from '@/controller/home'
 import { Space } from '@/controller/space'
 import { FileManager } from '@/controller/file'
+import { Ext } from '@/tools/ext'
 
 const pathHome = '/home/index'
 const pathAssets = './assets'
@@ -28,6 +29,7 @@ Controller.connect<Space>(new Space(), router)
 Controller.connect<FileManager>(new FileManager(), router)
 
 app.use(serve(pathAssets))
+app.use(Ext.image)
 Ejs.ejsRender(app)
 app.use(ErrorKoa.onerror)
 app.use(Jwt.intercept())
