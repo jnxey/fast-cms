@@ -8,7 +8,8 @@ import ResetPwd from '@/views/reset-pwd/index.vue'
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
-    { path: '/', name: '/', redirect: 'home' },
+    { path: '', name: '', redirect: '/home' },
+    { path: '/', name: '/', redirect: '/home' },
     { path: '/login', name: 'login', component: Login },
     { path: '/home', name: 'home', meta: { layout: true }, component: Home },
     { path: '/person', name: 'person', meta: { layout: true }, component: Person },

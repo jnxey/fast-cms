@@ -146,6 +146,10 @@ const setHome = () => {
   })
 }
 
+const jumpPage = () => {
+  window.open('/space/' + pageContent.value?.id)
+}
+
 onMounted(() => {
   eventManager.on(EVENT_CONTENT_CLEAR, clearContent)
   eventManager.on(EVENT_CONTENT_RESET, setContent)
@@ -172,6 +176,7 @@ onBeforeUnmount(() => {
           <template v-if="!Boolean(currentPage.parent_id) && pageContent.id !== homeId">
             <el-button @click="setHome">设置首页</el-button>
           </template>
+          <el-button @click="jumpPage">查看页面</el-button>
           <el-button @click="repackEdit">撤销</el-button>
           <el-button type="primary" @click="editSubmit">保存</el-button>
         </div>
@@ -193,7 +198,11 @@ onBeforeUnmount(() => {
       </template>
       <template v-if="pageContent.doc_type === docTypeMap.website">
         <div id="content-website-box">
-          <el-input type="text" placeholder="请输入网站地址"></el-input>
+          <el-input
+            v-model="pageContent.doc_content"
+            type="text"
+            placeholder="请输入网站地址"
+          ></el-input>
         </div>
       </template>
       <template v-if="pageContent.doc_type === docTypeMap.assets">

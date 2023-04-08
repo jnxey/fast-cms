@@ -6,9 +6,9 @@
     <div class="sliderbar-item"
          :class="{active: isActive, page: isPage}" @click="toPath(content)">
         {{content.menu_name}}
-        <div class="sliderbar-item-children" v-if="content.children">
-            <div v-for="(_item, _index) in content.children" :key="_index" v-scope="SliderbarItem({ content: _item })">
-            </div>
+    </div>
+    <div class="sliderbar-item-children" v-if="content.children">
+        <div v-for="(_item, _index) in content.children" :key="_index" v-scope="SliderbarItem({ content: _item })">
         </div>
     </div>
 </template>

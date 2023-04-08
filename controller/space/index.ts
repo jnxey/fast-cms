@@ -2,7 +2,7 @@ import { Controller } from '@/tools/controller'
 import { ExtendableContext, Next } from 'koa'
 import { Summary, View } from '@/tools/method'
 import { Database } from '@/database'
-import { docTypeMap } from '@/tools/values'
+import { docTypeMap, resourceSpace } from '@/tools/values'
 import { DatabaseQueryResult } from '@/database/_types'
 import MarkdownIt from 'markdown-it'
 
@@ -20,10 +20,7 @@ export class Space extends Controller.Api {
     )
     if (resultContent.code === Database.result.success) {
       content = resultContent.value[0] || {}
-      if (content['doc_type'] === docTypeMap.markdown) {
-        const md = new MarkdownIt()
-        content['doc_content'] = md.render(content['doc_content'])
-      }
+      content['doc_content'] = Space.getContent(content, ctx)
     }
     //
     const resultMenuList: DatabaseQueryResult = await Database.execute(
@@ -45,5 +42,26 @@ export class Space extends Controller.Api {
       data: { content, menuList, menuHome, docTypeMap }
     })
     return next()
+  }
+
+  /// 获取Content内容
+  public static getContent(content: any, ctx: ExtendableContext) {
+    let result = ''
+    if (!content) return result
+    if (content.doc_type === docTypeMap.rich) {
+      // 富文本
+      result = content.doc_content
+    } else if (content.doc_type === docTypeMap.markdown) {
+      // markdown
+      const md = new MarkdownIt()
+      result = md.render(content.doc_content)
+    } else if (content.doc_type === docTypeMap.website) {
+      // 第三方网站
+      ctx.redirect(content.doc_content)
+    } else if (content.doc_type === docTypeMap.assets) {
+      // 静态资源
+      ctx.redirect(resourceSpace + content.id)
+    }
+    return result
   }
 }
