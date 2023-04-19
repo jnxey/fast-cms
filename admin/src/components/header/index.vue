@@ -2,24 +2,15 @@
 import { ElLoading, ElMessageBox } from 'element-plus'
 import { Http, HttpApis } from '@/tools/http'
 import { SystemValues } from '@/tools/values'
-import { onMounted, ref } from 'vue'
+import { onMounted } from 'vue'
 import { toLogin } from '@/tools'
-import {useRouter} from "vue-router";
+import { useRouter } from 'vue-router'
+import { getUserInfo, userInfo } from '@/tools/user'
 
-const user = ref(null)
 const router = useRouter()
 
-const getAdminInfo = () => {
-  Http.get(HttpApis.getAdminInfo).then(function (response) {
-    var res = response.data
-    if (res.code === SystemValues.responseMap.success.code) {
-      user.value = res.result
-    }
-  })
-}
-
 const toResetPwd = () => {
-  router.push({path:'/reset-pwd'})
+  router.push({ path: '/reset-pwd' })
 }
 
 const headerLoginOut = () => {
@@ -45,17 +36,17 @@ const headerLoginOut = () => {
 }
 
 onMounted(() => {
-  getAdminInfo()
+  getUserInfo()
 })
 </script>
 <template>
   <div class="admin-nav-top">
     <el-menu mode="horizontal" :ellipsis="false">
       <div class="flex-grow-place"></div>
-      <el-sub-menu index="1" v-if="user">
+      <el-sub-menu index="1" v-if="userInfo">
         <template #title>
           <img class="nav-user-icon" src="@/assets/images/user-avatar.png" alt="" />
-          <span>{{ user.admin_name }}</span>
+          <span>{{ userInfo.admin_name }}</span>
         </template>
         <el-menu-item index="1-1" @click="toResetPwd">修改密码</el-menu-item>
         <el-menu-item index="1-2" @click="headerLoginOut">退出登录</el-menu-item>

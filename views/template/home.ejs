@@ -19,6 +19,9 @@
     <% if (data.content.doc_type === data.docTypeMap.markdown) { %>
         <%- include('./_editor/markdown.ejs') %>
     <% } %>
+    <% if (data.content.doc_type === data.docTypeMap.code) { %>
+        <%- include('./_editor/code.ejs') %>
+    <% } %>
 </div>
 <style>
     .home-container {

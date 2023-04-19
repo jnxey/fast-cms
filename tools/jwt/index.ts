@@ -1,30 +1,20 @@
 import jwt from 'koa-jwt'
-import Koa, { ExtendableContext, Next } from 'koa'
-import { Dto, ResponseCode } from '@/tools/dto'
+import Koa, { ExtendableContext } from 'koa'
 import jsonwebtoken from 'jsonwebtoken'
 import { Controller } from '@/tools/controller'
-
-declare module 'Koa' {
-  interface User {
-    user: JwtUser
-  }
-
-  interface ExtendableContext {
-    jwt?: boolean
-    state?: User
-  }
-}
 
 class JwtUser {
   public id?: number
   public admin_name?: string
-  public system_role?: number
+  public admin_role?: number
+  public admin_auth_ids?: string
 
-  constructor(id: number, admin_name: string, system_role: number) {
+  constructor(id?: number, admin_name?: string, admin_role?: number, admin_auth_ids?: string) {
     this.id = id
     this.admin_name = admin_name
-    this.system_role = system_role
-    return { id, admin_name, system_role }
+    this.admin_role = admin_role
+    this.admin_auth_ids = admin_auth_ids
+    return { id, admin_name, admin_role, admin_auth_ids }
   }
 }
 
@@ -41,6 +31,11 @@ export class Jwt {
 
   /// 设置Token的名字
   public static JwtUser = JwtUser
+
+  /// 获取state
+  public static getUser(ctx: ExtendableContext): JwtUser {
+    return ctx?.['state']?.['user'] || ({} as JwtUser)
+  }
 
   /// JWT拦截
   public static intercept() {

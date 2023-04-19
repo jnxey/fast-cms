@@ -12,6 +12,8 @@ import { ParamsContentAdd, ResultContentAdd } from '@/controller/admin/home/_mod
 import { ParamsContentGet, ResultContentGet } from '@/controller/admin/home/_models/content-get'
 import { ParamsContentEdit } from '@/controller/admin/home/_models/content-edit'
 import { ParamsContentHome, ResultContentHome } from '@/controller/admin/home/_models/content-home'
+import { Auth } from '@/tools/auth'
+import { menuRoot } from '@/tools/values'
 
 export class AdminHome extends Controller.Api {
   @Get()
@@ -22,7 +24,7 @@ export class AdminHome extends Controller.Api {
       Database.format(Database.query.SelectMenuList)
     )
     if (result.code !== Database.result.success) throw Error('拉取菜单信息失败')
-    ctx.body = Dto(ResponseCode.success, result.value || [])
+    ctx.body = Dto(ResponseCode.success, Auth.menus(ctx, result.value || []))
     return next()
   }
 
@@ -33,13 +35,21 @@ export class AdminHome extends Controller.Api {
   @Result(ResultMenuAdd)
   @Summary('添加/编辑菜单')
   public async menuAddOrEdit(ctx: ExtendableContext, next: Next) {
-    const { id }: ParamsMenuAdd = ctx.params
-    if (Boolean(id)) {
+    const params = Params.get<ParamsMenuAdd>(ctx)
+    const { id, parent_id }: ParamsMenuAdd = params
+
+    if (id) {
+      /// 权限校验
+      Auth.checkMenu(ctx, id)
+
       /// 编辑
-      await this.editMenu(ctx, ctx.params)
+      await this.editMenu(ctx, params)
     } else {
+      /// 权限校验
+      Auth.checkMenu(ctx, parent_id)
+
       /// 添加
-      await this.addMenu(ctx, ctx.params)
+      await this.addMenu(ctx, params)
     }
     return next()
   }
@@ -51,7 +61,11 @@ export class AdminHome extends Controller.Api {
   @Result(ResultContentAdd)
   @Summary('添加文档内容')
   public async contentAdd(ctx: ExtendableContext, next: Next) {
-    const { menu_id, doc_type }: ParamsContentAdd = ctx.params
+    const { menu_id, doc_type }: ParamsContentAdd = Params.get<ParamsContentAdd>(ctx)
+
+    /// 权限校验
+    Auth.checkMenu(ctx, menu_id)
+
     const resultInsert: DatabaseQueryResult = await Database.execute(
       Database.format(Database.query.InsertContentItem, { doc_type })
     )
@@ -79,7 +93,11 @@ export class AdminHome extends Controller.Api {
   @Params(ParamsContentEdit, ParamsSource.Body)
   @Summary('编辑文档内容')
   public async contentEdit(ctx: ExtendableContext, next: Next) {
-    const { id, doc_keyword, doc_content }: ParamsContentEdit = ctx.params
+    const { id, doc_keyword, doc_content }: ParamsContentEdit = Params.get<ParamsContentEdit>(ctx)
+
+    /// 权限校验
+    Auth.checkContent(ctx, id)
+
     const resultUpdate: DatabaseQueryResult = await Database.execute(
       Database.format(Database.query.UpdateDocContent, { id, doc_keyword, doc_content })
     )
@@ -97,7 +115,9 @@ export class AdminHome extends Controller.Api {
   @Params(ParamsContentHome, ParamsSource.Body)
   @Summary('设置文档内容为网站首页')
   public async contentHome(ctx: ExtendableContext, next: Next) {
-    const { id }: ParamsContentEdit = ctx.params
+    Auth.manager(ctx)
+
+    const { id }: ParamsContentEdit = Params.get<ParamsContentHome>(ctx)
     const resultUpdate: DatabaseQueryResult = await Database.execute(
       Database.format(Database.query.UpdateDocContentHome, { page_index: id })
     )
@@ -135,7 +155,7 @@ export class AdminHome extends Controller.Api {
   @Result(ResultContentGet)
   @Summary('获取文档内容')
   public async contentGet(ctx: ExtendableContext, next: Next) {
-    const { id }: ParamsContentGet = ctx.params
+    const { id }: ParamsContentGet = Params.get<ParamsContentGet>(ctx)
     const resultSelect: DatabaseQueryResult = await Database.execute(
       Database.format(Database.query.SelectDocContent, { id })
     )
@@ -163,7 +183,11 @@ export class AdminHome extends Controller.Api {
         )
         if (resultInsert.code === Database.result.success) {
           const insertResult = new ResultMenuAdd()
-          insertResult.fill({ ...menuInfo, id: resultInsert.value.insertId })
+          const insertId = resultInsert.value.insertId
+          insertResult.fill({ ...menuInfo, id: insertId })
+          if (parent_id === menuRoot) {
+            await Auth.addMenuAuths(ctx, insertId)
+          }
           ctx.body = Dto(ResponseCode.success, insertResult)
         } else {
           ctx.body = Dto(ResponseCode.error_server, null, resultInsert.msg)

@@ -18,7 +18,7 @@ export class AdminLogin extends Controller.Api {
   @Result(ResultLogin)
   @Summary('登录')
   public async login(ctx: ExtendableContext, next: Next) {
-    const params: ParamsLogin = ctx.params
+    const params: ParamsLogin = Params.get<ParamsLogin>(ctx)
     const result: DatabaseQueryResult = await Database.execute(
       Database.format(Database.query.SelectAdminUser, { name: params.name })
     )
@@ -30,7 +30,12 @@ export class AdminLogin extends Controller.Api {
       const user = result.value[0]
       if (user.admin_pwd === params.password) {
         // 比对成功
-        const payload = new Jwt.JwtUser(user.id, user.admin_name, user.system_role)
+        const payload = new Jwt.JwtUser(
+          user.id,
+          user.admin_name,
+          user.admin_role,
+          user.admin_auth_ids
+        )
         const token = Jwt.sign(payload)
         const userResult: ResultLogin = new ResultLogin()
         userResult.fill(user)
@@ -53,7 +58,7 @@ export class AdminLogin extends Controller.Api {
   @Result(ResultAdminInfo)
   @Summary('获取登录信息')
   public async getAdminInfo(ctx: ExtendableContext, next: Next) {
-    const user = ctx?.state?.user || {}
+    const user = Jwt.getUser(ctx)
     const userResult = new ResultAdminInfo()
     userResult.fill(user)
     ctx.body = Dto(ResponseCode.success, userResult)
@@ -76,8 +81,8 @@ export class AdminLogin extends Controller.Api {
   @Params(ParamsResetPwd, ParamsSource.Body)
   @Summary('修改密码')
   public async resetPwd(ctx: ExtendableContext, next: Next) {
-    const { admin_pwd } = ctx.params
-    const { id } = ctx?.state?.user || {}
+    const { admin_pwd } = Params.get<ParamsResetPwd>(ctx)
+    const { id } = Jwt.getUser(ctx)
     const result: DatabaseQueryResult = await Database.execute(
       Database.format(Database.query.UpdateAdminPwd, { id, admin_pwd })
     )

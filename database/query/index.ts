@@ -1,5 +1,6 @@
 /// 查询用户
-export const SelectAdminUser = 'SELECT * FROM admin_user WHERE admin_name = {name}'
+export const SelectAdminUser =
+  'SELECT * FROM admin_user WHERE admin_name = {name} AND admin_status=1'
 
 /// 修改密码
 export const UpdateAdminPwd = 'UPDATE admin_user SET admin_pwd={admin_pwd} WHERE id = {id}'
@@ -48,3 +49,23 @@ export const InsertBlobToFile =
 
 /// 查询文件Blob
 export const SelectBlobFromFile = 'SELECT * FROM file_save WHERE file_hash = {file_hash} LIMIT 1'
+
+/// 查询管理员列表
+export const SelectManagerList = 'SELECT * FROM admin_user WHERE admin_status=1'
+
+/// 查询账户名称是否存在，BY Mark
+export const SelectMemberCount = 'SELECT * FROM admin_user WHERE admin_name = {admin_name} LIMIT 1'
+
+/// 插入管理员列表
+export const InsertMember =
+  'INSERT INTO admin_user(admin_name,admin_pwd,admin_role,admin_status,create_time) VALUES({admin_name},{admin_pwd},{admin_role},1,CURRENT_TIMESTAMP)'
+
+/// 删除管理员列表
+export const DeleteMember = 'UPDATE admin_user SET admin_status=0 WHERE id={id}'
+
+/// 获取文档空间角色列表
+export const SelectMenuRoots = 'SELECT * FROM doc_menu WHERE parent_id=0'
+
+/// 编辑管理员权限
+export const UpateMemberAuths =
+  'UPDATE admin_user SET admin_auth_ids={admin_auth_ids} WHERE id={id}'

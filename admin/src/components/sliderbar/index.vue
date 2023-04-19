@@ -1,6 +1,8 @@
 <script setup>
 import { computed, onBeforeMount, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { userInfo } from '@/tools/user'
+import { SystemValues } from '@/tools/values'
 
 const close = ref(false)
 
@@ -17,6 +19,7 @@ const closeCacheValue = { close: 'close', open: 'open' }
 const menuList = [
   { label: '首页', path: '/home' },
   { label: '文档空间', path: '/space' },
+  { label: '成员管理', path: '/manager', auth: SystemValues.systemRole.manager },
   { label: '个人中心', path: '/person' }
 ]
 
@@ -28,6 +31,14 @@ const initClose = () => {
   if (document.body) {
     if (close.value) document.body.classList.add(closeBodyStyle)
     else document.body.classList.remove(closeBodyStyle)
+  }
+}
+
+const hasAuth = (item) => {
+  if (item.auth) {
+    return item.auth === userInfo.value?.admin_role
+  } else {
+    return true
   }
 }
 
@@ -58,25 +69,10 @@ onBeforeMount(() => {
         <img class="layui-nav-logo-img" src="@/assets/images/admin-nav-left-logo.png" alt="" />
       </el-menu-item>
       <template v-for="(item, index) in menuList">
-        <template v-if="!item.children">
+        <template v-if="hasAuth(item)">
           <el-menu-item :key="String(index)" :index="item.path" @click="toPath(item.path)">
             <span>{{ item.label }}</span>
           </el-menu-item>
-        </template>
-        <template v-else>
-          <el-sub-menu :key="String(index)" :index="String(index)">
-            <template #title>
-              <span>{{ item.label }}</span>
-            </template>
-            <el-menu-item
-              v-for="(_item, _index) in item.children"
-              :key="String(index) + '_' + String(_index)"
-              :index="_item.path"
-              @click="toPath(_item.path)"
-            >
-              {{ _item.label }}
-            </el-menu-item>
-          </el-sub-menu>
         </template>
       </template>
     </template>

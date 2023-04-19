@@ -6,33 +6,15 @@ nr_document;
 
 CREATE TABLE admin_user
 (
-  id          INT         NOT NULL UNIQUE AUTO_INCREMENT COMMENT '主键',
-  admin_name  VARCHAR(50) NOT NULL UNIQUE COMMENT '用户名',
-  admin_pwd   VARCHAR(50) NOT NULL COMMENT '密码',
-  system_role INT         NOT NULL COMMENT '角色',
-  create_time DATETIME    NOT NULL COMMENT '创建时间',
+  id              INT         NOT NULL UNIQUE AUTO_INCREMENT COMMENT '主键',
+  admin_name      VARCHAR(50) NOT NULL UNIQUE COMMENT '用户名',
+  admin_pwd       VARCHAR(50) NOT NULL COMMENT '密码',
+  admin_role      INT         NOT NULL COMMENT '角色，999-超级管理员，888-一般编辑员',
+  admin_auth_ids  VARCHAR(255)         COMMENT '权限IDS',
+  admin_status    INT         NOT NULL COMMENT '用户状态，1-正常，0-删除',
+  create_time     DATETIME    NOT NULL COMMENT '创建时间',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB COMMENT='管理员表';
-
-CREATE TABLE system_role
-(
-  id          INT         NOT NULL UNIQUE AUTO_INCREMENT COMMENT '主键',
-  role_name   VARCHAR(50) NOT NULL UNIQUE COMMENT '角色名',
-  role_auth   VARCHAR(50) NOT NULL COMMENT '角色权限集合',
-  create_time DATETIME    NOT NULL COMMENT '创建时间',
-  PRIMARY KEY (id)
-) ENGINE=InnoDB COMMENT='角色表';
-
-CREATE TABLE system_auth
-(
-  id          INT         NOT NULL UNIQUE AUTO_INCREMENT COMMENT '主键',
-  auth_name   VARCHAR(50) NOT NULL UNIQUE COMMENT '权限名',
-  auth_code   VARCHAR(50) NOT NULL UNIQUE COMMENT '权限码',
-  auth_parent INT         NOT NULL DEFAULT 0 COMMENT '上一级权限ID，0为第一级',
-  auth_type   SMALLINT    NOT NULL DEFAULT 1 COMMENT '权限类型：1-菜单，2-页面，3-功能',
-  create_time DATETIME    NOT NULL COMMENT '创建时间',
-  PRIMARY KEY (id)
-) ENGINE=InnoDB COMMENT='权限表';
 
 CREATE TABLE system_config (
   id          INT      NOT NULL UNIQUE COMMENT '主键',
@@ -57,7 +39,7 @@ CREATE TABLE doc_menu
 CREATE TABLE doc_content
 (
   id          INT NOT NULL UNIQUE AUTO_INCREMENT COMMENT '主键',
-  doc_type    INT NOT NULL      COMMENT '文档显示类型，1-富文本，2-Markdown，3-Iframe，4-SFC',
+  doc_type    INT NOT NULL      COMMENT '文档显示类型，1-richText，2-Markdown，3-website，4-code',
   doc_title   VARCHAR(50)       COMMENT '文档标题',
   doc_keyword VARCHAR(50)       COMMENT '文档关键词',
   doc_content LONGTEXT          COMMENT '文档内容',
@@ -76,7 +58,7 @@ CREATE TABLE file_save
   PRIMARY KEY (id)
 ) ENGINE=InnoDB COMMENT='文件存储';
 
-INSERT INTO admin_user    VALUES (1, 'admin', '698495dad777ebb0be5281f4f44d27c6', 999, CURRENT_TIMESTAMP);
+INSERT INTO admin_user    VALUES (1, 'admin', '698495dad777ebb0be5281f4f44d27c6', 999, 1, CURRENT_TIMESTAMP);
 INSERT INTO system_config VALUES (1, 0, CURRENT_TIMESTAMP);
 
 CREATE INDEX admin_name_index ON admin_user (admin_name);

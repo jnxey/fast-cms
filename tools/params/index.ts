@@ -2,12 +2,6 @@ import { ExtendableContext, Next } from 'koa'
 import { isBoolean, isString } from '@/tools'
 import { Dto, ResponseCode } from '@/tools/dto'
 
-declare module 'Koa' {
-  interface ExtendableContext {
-    params?: any
-  }
-}
-
 /// 缓存参数配置的键
 const ParamsConfigCache: string = 'PARAMS_CONFIG_CACHE'
 
@@ -43,7 +37,7 @@ export function Params<T extends ParamsModel>(params: { new (): T }, type: Param
       const current: object = type === ParamsSource.Body ? ctx.request.body : ctx.query
       const result: ParamsModelFillResult = _params.fill(current)
       if (result.valid) {
-        ctx.params = _params
+        ctx['params'] = _params
         return func.apply(this, args)
       } else {
         ctx.body = Dto({ ...ResponseCode.error_params, msg: result.message })
@@ -51,6 +45,10 @@ export function Params<T extends ParamsModel>(params: { new (): T }, type: Param
       }
     }
   }
+}
+
+Params.get = function <T>(ctx: ExtendableContext): T {
+  return ctx['params'] as T
 }
 
 /// 添加参数提示语

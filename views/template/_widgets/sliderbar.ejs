@@ -14,6 +14,9 @@
 </template>
 <script>
   (function () {
+    if(window.MenuTree && !window.MenuTree.length) {
+      document.body.classList.add('no-slider');
+    }
     function SliderbarItem(props) {
       return {
         $template: '#sliderbar-item-template',
@@ -30,7 +33,7 @@
 
     PetiteVue.createApp({
       SliderbarItem: SliderbarItem,
-      menuTree: window.MenuTree,
+      menuTree: window.MenuTree
     }).mount('#sliderbar')
   })();
 </script>
@@ -52,7 +55,7 @@
   .sliderbar-left .sliderbar-item {
     height: 50px;
     line-height: 50px;
-    padding-left: 10px;
+    padding-left: 15px;
     cursor: pointer;
     color: #000000;
     font-size: 14px;
@@ -70,6 +73,9 @@
     display: none;
   }
   .sliderbar-item-children {
-    padding-left: 10px;
+    padding-left: 15px;
+  }
+  .no-slider .sliderbar-left {
+    display: none;
   }
 </style>

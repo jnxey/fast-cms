@@ -3,9 +3,9 @@ import { type Config } from './_types'
 export const config: Config = {
   port: 3000,
   database: {
-    host: 'localhost',
+    host: '10.8.160.244',
     user: 'root',
-    password: '846046',
+    password: 'Narwal#2022',
     name: 'nr_document',
     port: 3306
   },

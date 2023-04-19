@@ -1,4 +1,4 @@
-import Application from 'koa'
+import Application, { ExtendableContext } from 'koa'
 import render from '@koa/ejs'
 import path from 'path'
 const root = path.resolve('.')
@@ -13,5 +13,14 @@ export class Ejs {
       cache: false,
       debug: false
     })
+  }
+
+  /// 获取render
+  public static getRender(ctx: ExtendableContext): render {
+    if (ctx['render']) {
+      return ctx['render'].bind(ctx) as render
+    } else {
+      ;(function () {}) as render
+    }
   }
 }

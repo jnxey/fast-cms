@@ -5,6 +5,7 @@ import { DatabaseQueryResult } from '@/database/_types'
 import { Database } from '@/database'
 import { docTypeMap } from '@/tools/values'
 import { Space } from '@/controller/space'
+import { Ejs } from '@/tools/ejs'
 
 export class Home extends Controller.Api {
   @View()
@@ -26,7 +27,7 @@ export class Home extends Controller.Api {
         ctx.redirect('/404.html')
       }
     }
-    await ctx.render('template/home', {
+    await Ejs.getRender(ctx)('template/home', {
       layout: 'layout/empty',
       data: { content, docTypeMap }
     })

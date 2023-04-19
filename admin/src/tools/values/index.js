@@ -21,7 +21,11 @@ export const SystemValues = {
   /// 菜单类型信息
   menuType: { menu: 1, page: 2 },
   /// 文档类型，1-富文本，2-Markdown，3-Iframe，4-资源
-  docTypeMap: { rich: 1, markdown: 2, website: 3, assets: 4 },
+  docTypeMap: { rich: 1, markdown: 2, website: 3, code: 4 },
   /// 文档对应信息
-  docTypeInfo: { 1: '富文本', 2: 'Markdown', 3: '外部网站', 4: '静态资源' }
+  docTypeInfo: { 1: '富文本', 2: 'Markdown', 3: '外部网站', 4: '代码' },
+  /// 系统角色
+  systemRole: { manager: 999, editor: 888 },
+  /// 角色对应信息
+  systemRoleInfo: { 999: '超级管理员', 888: '编辑员' }
 }

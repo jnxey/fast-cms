@@ -12,9 +12,9 @@ export class ErrorKoa {
   /// JWT处理
   public static onerror(ctx: ExtendableContext, next: Next) {
     const url: string = ctx.originalUrl || ''
-    return next().catch(function (err) {
+    return next().catch(function () {
       const isApi = url.startsWith(Controller.ApiPrefix)
-      if (err.status === ErrorKoa.JWT_ERROR_STATUS) {
+      if (ctx.status === ErrorKoa.JWT_ERROR_STATUS) {
         /// 权限
         if (isApi) {
           ctx.status = ErrorKoa.JWT_ERROR_STATUS
@@ -22,7 +22,7 @@ export class ErrorKoa {
         } else {
           ctx.redirect('/admin-login/index')
         }
-      } else if (err.status === ErrorKoa.NotFound) {
+      } else if (ctx.status === ErrorKoa.NotFound) {
         /// 未找到
         if (isApi) {
           ctx.status = ErrorKoa.NotFound
@@ -31,7 +31,6 @@ export class ErrorKoa {
           ctx.redirect('/404.html')
         }
       } else {
-        console.log(err, '------123')
         /// 其他错误
         if (isApi) {
           ctx.status = ErrorKoa.NotFound

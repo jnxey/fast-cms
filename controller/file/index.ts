@@ -6,6 +6,11 @@ import { Dto, ResponseCode } from '@/tools/dto'
 import fs from 'fs'
 import { DatabaseQueryResult } from '@/database/_types'
 import { Database } from '@/database'
+import { Params } from '@/tools/params'
+
+interface HashBean {
+  hash?: string
+}
 
 export class FileManager extends Controller.Api {
   @Post()
@@ -49,7 +54,7 @@ export class FileManager extends Controller.Api {
   @Get()
   @Summary('保存文件')
   public async read$hash(ctx: ExtendableContext, next: Next) {
-    let { hash } = ctx.params
+    let { hash } = Params.get<HashBean>(ctx) || {}
     const selectResult = await Database.execute(
       Database.format(Database.query.SelectBlobFromFile, { file_hash: hash })
     )

@@ -66,8 +66,8 @@ onBeforeUnmount(() => {
           <el-radio class="form-content-radio" border :label="docTypeMap.website" size="large">
             {{ docTypeInfo[docTypeMap.website] }}
           </el-radio>
-          <el-radio class="form-content-radio" border :label="docTypeMap.assets" size="large">
-            {{ docTypeInfo[docTypeMap.assets] }}
+          <el-radio class="form-content-radio" border :label="docTypeMap.code" size="large">
+            {{ docTypeInfo[docTypeMap.code] }}
           </el-radio>
         </el-radio-group>
       </el-form-item>

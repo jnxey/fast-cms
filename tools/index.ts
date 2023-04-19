@@ -15,10 +15,22 @@ function _camelCase(name: string): string {
     .replace(MOZ_HACK_REGEXP, 'Moz$1')
 }
 
+/// 获取json
+export function _getJSON(value?: string, def?: any) {
+  if (!value) return def
+  try {
+    return JSON.parse(value)
+  } catch (e) {
+    return def
+  }
+}
+
 /// 驼峰命名=>中横线命名
 export const kebabCase = _kebabCase
 /// 驼峰命名<=中横线命名
 export const camelCase = _camelCase
+/// 获取json
+export const getJSON = _getJSON
 
 /// 判断数据类型
 export const getType = (obj: any): string =>

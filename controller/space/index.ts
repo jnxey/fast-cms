@@ -2,17 +2,21 @@ import { Controller } from '@/tools/controller'
 import { ExtendableContext, Next } from 'koa'
 import { Summary, View } from '@/tools/method'
 import { Database } from '@/database'
-import { docTypeMap, resourcePosition, resourceSpace } from '@/tools/values'
+import { docTypeMap } from '@/tools/values'
 import { DatabaseQueryResult } from '@/database/_types'
 import MarkdownIt from 'markdown-it'
-import fs from 'fs'
-import path from 'path'
+import { Params } from '@/tools/params'
+import { Ejs } from '@/tools/ejs'
+
+interface IndexBean {
+  index?: number
+}
 
 export class Space extends Controller.Api {
   @View()
   @Summary('首页')
   public async $index(ctx: ExtendableContext, next: Next) {
-    let { index } = ctx.params
+    let { index } = Params.get<IndexBean>(ctx) || {}
     let content = { id: -1 }
     let menuList = '[]'
     let menuHome = null
@@ -41,7 +45,7 @@ export class Space extends Controller.Api {
       const { page_index } = resultHome.value[0] || {}
       menuHome = page_index || 0
     }
-    await ctx.render('template/space', {
+    await Ejs.getRender(ctx)('template/space', {
       layout: 'layout/empty',
       data: { content, menuList, menuHome, docTypeMap }
     })
@@ -62,24 +66,8 @@ export class Space extends Controller.Api {
     } else if (content.doc_type === docTypeMap.website) {
       // 第三方网站
       ctx.redirect(content.doc_content)
-    } else if (content.doc_type === docTypeMap.assets) {
-      const root = path.resolve()
-      const extName = 'space-' + content.id
-      const pathFile = path.resolve(root, resourcePosition + resourceSpace + extName)
-      const hasFile = fs.existsSync(pathFile)
-      if (!hasFile) {
-        const selectResult = await Database.execute(
-          Database.format(Database.query.SelectBlobFromFile, { file_hash: content.doc_content })
-        )
-        if (selectResult.code === Database.result.success) {
-          const file = selectResult.value[0] || {}
-          const base64 = file.file_blob || ''
-          fs.mkdirSync(pathFile)
-          fs.writeFileSync(path.resolve(pathFile, file.file_hash), Buffer.from(base64, 'base64'))
-        }
-      }
-      // 静态资源
-      ctx.redirect(resourceSpace + extName)
+    } else if (content.doc_type === docTypeMap.code) {
+      result = content.doc_content
     }
     return result
   }

@@ -12,6 +12,7 @@ import { Home } from '@/controller/home'
 import { Space } from '@/controller/space'
 import { FileManager } from '@/controller/file'
 import { Ext } from '@/tools/ext'
+import { AdminManager } from '@/controller/admin/manager'
 
 const pathHome = '/home/index'
 const pathAssets = './assets'
@@ -24,6 +25,7 @@ router.get('/', (ctx) => {
 })
 Controller.connect<AdminLogin>(new AdminLogin(), router)
 Controller.connect<AdminHome>(new AdminHome(), router)
+Controller.connect<AdminManager>(new AdminManager(), router)
 Controller.connect<Home>(new Home(), router)
 Controller.connect<Space>(new Space(), router)
 Controller.connect<FileManager>(new FileManager(), router)

@@ -60,6 +60,9 @@
     <% if (data.content.doc_type === data.docTypeMap.markdown) { %>
         <%- include('./_editor/markdown.ejs') %>
     <% } %>
+    <% if (data.content.doc_type === data.docTypeMap.code) { %>
+            <%- include('./_editor/code.ejs') %>
+    <% } %>
 </div>
 <style>
   .home-container {
@@ -67,6 +70,9 @@
     margin-right: 15px;
     margin-left: 215px;
     margin-bottom: 15px;
+  }
+  .no-slider .home-container {
+    margin-left: 15px;
   }
 </style>
 </body>

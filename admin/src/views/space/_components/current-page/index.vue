@@ -1,7 +1,10 @@
 <script setup>
-import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { ElMessageBox, ElMessage, ElLoading } from 'element-plus'
 import AddContent from './_components/add-content/index.vue'
+import CodeEditor from '@/components/code-editor/index.vue'
+import WangEditor from '@/components/wang-editor/index.vue'
+import MarkdownEditor from '@/components/markdown-editor/index.vue'
 import { Http, HttpApis } from '@/tools/http'
 import { SystemValues } from '@/tools/values'
 import eventManager from '@/tools/event-manager'
@@ -12,11 +15,9 @@ import {
   EVENT_CONTENT_RESET
 } from '@/views/space/_values'
 import { homeId } from '@/views/space/_values/home'
-import { UploadFilled } from '@element-plus/icons-vue'
+import { userInfo } from '@/tools/user'
 
 let cacheDocContent = ''
-let richEditor = null
-let markdownEditor = null
 const { docTypeMap, docTypeInfo } = SystemValues
 const currentPage = ref(null)
 const pageContent = ref(false)
@@ -49,11 +50,6 @@ const repackEdit = () => {
   ElMessageBox.confirm('确认撤销您的编辑？', '提示').then(() => {
     const content = pageContent.value
     content.doc_content = cacheDocContent
-    if (content.doc_type === docTypeMap.rich) {
-      if (richEditor) richEditor.setHtml(cacheDocContent)
-    } else if (content.doc_type === docTypeMap.markdown) {
-      if (markdownEditor) markdownEditor.setMarkdown(cacheDocContent)
-    }
   })
 }
 
@@ -71,7 +67,7 @@ const clearContent = () => {
 /// 添加网页内容
 const changeContent = (content) => {
   pageContent.value = content
-  initEditor(content)
+  cacheEditor(content)
 }
 
 /// 设置网页内容
@@ -79,48 +75,12 @@ const setContent = ({ page, content }) => {
   currentPage.value = page
   pageContent.value = content
   if (!content) return
-  initEditor(content)
+  cacheEditor(content)
 }
 
-/// 初始化文档编辑器
-const initEditor = (content) => {
-  nextTick(() => {
-    cacheDocContent = content.doc_content
-    if (content.doc_type === docTypeMap.rich) {
-      const createEditor = window.wangEditor.createEditor
-      const createToolbar = window.wangEditor.createToolbar
-      const editorConfig = {
-        placeholder: 'Type here...',
-        scroll: false,
-        onChange: function (editor) {
-          pageContent.value.doc_content = editor.getHtml()
-        }
-      }
-      const toolbarConfig = {}
-      richEditor = createEditor({
-        selector: '#editor-container',
-        html: content.doc_content,
-        config: editorConfig,
-        mode: 'default'
-      })
-      createToolbar({
-        editor: richEditor,
-        selector: '#toolbar-container',
-        config: toolbarConfig,
-        mode: 'default'
-      })
-    } else if (content.doc_type === docTypeMap.markdown) {
-      markdownEditor = editormd('content-markdown-box', {
-        width: '100%',
-        height: '500px',
-        markdown: content.doc_content,
-        path: './editor/editor.md/lib/',
-        onchange: () => {
-          pageContent.value.doc_content = markdownEditor.getMarkdown()
-        }
-      })
-    }
-  })
+/// 缓存文档内容
+const cacheEditor = (content) => {
+  cacheDocContent = content.doc_content
 }
 
 const setHome = () => {
@@ -146,17 +106,17 @@ const setHome = () => {
   })
 }
 
-const uploadSuccess = (e) => {
-  pageContent.value.doc_content = e.result.hash
-}
-
-const uploadError = (e) => {
-  ElMessageBox.alert(e.result.msg, '上传失败')
-}
-
 const jumpPage = () => {
-  window.open('/space/' + pageContent.value?.id)
+  if (pageContent.value?.id === homeId) {
+    window.open('/home/index')
+  } else {
+    window.open('/space/' + pageContent.value?.id)
+  }
 }
+
+const canSetHome = computed(() => {
+  return userInfo.value?.admin_role === SystemValues.systemRole.manager
+})
 
 onMounted(() => {
   eventManager.on(EVENT_CONTENT_CLEAR, clearContent)
@@ -181,7 +141,9 @@ onBeforeUnmount(() => {
       <template v-if="pageContent">
         <div class="info">网页类型：{{ docTypeInfo[pageContent.doc_type] }}</div>
         <div class="handler-box">
-          <template v-if="!Boolean(currentPage.parent_id) && pageContent.id !== homeId">
+          <template
+            v-if="!Boolean(currentPage.parent_id) && pageContent.id !== homeId && canSetHome"
+          >
             <el-button @click="setHome">设置首页</el-button>
           </template>
           <el-button @click="jumpPage">查看页面</el-button>
@@ -196,13 +158,10 @@ onBeforeUnmount(() => {
     <el-divider></el-divider>
     <template v-if="pageContent">
       <template v-if="pageContent.doc_type === docTypeMap.rich">
-        <div id="content-rich-box">
-          <div id="toolbar-container"><!-- 工具栏 --></div>
-          <div id="editor-container"><!-- 编辑器 --></div>
-        </div>
+        <WangEditor v-model="pageContent.doc_content" />
       </template>
       <template v-if="pageContent.doc_type === docTypeMap.markdown">
-        <div id="content-markdown-box"></div>
+        <MarkdownEditor v-model="pageContent.doc_content" />
       </template>
       <template v-if="pageContent.doc_type === docTypeMap.website">
         <div id="content-website-box">
@@ -213,23 +172,8 @@ onBeforeUnmount(() => {
           ></el-input>
         </div>
       </template>
-      <template v-if="pageContent.doc_type === docTypeMap.assets">
-        <div id="content-assets-box">
-          <div class="mb-25">当前文件：{{ pageContent.doc_content }}</div>
-          <el-upload
-            class="upload-demo"
-            drag
-            :limit="1"
-            :action="HttpApis.fileSave"
-            @success="uploadSuccess"
-          >
-            <el-icon class="el-icon--upload"><upload-filled /></el-icon>
-            <div class="el-upload__text">拉取ZIP文件到这里或者 <em>点击上传</em></div>
-            <template #tip>
-              <div class="el-upload__tip">仅支持ZIP格式文件，最大不能超过5M</div>
-            </template>
-          </el-upload>
-        </div>
+      <template v-if="pageContent.doc_type === docTypeMap.code">
+        <CodeEditor v-model="pageContent.doc_content" />
       </template>
     </template>
   </template>
