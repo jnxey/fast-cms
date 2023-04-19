@@ -58,7 +58,7 @@ CREATE TABLE file_save
   PRIMARY KEY (id)
 ) ENGINE=InnoDB COMMENT='文件存储';
 
-INSERT INTO admin_user    VALUES (1, 'admin', '698495dad777ebb0be5281f4f44d27c6', 999, 1, CURRENT_TIMESTAMP);
+INSERT INTO admin_user    VALUES (1, 'admin', '698495dad777ebb0be5281f4f44d27c6', 999, NULL, 1, CURRENT_TIMESTAMP);
 INSERT INTO system_config VALUES (1, 0, CURRENT_TIMESTAMP);
 
 CREATE INDEX admin_name_index ON admin_user (admin_name);
