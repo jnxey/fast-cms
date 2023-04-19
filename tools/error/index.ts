@@ -12,9 +12,9 @@ export class ErrorKoa {
   /// JWT处理
   public static onerror(ctx: ExtendableContext, next: Next) {
     const url: string = ctx.originalUrl || ''
-    return next().catch(function () {
+    return next().catch(function (err) {
       const isApi = url.startsWith(Controller.ApiPrefix)
-      if (ctx.status === ErrorKoa.JWT_ERROR_STATUS) {
+      if (ctx.status === ErrorKoa.JWT_ERROR_STATUS || err?.status === ErrorKoa.JWT_ERROR_STATUS) {
         /// 权限
         if (isApi) {
           ctx.status = ErrorKoa.JWT_ERROR_STATUS
