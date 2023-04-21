@@ -1,0 +1,6 @@
+.dynamic-setting-content-box {
+  width: 500px;
+  height: 100%;
+  overflow-y: scroll;
+  box-sizing: border-box;
+}

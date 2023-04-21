@@ -4,6 +4,7 @@ import { ElMessageBox, ElMessage, ElLoading } from 'element-plus'
 import AddContent from './_components/add-content/index.vue'
 import CodeEditor from '@/components/code-editor/index.vue'
 import WangEditor from '@/components/wang-editor/index.vue'
+import DynamicEditor from '@/components/dynamic-editor/index.vue'
 import MarkdownEditor from '@/components/markdown-editor/index.vue'
 import { Http, HttpApis } from '@/tools/http'
 import { SystemValues } from '@/tools/values'
@@ -174,6 +175,9 @@ onBeforeUnmount(() => {
       </template>
       <template v-if="pageContent.doc_type === docTypeMap.code">
         <CodeEditor v-model="pageContent.doc_content" />
+      </template>
+      <template v-if="pageContent.doc_type === docTypeMap.dynamic">
+        <DynamicEditor v-model="pageContent.doc_content" />
       </template>
     </template>
   </template>

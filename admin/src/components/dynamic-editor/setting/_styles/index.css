@@ -1,0 +1,7 @@
+.dynamic-setting {
+  display: flex;
+  flex-direction: row;
+  width: 900px;
+  height: calc(100vh - 300px);
+  border: 1px solid #eee;
+}

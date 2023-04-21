@@ -1,0 +1,7 @@
+.dynamic-setting-widgets-box {
+  width: 200px;
+  height: 100%;
+  overflow-y: scroll;
+  box-sizing: border-box;
+  border-right: 1px solid #eee;
+}
