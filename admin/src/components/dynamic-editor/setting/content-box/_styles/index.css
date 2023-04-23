@@ -3,4 +3,5 @@
   height: 100%;
   overflow-y: scroll;
   box-sizing: border-box;
+  background-color: #eee;
 }

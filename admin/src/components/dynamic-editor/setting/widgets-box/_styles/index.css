@@ -1,7 +1,46 @@
 .dynamic-setting-widgets-box {
+  position: relative;
   width: 200px;
   height: 100%;
   overflow-y: scroll;
+}
+
+.dynamic-setting-widgets-box:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1px;
+  height: 100%;
+  background-color: #eee;
+}
+
+.dynamic-setting-widget-item {
   box-sizing: border-box;
-  border-right: 1px solid #eee;
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+  margin: 9.5px;
+  border-radius: 8px;
+  border: 2px solid #999;
+  vertical-align: top;
+  cursor: pointer;
+  user-select: none;
+  font-size: 0;
+  background-color: #ffffff;
+}
+
+
+.dynamic-setting-widget-item .widget-icon {
+  display: block;
+  font-size: 45px;
+  font-weight: 700;
+  color: #000;
+}
+
+.dynamic-setting-widget-item .widget-text {
+  display: block;
+  font-size: 14px;
+  line-height: 20px;
+  color: #000;
 }
