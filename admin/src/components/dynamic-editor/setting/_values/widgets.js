@@ -1,8 +1,11 @@
+import Container from '../../widgets/layout/container/index.vue'
+
 export const Widgets = {
   text: {
-    key: 'text',
+    key: Container.name,
     label: '文字',
-    icon: 'iconfont icon-wenzi'
+    icon: 'iconfont icon-wenzi',
+    contructor: Container
   },
   container: {
     key: 'container',
