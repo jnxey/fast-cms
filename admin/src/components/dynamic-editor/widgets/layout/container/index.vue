@@ -1,12 +1,10 @@
-<script setup name="Container">
-import Wrap from '../../wrap/index.vue'
-
+<script setup name="container">
 const props = defineProps({ options: Object })
 </script>
 <template>
-  <Wrap class="widgets-container-wrap" display="block">
+  <div class="widgets-container-wrap">
     <slot />
-  </Wrap>
+  </div>
 </template>
 <style scoped>
 .widgets-container-wrap {

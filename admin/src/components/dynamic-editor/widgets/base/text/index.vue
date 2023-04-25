@@ -1,8 +1,4 @@
-<script setup name="Text">
-import Wrap from '../../wrap/index.vue'
-
-const props = defineProps({ options: Object })
-</script>
+<script setup name="text"></script>
 <template>
-  <Wrap display="inline"></Wrap>
+  <span></span>
 </template>

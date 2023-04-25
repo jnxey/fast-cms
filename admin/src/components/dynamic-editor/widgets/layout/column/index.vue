@@ -1,10 +1,8 @@
-<script setup name="Column">
-import Wrap from '../../wrap/index.vue'
-
+<script setup name="column">
 const props = defineProps({ options: Object })
 </script>
 <template>
-  <Wrap display="block">
+  <div>
     <slot />
-  </Wrap>
+  </div>
 </template>

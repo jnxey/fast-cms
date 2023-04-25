@@ -1,10 +1,10 @@
 <script setup>
-import { current } from '../../setting/_gesture/gesture'
-import { ref } from 'vue'
+import { current } from '../../../_gesture/gesture'
+import { computed, ref } from 'vue'
 
 // display: inline inline-block block
-const props = defineProps({ display: String })
-const sign = ref(false)
+const props = defineProps({ sign: String, display: String })
+const mark = ref(false)
 
 const check = (e) => {
   if (!current.value) return
@@ -12,26 +12,31 @@ const check = (e) => {
 }
 
 const signEnter = () => {
-  sign.value = true
+  mark.value = true
 }
 
 const signLeave = () => {
-  sign.value = false
+  mark.value = false
 }
+
+const markStyle = computed(() => {
+  return mark.value ? { display: 'block' } : {}
+})
 </script>
 <template>
   <div
     class="widgets-wrap"
-    :class="{ [display]: true, sign }"
+    :class="{ [display]: true }"
+    :data-sign="sign"
     @mouseenter="signEnter"
     @mouseleave="signLeave"
     @mousemove="check"
   >
     <slot />
-    <span class="widget-boundary-line widget-line-top" />
-    <span class="widget-boundary-line widget-line-right" />
-    <span class="widget-boundary-line widget-line-bottom" />
-    <span class="widget-boundary-line widget-line-left" />
+    <span class="widget-boundary-line widget-line-top" :style="markStyle" />
+    <span class="widget-boundary-line widget-line-right" :style="markStyle" />
+    <span class="widget-boundary-line widget-line-bottom" :style="markStyle" />
+    <span class="widget-boundary-line widget-line-left" :style="markStyle" />
   </div>
 </template>
 <style scoped>
@@ -58,7 +63,7 @@ const signLeave = () => {
   display: none;
 }
 
-.widgets-wrap.sign .widget-boundary-line {
+.widgets-wrap.mark .widget-boundary-line {
   display: block;
 }
 
