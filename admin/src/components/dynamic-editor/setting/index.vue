@@ -2,10 +2,11 @@
 import WidgetsBox from './widgets-box/index.vue'
 import ContentBox from './content-box/index.vue'
 import AttributeBox from './attribute-box/index.vue'
+import { Widgets, WrapSign } from '@/components/dynamic-editor/setting/_values'
 
 const tree = {
-  key: 'container',
-  uid: 'wrap',
+  key: Widgets.container.key,
+  uid: WrapSign,
   children: [
     {
       key: 'row',

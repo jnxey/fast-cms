@@ -1,6 +1,6 @@
 <script setup>
 import Wrap from './wrap/index.vue'
-import { Widgets } from '@/components/dynamic-editor/setting/_values/widgets'
+import { Widgets } from '@/components/dynamic-editor/setting/_values'
 
 const props = defineProps({ list: Array })
 </script>

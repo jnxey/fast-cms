@@ -1,7 +1,7 @@
 <script setup>
 import Wrap from './render-tree/wrap/index.vue'
 import RenderTree from './render-tree/index.vue'
-import { Widgets } from '@/components/dynamic-editor/setting/_values/widgets'
+import { Widgets } from '@/components/dynamic-editor/setting/_values'
 
 const props = defineProps({ tree: Object })
 </script>

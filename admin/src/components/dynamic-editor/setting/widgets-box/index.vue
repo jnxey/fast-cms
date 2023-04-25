@@ -1,6 +1,6 @@
 <script setup>
-import { Widgets } from '../_values/widgets'
-import { gestureDestroy, gestureInit, gestureStart } from '../_gesture/gesture'
+import { Widgets } from '../_values'
+import { gestureDestroy, gestureInit, gestureStart } from '../_gesture/index'
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 
 const $el = ref(null)

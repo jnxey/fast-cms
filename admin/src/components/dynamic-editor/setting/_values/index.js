@@ -5,6 +5,7 @@ import Column from '../../widgets/layout/column/index.vue'
 
 export const Display = { inline: 'inline', block: 'block', inlineBlock: 'inline-block' }
 export const Type = { base: 'base', layout: 'layout' }
+export const WrapSign = 'wrap'
 
 export const Widgets = {
   text: {
@@ -27,7 +28,7 @@ export const Widgets = {
   },
   row: {
     key: Row.name,
-    label: '行',
+    label: '横向',
     icon: 'iconfont icon-row',
     display: Display.block,
     hasChildren: true,
@@ -36,7 +37,7 @@ export const Widgets = {
   },
   column: {
     key: Column.name,
-    label: '列',
+    label: '纵向',
     icon: 'iconfont icon-column',
     display: Display.block,
     hasChildren: true,

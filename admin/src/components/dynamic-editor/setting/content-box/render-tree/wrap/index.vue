@@ -1,36 +1,39 @@
 <script setup>
-import { current } from '../../../_gesture/gesture'
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
+import {
+  currentHover,
+  asyncMouseLeave,
+  syncMouseEnter,
+  syncMouseMove
+} from '@/components/dynamic-editor/setting/content-box/render-tree/_tools'
 
 // display: inline inline-block block
 const props = defineProps({ sign: String, display: String })
-const mark = ref(false)
 
-const check = (e) => {
-  if (!current.value) return
-  console.log(e)
+const mouseEnter = (e) => {
+  syncMouseEnter(e, props.sign)
 }
 
-const signEnter = () => {
-  mark.value = true
+const mouseMove = (e) => {
+  syncMouseMove(e, props.sign)
 }
 
-const signLeave = () => {
-  mark.value = false
+const mouseLeave = (e) => {
+  asyncMouseLeave(e, props.sign)
 }
 
 const markStyle = computed(() => {
-  return mark.value ? { display: 'block' } : {}
+  return currentHover.value === props.sign ? { display: 'block' } : {}
 })
 </script>
 <template>
   <div
     class="widgets-wrap"
     :class="{ [display]: true }"
-    :data-sign="sign"
-    @mouseenter="signEnter"
-    @mouseleave="signLeave"
-    @mousemove="check"
+    :data-wrap-check="sign"
+    @mouseover="mouseEnter"
+    @mousemove="mouseMove"
+    @mouseleave="mouseLeave"
   >
     <slot />
     <span class="widget-boundary-line widget-line-top" :style="markStyle" />
@@ -61,10 +64,6 @@ const markStyle = computed(() => {
 .widgets-wrap .widget-boundary-line {
   position: absolute;
   display: none;
-}
-
-.widgets-wrap.mark .widget-boundary-line {
-  display: block;
 }
 
 .widget-boundary-line.widget-line-top {
