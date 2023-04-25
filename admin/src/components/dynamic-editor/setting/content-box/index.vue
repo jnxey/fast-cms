@@ -7,7 +7,12 @@ const props = defineProps({ tree: Object })
 </script>
 <template>
   <div class="dynamic-setting-content-box">
-    <Wrap :display="Widgets[tree.key].display" :sign="tree.uid" class="page-wrap">
+    <Wrap
+      :display="Widgets[tree.key].display"
+      :sign="tree.uid"
+      :widget="tree.key"
+      class="page-wrap"
+    >
       <component :is="Widgets[tree.key].component">
         <RenderTree :list="tree.children" />
       </component>

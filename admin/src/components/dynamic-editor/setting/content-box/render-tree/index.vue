@@ -13,6 +13,7 @@ export default { name: 'RenderTree' }
       v-if="Widgets[widget.key]"
       :key="widget.uid"
       :sign="widget.uid"
+      :widget="widget.key"
       :display="Widgets[widget.key].display"
     >
       <component :is="Widgets[widget.key].component" :options="widget.options">

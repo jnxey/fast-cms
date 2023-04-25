@@ -6,9 +6,14 @@ import {
   syncMouseEnter,
   syncMouseMove
 } from '@/components/dynamic-editor/setting/content-box/render-tree/_tools'
+import {
+  clearCurrentAttribute,
+  currentAttribute,
+  setCurrentAttribute
+} from '@/components/dynamic-editor/setting/_tools/attribute'
 
 // display: inline inline-block block
-const props = defineProps({ sign: String, display: String })
+const props = defineProps({ widget: String, sign: String, display: String })
 
 const mouseEnter = (e) => {
   syncMouseEnter(e, props.sign)
@@ -22,8 +27,22 @@ const mouseLeave = (e) => {
   asyncMouseLeave(e, props.sign)
 }
 
+const setAttribute = () => {
+  if (props.sign === currentAttribute.value?.sign) {
+    clearCurrentAttribute()
+  } else {
+    setCurrentAttribute(props.sign, props.widget)
+  }
+}
+
 const markStyle = computed(() => {
   return currentHover.value === props.sign ? { display: 'block' } : {}
+})
+
+const selectStyle = computed(() => {
+  return currentAttribute.value?.sign === props.sign
+    ? { display: 'block', borderColor: 'blue' }
+    : {}
 })
 </script>
 <template>
@@ -34,12 +53,13 @@ const markStyle = computed(() => {
     @mouseover="mouseEnter"
     @mousemove="mouseMove"
     @mouseleave="mouseLeave"
+    @click.stop="setAttribute"
   >
     <slot />
-    <span class="widget-boundary-line widget-line-top" :style="markStyle" />
-    <span class="widget-boundary-line widget-line-right" :style="markStyle" />
-    <span class="widget-boundary-line widget-line-bottom" :style="markStyle" />
-    <span class="widget-boundary-line widget-line-left" :style="markStyle" />
+    <span class="widget-boundary-line widget-line-top" :style="[markStyle, selectStyle]" />
+    <span class="widget-boundary-line widget-line-right" :style="[markStyle, selectStyle]" />
+    <span class="widget-boundary-line widget-line-bottom" :style="[markStyle, selectStyle]" />
+    <span class="widget-boundary-line widget-line-left" :style="[markStyle, selectStyle]" />
   </div>
 </template>
 <style scoped>
