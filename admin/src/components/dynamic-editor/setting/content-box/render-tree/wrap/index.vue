@@ -13,7 +13,7 @@ import {
 } from '@/components/dynamic-editor/setting/_tools/attribute'
 
 // display: inline inline-block block
-const props = defineProps({ widget: String, sign: String, display: String })
+const props = defineProps({ widget: Object, sign: String, display: String })
 
 const mouseEnter = (e) => {
   syncMouseEnter(e, props.sign)

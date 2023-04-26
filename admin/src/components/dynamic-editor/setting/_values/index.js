@@ -1,3 +1,4 @@
+import Page from '../../widgets/layout/page/index.vue'
 import Text from '../../widgets/base/text/index.vue'
 import Container from '../../widgets/layout/container/index.vue'
 import Row from '../../widgets/layout/row/index.vue'
@@ -5,7 +6,7 @@ import Column from '../../widgets/layout/column/index.vue'
 import { Schema } from '@/components/dynamic-editor/setting/_values/schema'
 
 export const Display = { inline: 'inline', block: 'block', inlineBlock: 'inline-block' }
-export const Type = { base: 'base', layout: 'layout' }
+export const Type = { base: 'base', layout: 'layout', page: 'page' }
 export const WrapSign = 'wrap'
 
 export const Widgets = {
@@ -49,4 +50,13 @@ export const Widgets = {
     component: Column,
     schema: Schema.column
   }
+}
+
+export const WidgetsPage = {
+  key: Page.name,
+  display: Display.block,
+  hasChildren: true,
+  type: Type.layout,
+  component: Page,
+  schema: Schema.page
 }

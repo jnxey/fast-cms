@@ -1,20 +1,16 @@
 <script setup>
 import Wrap from './render-tree/wrap/index.vue'
 import RenderTree from './render-tree/index.vue'
-import { Widgets } from '@/components/dynamic-editor/setting/_values'
+import { WidgetsPage, WrapSign } from '@/components/dynamic-editor/setting/_values'
+import { currentTree } from '@/components/dynamic-editor/setting/_tools/tree'
 
-const props = defineProps({ tree: Object })
+const props = defineProps()
 </script>
 <template>
   <div class="dynamic-setting-content-box">
-    <Wrap
-      :display="Widgets[tree.key].display"
-      :sign="tree.uid"
-      :widget="tree.key"
-      class="page-wrap"
-    >
-      <component :is="Widgets[tree.key].component">
-        <RenderTree :list="tree.children" />
+    <Wrap :display="WidgetsPage.display" :sign="WrapSign" :widget="WidgetsPage" class="page-wrap">
+      <component :is="WidgetsPage.component">
+        <RenderTree :list="currentTree" />
       </component>
     </Wrap>
   </div>

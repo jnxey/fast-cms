@@ -1,12 +1,13 @@
 <script setup name="row">
-/// options: { paddingTop: 30, paddingLeft: 30, paddingBottom: 30, paddingRight: 30 }
+/// options: { padding: [30,30,30,30] }
 import { computed } from 'vue'
+import { getMargin } from '@/components/dynamic-editor/setting/_tools'
 
 const props = defineProps({ options: Object })
 
 const style = computed(() => {
-  const { paddingTop, paddingLeft, paddingBottom, paddingRight } = props.options
-  return { paddingTop, paddingLeft, paddingBottom, paddingRight }
+  const { padding } = props.options
+  return { padding: getMargin(padding) }
 })
 </script>
 <template>
