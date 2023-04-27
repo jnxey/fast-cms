@@ -1,15 +1,12 @@
 import { ref } from 'vue'
+import { SchemaOptions } from '@/components/dynamic-editor/setting/_values/schema'
 
 /// 当前操作树
 export const currentTree = ref([
   {
     key: 'row',
     uid: '16823910876979403298',
-    options: {
-      width: 750,
-      height: undefined,
-      padding: [30, 30, 30, 30]
-    }
+    options: { ...SchemaOptions.row }
   }
 ])
 

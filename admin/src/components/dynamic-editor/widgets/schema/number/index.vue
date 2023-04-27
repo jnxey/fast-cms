@@ -11,7 +11,7 @@ const inputHandler = (value) => {
   <div class="widgets-schema-number" v-if="options">
     <div class="label">{{ options.label }}</div>
     <div class="value-box">
-      <el-input-number :model-value="modelValue" @input="inputHandler" />
+      <el-input-number class="input" :model-value="modelValue" @input="inputHandler" />
     </div>
   </div>
 </template>
@@ -19,7 +19,12 @@ const inputHandler = (value) => {
 .widgets-schema-number {
   padding: 10px;
 }
+
 .widgets-schema-number .label {
   margin-bottom: 10px;
+}
+
+.widgets-schema-number .input {
+  width: 180px;
 }
 </style>

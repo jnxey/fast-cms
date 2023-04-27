@@ -15,7 +15,7 @@ export const container = [
     field: 'margin'
   },
   {
-    type: 'margin',
+    type: 'padding',
     label: '内边距',
     field: 'padding'
   },

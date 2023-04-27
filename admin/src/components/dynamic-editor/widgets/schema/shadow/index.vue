@@ -3,7 +3,9 @@ const props = defineProps({ options: Object, modelValue: String })
 
 const emit = defineEmits(['update:modelValue'])
 
-const inputHandler = (value) => {
+const shadow = '0 5px 8px 0 rgba(0,0,0,.1)'
+
+const changeHandler = (value) => {
   emit('update:modelValue', value)
 }
 </script>
@@ -11,7 +13,12 @@ const inputHandler = (value) => {
   <div class="widgets-schema-number" v-if="options">
     <div class="label">{{ options.label }}</div>
     <div class="value-box">
-      <el-input :model-value="modelValue" @input="inputHandler" />
+      <el-switch
+        :model-value="modelValue"
+        @change="changeHandler"
+        :active-value="shadow"
+        :inactive-value="null"
+      />
     </div>
   </div>
 </template>

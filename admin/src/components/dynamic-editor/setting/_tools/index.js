@@ -6,5 +6,5 @@ export function getWidgetUid() {
 
 /// 获取边距By数组
 export function getMargin(value) {
-  return value.map((v) => v + 'px').join(' ')
+  return value.map((v) => (v || 0) + 'px').join(' ')
 }

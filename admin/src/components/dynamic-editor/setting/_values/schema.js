@@ -6,6 +6,7 @@ import { text } from './widgets-schema/text'
 import ColorPicker from '../../widgets/schema/color-picker/index.vue'
 import Fillet from '../../widgets/schema/fillet/index.vue'
 import Margin from '../../widgets/schema/margin/index.vue'
+import Padding from '../../widgets/schema/padding/index.vue'
 import Number from '../../widgets/schema/number/index.vue'
 import Rich from '../../widgets/schema/rich/index.vue'
 import Shadow from '../../widgets/schema/shadow/index.vue'
@@ -25,30 +26,30 @@ export const SchemaOptions = {
   page: {},
   column: {
     width: 375,
-    height: undefined,
-    margin: undefined,
+    height: null,
+    margin: null,
     padding: [30, 30, 30, 30],
-    borderRadius: undefined,
-    backgroundColor: undefined,
-    boxShadow: undefined
+    borderRadius: null,
+    backgroundColor: null,
+    boxShadow: null
   },
   container: {
     width: 375,
-    height: undefined,
-    margin: undefined,
+    height: null,
+    margin: null,
     padding: [30, 30, 30, 30],
-    borderRadius: undefined,
-    backgroundColor: undefined,
-    boxShadow: undefined
+    borderRadius: null,
+    backgroundColor: null,
+    boxShadow: null
   },
   row: {
     width: 375,
-    height: undefined,
-    margin: undefined,
+    height: null,
+    margin: null,
     padding: [30, 30, 30, 30],
-    borderRadius: undefined,
-    backgroundColor: undefined,
-    boxShadow: undefined
+    borderRadius: null,
+    backgroundColor: null,
+    boxShadow: null
   },
   text: {
     value: '文字',
@@ -66,6 +67,7 @@ export const SchemaTypeComponent = {
   color_picker: ColorPicker,
   fillet: Fillet,
   margin: Margin,
+  padding: Padding,
   number: Number,
   rich: Rich,
   shadow: Shadow,

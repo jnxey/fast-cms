@@ -39,7 +39,7 @@ const inputHandler = (v, index) => {
 }
 </script>
 <template>
-  <div class="widgets-schema-margin" v-if="options">
+  <div class="widgets-schema-padding" v-if="options">
     <div class="label">{{ options.label }}</div>
     <div class="value-box">
       <div class="place-box" />
@@ -87,60 +87,59 @@ const inputHandler = (v, index) => {
   </div>
 </template>
 <style scoped>
-.widgets-schema-margin {
+.widgets-schema-padding {
   padding: 10px;
 }
-.widgets-schema-margin .label {
+.widgets-schema-padding .label {
   margin-bottom: 10px;
 }
 
-.widgets-schema-margin .value-box {
+.widgets-schema-padding .value-box {
   position: relative;
   width: 180px;
   height: 100px;
 }
 
-.widgets-schema-margin .place-box {
+.widgets-schema-padding .place-box {
   box-sizing: border-box;
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 50px;
-  height: 25px;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   border-radius: 5px;
   border: 2px solid #eeeeee;
-  transform: translate(-50%, -50%);
 }
 
-.widgets-schema-margin .box-top {
+.widgets-schema-padding .box-top {
   position: absolute;
   top: 10px;
   left: 50%;
   transform: translateX(-50%);
 }
 
-.widgets-schema-margin .box-right {
+.widgets-schema-padding .box-right {
   position: absolute;
   right: 30px;
   top: 50%;
   transform: translateY(-50%);
 }
 
-.widgets-schema-margin .box-bottom {
+.widgets-schema-padding .box-bottom {
   position: absolute;
   bottom: 10px;
   left: 50%;
   transform: translateX(-50%);
 }
 
-.widgets-schema-margin .box-left {
+.widgets-schema-padding .box-left {
   position: absolute;
   left: 30px;
   top: 50%;
   transform: translateY(-50%);
 }
 
-.widgets-schema-margin .input {
+.widgets-schema-padding .input {
   width: 30px;
   padding: 0;
   margin: 0;

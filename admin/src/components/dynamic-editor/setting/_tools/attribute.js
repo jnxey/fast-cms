@@ -10,7 +10,7 @@ export const currentData = ref({})
 /// 设置要编辑的盒子
 export function setCurrentAttribute(sign, widget) {
   currentAttribute.value = { sign, widget }
-  currentData.value = getOptions(sign)
+  currentData.value = getOptions(sign).value || {}
 }
 
 /// 清除要编辑的盒子
