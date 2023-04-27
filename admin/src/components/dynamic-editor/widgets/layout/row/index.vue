@@ -1,13 +1,26 @@
 <script setup name="row">
-/// options: { padding: [30,30,30,30] }
 import { computed } from 'vue'
-import { getMargin } from '@/components/dynamic-editor/setting/_tools'
+import {
+  getFillet,
+  getHeight,
+  getMargin,
+  getPadding,
+  getWidth
+} from '@/components/dynamic-editor/setting/_tools'
 
 const props = defineProps({ options: Object })
 
 const style = computed(() => {
-  const { padding } = props.options
-  return { padding: getMargin(padding) }
+  const { width, height, margin, padding, borderRadius, backgroundColor, boxShadow } = props.options
+  return {
+    width: getWidth(width),
+    height: getHeight(height),
+    margin: getMargin(margin),
+    padding: getPadding(padding),
+    borderRadius: getFillet(borderRadius),
+    backgroundColor: backgroundColor,
+    boxShadow: boxShadow
+  }
 })
 </script>
 <template>

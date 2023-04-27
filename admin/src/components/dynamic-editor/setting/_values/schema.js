@@ -25,7 +25,7 @@ export const Schema = {
 export const SchemaOptions = {
   page: {},
   column: {
-    width: 375,
+    width: null,
     height: null,
     margin: null,
     padding: [30, 30, 30, 30],
@@ -34,7 +34,7 @@ export const SchemaOptions = {
     boxShadow: null
   },
   container: {
-    width: 375,
+    width: null,
     height: null,
     margin: null,
     padding: [30, 30, 30, 30],
@@ -43,7 +43,7 @@ export const SchemaOptions = {
     boxShadow: null
   },
   row: {
-    width: 375,
+    width: null,
     height: null,
     margin: null,
     padding: [30, 30, 30, 30],
