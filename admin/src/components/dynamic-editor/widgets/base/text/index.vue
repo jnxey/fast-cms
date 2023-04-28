@@ -1,4 +1,8 @@
-<script setup name="text"></script>
+<script setup name="text">
+const props = defineProps({ options: Object })
+</script>
 <template>
-  <span></span>
+  <span v-if="options">
+    {{ options.value }}
+  </span>
 </template>

@@ -5,7 +5,7 @@ import {
   asyncMouseLeave,
   syncMouseEnter,
   syncMouseMove
-} from '@/components/dynamic-editor/setting/content-box/render-tree/_tools'
+} from '@/components/dynamic-editor/setting/_tools/match'
 import {
   clearCurrentAttribute,
   currentAttribute,
@@ -50,6 +50,7 @@ const selectStyle = computed(() => {
     class="widgets-wrap"
     :class="{ [display]: true }"
     :data-wrap-check="sign"
+    :data-has-children="widget.hasChildren"
     @mouseover="mouseEnter"
     @mousemove="mouseMove"
     @mouseleave="mouseLeave"
@@ -66,10 +67,10 @@ const selectStyle = computed(() => {
 .widgets-wrap {
   position: relative;
   display: inline;
-  width: 100%;
 }
 
 .block {
+  width: 100%;
   display: block;
 }
 
