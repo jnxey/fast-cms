@@ -1,4 +1,4 @@
-export const text = [
+export const txt = [
   {
     type: 'rich',
     label: '文案',

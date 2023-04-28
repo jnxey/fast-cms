@@ -44,7 +44,7 @@ function _gestureEnd(e) {
   if (!current.value) return
   const sign = getInsertBox()
   const path = getInsertPath(sign)
-  insertWidget(sign, path, current.value)
+  if (sign) insertWidget(sign, path, current.value)
   document.body.removeChild(slider.el)
   current.value = null
   slider.el = null

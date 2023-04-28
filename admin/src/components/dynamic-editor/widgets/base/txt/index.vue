@@ -1,4 +1,4 @@
-<script setup name="text">
+<script setup name="txt">
 import { computed } from 'vue'
 import { getPX } from '@/components/dynamic-editor/setting/_tools'
 

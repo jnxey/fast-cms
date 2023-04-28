@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import { SchemaOptions } from '@/components/dynamic-editor/setting/_values/schema'
 import { getWidgetUid } from '@/components/dynamic-editor/setting/_tools/index'
+import { WidgetsPage, WrapSign } from '@/components/dynamic-editor/setting/_values'
 
 /// 当前操作树
 export const currentTree = ref([
@@ -34,6 +35,7 @@ export function getOptions(sign) {
 export function insertWidget(sign, path, config) {
   const tree = currentTree.value
   const widget = _getWidgetByPath(tree || [], path)
+  if (!widget) return
   const newWidget = {
     key: config.key,
     uid: getWidgetUid(),
@@ -55,12 +57,12 @@ function _getWidgetByPath(tree, path) {
       if (path.length <= 1) {
         return tree[key]
       } else {
-        return _getWidgetByPath(tree.children || [], path.slice(1))
+        return _getWidgetByPath(tree[key].children || [], path.slice(1))
       }
     } else {
       return null
     }
   } else {
-    return { children: tree }
+    return { key: WidgetsPage.key, uid: WrapSign, children: tree }
   }
 }

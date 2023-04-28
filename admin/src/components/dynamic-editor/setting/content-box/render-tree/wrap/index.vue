@@ -70,7 +70,6 @@ const selectStyle = computed(() => {
 }
 
 .block {
-  width: 100%;
   display: block;
 }
 

@@ -1,7 +1,7 @@
 import { column } from './widgets-schema/column'
 import { container } from './widgets-schema/container'
 import { row } from './widgets-schema/row'
-import { text } from './widgets-schema/text'
+import { txt } from './widgets-schema/txt'
 
 import ColorPicker from '../../widgets/schema/color-picker/index.vue'
 import Fillet from '../../widgets/schema/fillet/index.vue'
@@ -10,7 +10,6 @@ import Padding from '../../widgets/schema/padding/index.vue'
 import Number from '../../widgets/schema/number/index.vue'
 import Rich from '../../widgets/schema/rich/index.vue'
 import Shadow from '../../widgets/schema/shadow/index.vue'
-import Text from '../../widgets/schema/text/index.vue'
 
 /// 组件描述，以下像素单位均在设计稿宽度为750下的值
 export const Schema = {
@@ -18,7 +17,7 @@ export const Schema = {
   column: column,
   container: container,
   row: row,
-  text: text
+  txt: txt
 }
 
 /// 组件描述默认值
@@ -51,7 +50,7 @@ export const SchemaOptions = {
     backgroundColor: null,
     boxShadow: null
   },
-  text: {
+  txt: {
     value: '文字',
     lineHeight: 20,
     fontSize: 14,
@@ -70,6 +69,5 @@ export const SchemaTypeComponent = {
   padding: Padding,
   number: Number,
   rich: Rich,
-  shadow: Shadow,
-  text: Text
+  shadow: Shadow
 }

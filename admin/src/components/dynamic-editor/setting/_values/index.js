@@ -1,5 +1,5 @@
 import Page from '../../widgets/layout/page/index.vue'
-import Text from '../../widgets/base/text/index.vue'
+import Txt from '../../widgets/base/txt/index.vue'
 import Container from '../../widgets/layout/container/index.vue'
 import Row from '../../widgets/layout/row/index.vue'
 import Column from '../../widgets/layout/column/index.vue'
@@ -10,15 +10,15 @@ export const Type = { base: 'base', layout: 'layout', page: 'page' }
 export const WrapSign = 'wrap'
 
 export const Widgets = {
-  text: {
-    key: Text.name,
+  txt: {
+    key: Txt.name,
     label: '文字',
     icon: 'iconfont icon-wenzi',
     display: Display.inline,
     hasChildren: false,
     type: Type.base,
-    component: Text,
-    schema: Schema.text
+    component: Txt,
+    schema: Schema.txt
   },
   container: {
     key: Container.name,

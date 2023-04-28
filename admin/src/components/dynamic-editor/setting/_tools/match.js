@@ -57,6 +57,7 @@ export function getInsertBox() {
 
 /// 找到当前插入容器的标识路径
 export function getInsertPath(sign) {
+  if (!sign) return null
   const path = []
   const target = document.querySelector('[data-wrap-check="' + sign + '"]')
   function getRoot(elm) {
