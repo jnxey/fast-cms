@@ -34,7 +34,6 @@ export function getOptions(sign) {
 export function insertWidget(sign, path, config) {
   const tree = currentTree.value
   const widget = _getWidgetByPath(tree || [], path)
-  console.log(tree, '------------------')
   const newWidget = {
     key: config.key,
     uid: getWidgetUid(),
@@ -49,14 +48,19 @@ export function insertWidget(sign, path, config) {
 
 /// 找到节点By路径
 function _getWidgetByPath(tree, path) {
-  const key = tree.findIndex((val) => val.uid === path[0])
-  if (key > -1) {
-    if (path.length <= 1) {
-      return tree[key]
+  const root = path[0]
+  if (root) {
+    const key = tree.findIndex((val) => val.uid === root)
+    if (key > -1) {
+      if (path.length <= 1) {
+        return tree[key]
+      } else {
+        return _getWidgetByPath(tree.children || [], path.slice(1))
+      }
     } else {
-      return _getWidgetByPath(tree.children || [], path.slice(1))
+      return null
     }
   } else {
-    return null
+    return { children: tree }
   }
 }

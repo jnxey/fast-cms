@@ -22,7 +22,7 @@ export const text = [
   {
     type: 'color_picker',
     label: '字体颜色',
-    field: 'Color'
+    field: 'color'
   },
   {
     type: 'number',

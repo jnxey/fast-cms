@@ -28,3 +28,8 @@ export function getHeight(value) {
 export function getFillet(value) {
   return value?.map((v) => (v || 0) + 'px').join(' ')
 }
+
+/// 获取像素
+export function getPX(value) {
+  return (value || 0) + 'px'
+}

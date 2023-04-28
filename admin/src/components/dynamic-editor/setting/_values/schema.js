@@ -56,7 +56,7 @@ export const SchemaOptions = {
     lineHeight: 20,
     fontSize: 14,
     fontWeight: 400,
-    color_picker: '#000000',
+    color: '#000000',
     marginLeft: 0,
     marginRight: 0
   }
