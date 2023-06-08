@@ -8,9 +8,6 @@ import { Ejs } from '@/tools/ejs'
 import { Jwt } from '@/tools/jwt'
 import { AdminLogin } from '@/controller/admin/login'
 import { AdminHome } from '@/controller/admin/home'
-import { Home } from '@/controller/home'
-import { Space } from '@/controller/space'
-import { FileManager } from '@/controller/file'
 import { Ext } from '@/tools/ext'
 import { AdminManager } from '@/controller/admin/manager'
 
@@ -23,12 +20,9 @@ const router: Router = new Router()
 router.get('/', (ctx) => {
   ctx.redirect(pathHome)
 })
-Controller.connect<AdminLogin>(new AdminLogin(), router)
-Controller.connect<AdminHome>(new AdminHome(), router)
-Controller.connect<AdminManager>(new AdminManager(), router)
-Controller.connect<Home>(new Home(), router)
-Controller.connect<Space>(new Space(), router)
-Controller.connect<FileManager>(new FileManager(), router)
+Controller.connect(new AdminLogin(), router)
+Controller.connect(new AdminHome(), router)
+Controller.connect(new AdminManager(), router)
 
 app.use(serve(pathAssets))
 app.use(Ext.image)
