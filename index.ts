@@ -1,15 +1,8 @@
 import Koa from 'koa'
 import Router from '@koa/router'
 import serve from 'koa-static'
-import { Controller } from '@/tools/controller'
-import { Headers } from '@/tools/headers'
-import { ErrorKoa } from '@/tools/error'
-import { Ejs } from '@/tools/ejs'
-import { Jwt } from '@/tools/jwt'
+import { Controller } from '@/framework/controller'
 import { AdminLogin } from '@/controller/admin/login'
-import { AdminHome } from '@/controller/admin/home'
-import { Ext } from '@/tools/ext'
-import { AdminManager } from '@/controller/admin/manager'
 
 const pathHome = '/home/index'
 const pathAssets = './assets'
@@ -20,16 +13,10 @@ const router: Router = new Router()
 router.get('/', (ctx) => {
   ctx.redirect(pathHome)
 })
+
 Controller.connect(new AdminLogin(), router)
-Controller.connect(new AdminHome(), router)
-Controller.connect(new AdminManager(), router)
 
 app.use(serve(pathAssets))
-app.use(Ext.image)
-Ejs.ejsRender(app)
-app.use(ErrorKoa.onerror)
-app.use(Jwt.intercept())
-app.use(Headers.setAllowOrigin)
 app.use(router.routes())
 app.use(router.allowedMethods())
 
