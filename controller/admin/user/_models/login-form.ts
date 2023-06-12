@@ -24,8 +24,10 @@ export class ParamsLogin extends ParamsModel {
 
 export class ResultLogin extends ParamsModel {
   @ParamsModel.Declare()
+  @ParamsModel.TypeCheck(ParamsType.String)
   public name: ParamsValue
 
   @ParamsModel.Declare()
+  @ParamsModel.TypeCheck(ParamsType.String)
   public sex: ParamsValue
 }

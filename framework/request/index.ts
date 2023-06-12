@@ -9,49 +9,49 @@ export default class Request {
   /// Request使用Get
   public static Get(): Function {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-      descriptor.value.REQUEST_METHOD = Method.Get
+      descriptor.value.FW_REQUEST_METHOD = Method.Get
     }
   }
 
   /// Request使用Post
   public static Post(): Function {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-      descriptor.value.REQUEST_METHOD = Method.Post
+      descriptor.value.FW_REQUEST_METHOD = Method.Post
     }
   }
 
   /// Request使用Page
   public static Page(): Function {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-      descriptor.value.REQUEST_METHOD = Method.Page
+      descriptor.value.FW_REQUEST_METHOD = Method.Page
     }
   }
 
   /// 获取的body的数据结构为json
   public static Json(): Function {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-      descriptor.value.REQUEST_DATA_TYPE = DataType.Json
+      descriptor.value.FW_REQUEST_DATA_TYPE = DataType.Json
     }
   }
 
   /// 获取的body的数据结构为文本
   public static Text(): Function {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-      descriptor.value.REQUEST_DATA_TYPE = DataType.Text
+      descriptor.value.FW_REQUEST_DATA_TYPE = DataType.Text
     }
   }
 
   /// 获取的body的数据结构为文本
   public static FormData(): Function {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-      descriptor.value.REQUEST_DATA_TYPE = DataType.Text
+      descriptor.value.FW_REQUEST_DATA_TYPE = DataType.Text
     }
   }
 
   /// 描述
   public static Descriptor(text: string): Function {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-      descriptor.value.REQUEST_DESCRIPTOR = text
+      descriptor.value.FW_REQUEST_DESCRIPTOR = text
     }
   }
 
@@ -75,6 +75,20 @@ export default class Request {
           return next()
         }
       }
+      const metadata = _getCustomMetadata(func)
+      metadata.forEach(function (name) {
+        descriptor.value[name] = func[name]
+      })
+      /// 暂存参数模块
+      descriptor.value.FW_REQUEST_PARAMS_MODEL = Model
     }
   }
+}
+
+/// 获取方法内的自定义元数据
+function _getCustomMetadata(func) {
+  const names = Object.getOwnPropertyNames(func)
+  return names.filter(function (name) {
+    return name.startsWith('FW_')
+  })
 }

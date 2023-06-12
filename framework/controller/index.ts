@@ -1,14 +1,25 @@
 import Router from '@koa/router'
 import { koaBody } from 'koa-body'
-import { ExtendableContext, Next } from 'koa'
+import serve from 'koa-static'
+import Koa, { ExtendableContext, Next } from 'koa'
 import { isObject, kebabCase } from '@/framework/tools'
-import { DataType, Method } from '@/framework/values'
+import { DataType, Method, ParamsConfigCache } from '@/framework/values'
+import { ParamsModel } from '@/framework/params'
 
 /// 控制器公共类
 export class Api {}
 
 /// 控制器
 export class Controller {
+  /// 路由
+  public static router: Router = new Router()
+
+  /// 上下文
+  public static app: Koa = new Koa()
+
+  /// 静态资源
+  public static assets: Function = serve
+
   /// Api前缀
   public static ApiPrefix = '/api/'
 
@@ -21,22 +32,32 @@ export class Controller {
   /// 控制器Api
   public static Api = Api
 
+  /// 生成文档
+  public static Doc = true
+
+  /// 文档JSON
+  public static DocJson = {}
+
   /// 初始化
-  public init(options) {
+  public static init(options) {
     if (isObject(options)) {
       if (options.ApiPrefix) Controller.ApiPrefix = options.ApiPrefix
       if (options.PagePrefix) Controller.PagePrefix = options.PagePrefix
+      if (options.Doc) Controller.Doc = options.Doc
     }
   }
 
   /// 连接控制器
-  public static connect<T extends Api>(instance: T, router: Router) {
+  public static connect<T extends Api>(instance: T) {
+    const router = Controller.router
     const moduleName: string = instance.constructor.name
     const apis: string[] = Object.getOwnPropertyNames(instance.constructor.prototype)
     apis.forEach((name) => {
-      if (name === Controller.ConstructorName || !instance[name].REQUEST_METHOD) return
+      if (name === Controller.ConstructorName || !instance[name].FW_REQUEST_METHOD) return
       const prefix =
-        instance[name].REQUEST_METHOD === Method.Page ? Controller.PagePrefix : Controller.ApiPrefix
+        instance[name].FW_REQUEST_METHOD === Method.Page
+          ? Controller.PagePrefix
+          : Controller.ApiPrefix
       const module = kebabCase(moduleName)
       const func = kebabCase(name)
       const param = instance[name].ROUTE_PARAM ? '/:' + instance[name].ROUTE_PARAM : ''
@@ -51,12 +72,12 @@ export class Controller {
           if (err instanceof Error) console.log(err.stack?.toString(), 'err-----------1')
         }
       }
-      if (instance[name].REQUEST_METHOD === Method.Post) {
-        if (instance[name].REQUEST_DATA_TYPE === DataType.Json) {
+      if (instance[name].FW_REQUEST_METHOD === Method.Post) {
+        if (instance[name].FW_REQUEST_DATA_TYPE === DataType.Json) {
           router.post(path, koaBody({ json: true }), handler)
-        } else if (instance[name].REQUEST_DATA_TYPE === DataType.Text) {
+        } else if (instance[name].FW_REQUEST_DATA_TYPE === DataType.Text) {
           router.post(path, koaBody({ text: true }), handler)
-        } else if (instance[name].REQUEST_DATA_TYPE === DataType.FormData) {
+        } else if (instance[name].FW_REQUEST_DATA_TYPE === DataType.FormData) {
           router.post(
             path,
             koaBody({
@@ -70,12 +91,28 @@ export class Controller {
         } else {
           router.post(path, handler)
         }
-      } else if (instance[name].REQUEST_METHOD === Method.Get) {
+      } else if (instance[name].FW_REQUEST_METHOD === Method.Get) {
         router.get(path, handler)
-      } else if (instance[name].REQUEST_METHOD === Method.Page) {
+      } else if (instance[name].FW_REQUEST_METHOD === Method.Page) {
         router.get(path, handler)
       }
+
+      /// 获取配置
+      if (Controller.Doc) {
+        const metadata = instance[name]
+        if (!isObject(Controller.DocJson[module])) Controller.DocJson[module] = {}
+        Controller.DocJson[module][func] = {
+          path: path,
+          method: metadata.FW_REQUEST_METHOD,
+          dataType: metadata.FW_REQUEST_DATA_TYPE,
+          descriptor: metadata.FW_REQUEST_DESCRIPTOR,
+          request: JSON.stringify(_getConfig(metadata.FW_REQUEST_PARAMS_MODEL)),
+          response: JSON.stringify(_getConfig(metadata.FW_RESPONSE_RESULT_MODEL))
+        }
+      }
     })
+
+    console.log(Controller.DocJson, '---------------1')
   }
 }
 
@@ -110,5 +147,22 @@ export class ControllerExtra {
 
   getParams<T>(): T {
     return this.params as T
+  }
+}
+
+function _getConfig(meta) {
+  if (!Boolean(meta)) {
+    return undefined
+  } else {
+    const config = meta[ParamsConfigCache]
+    Object.keys(config).forEach(function (name) {
+      const _c = config[name]
+      if (_c['type'] instanceof ParamsModel) {
+        _c['type'] = _getConfig(_c['type'])
+      } else if (_c['childType'] instanceof ParamsModel) {
+        _c['childType'] = _getConfig(_c['childType'])
+      }
+    })
+    return config
   }
 }

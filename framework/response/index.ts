@@ -11,7 +11,7 @@ export default class Response {
   /// 返回参数检查装饰器
   public static Result<T extends ParamsModel>(Model: { new (): T }): Function {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-      descriptor.value.RESULT_MODE = Model
+      descriptor.value.FW_RESPONSE_RESULT_MODEL = Model
     }
   }
 

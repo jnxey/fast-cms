@@ -1,4 +1,11 @@
 import { ParamsType } from '@/framework/values'
+import { ExtendableContext, Next } from 'koa'
+
+/// 参数类型
+export type FrameworkContext = ExtendableContext
+
+/// 参数类型
+export type FrameworkNext = Next
 
 /// 参数类型
 export type ParamsValue = ParamsType | undefined
