@@ -2,7 +2,7 @@ import { Method, DataType, ParamsSource, ParamsType, ParamsConfigCache } from '@
 import { ExtendableContext, Next } from 'koa'
 import Response from '@/framework/response'
 import { ControllerExtra } from '@/framework/controller'
-import { isBoolean, isObject, isString } from '@/framework/tools'
+import { isBoolean, isString } from '@/framework/tools'
 
 /// 请求类，用于定义请求方法类型/装饰器，数据类型/装饰器
 export default class Request {
