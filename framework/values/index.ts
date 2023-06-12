@@ -24,3 +24,6 @@ export enum ParamsType {
   Boolean,
   String
 }
+
+/// 缓存参数配置的键
+export const ParamsConfigCache: string = 'PARAMS_CONFIG_CACHE'

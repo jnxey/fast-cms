@@ -1,24 +1,17 @@
 import { ResponseCodeValue, ResponseCodeBean, ResponseDTO } from '../types'
-import { ParamsModel } from '@/framework/request/_tools'
+import { RequestParams } from '@/framework/request'
 
 /// 返回类
 export default class Response {
-  /// 返回参数检查装饰器
-  public static Result<T extends ParamsModel>(Model: { new (): T }): Function {
-    return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-      descriptor.value.RESULT_MODE = Model
-    }
-  }
-
   /// Response返回数据传输对象
   public static Dto<T>(response: ResponseCodeValue, value?: T, msg?: string): ResponseDTO {
     return { code: response.code, msg: msg || response.msg, result: value }
   }
 
-  /// 对模块方法进行说明
-  public static Summary(text: string): Function {
+  /// 返回参数检查装饰器
+  public static Result<T extends RequestParams>(Model: { new (): T }): Function {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-      descriptor.value.RESPONSE_SUMMARY = text
+      descriptor.value.RESULT_MODE = Model
     }
   }
 
