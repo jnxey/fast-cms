@@ -22,7 +22,8 @@ export enum ParamsSource {
 export enum ParamsType {
   Number,
   Boolean,
-  String
+  String,
+  Array
 }
 
 /// 缓存参数配置的键

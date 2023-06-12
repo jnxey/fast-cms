@@ -2,7 +2,7 @@ import { Method, DataType, ParamsSource, ParamsType, ParamsConfigCache } from '@
 import { ExtendableContext, Next } from 'koa'
 import Response from '@/framework/response'
 import { ControllerExtra } from '@/framework/controller'
-import { isBoolean, isString } from '@/framework/tools'
+import { isArray, isBoolean, isFunction, isString } from '@/framework/tools'
 
 /// 请求类，用于定义请求方法类型/装饰器，数据类型/装饰器
 export default class Request {
@@ -102,11 +102,22 @@ export class RequestParams {
   }
 
   /// 添加类型错误提示语
-  public static TypeError(type: ParamsType | RequestParams, message?: string): Function {
+  public static TypeCheck(type: ParamsType | RequestParams, message?: string): Function {
     return function (target: any, propertyKey: string) {
       _checkParamsConfigExist(target, propertyKey)
       target.constructor[ParamsConfigCache][propertyKey].type = type
-      target.constructor[ParamsConfigCache][propertyKey].typeErrorMessage = message
+      target.constructor[ParamsConfigCache][propertyKey].typeMessage = message
+      message || propertyKey + '`s data type is error'
+    }
+  }
+
+  /// 添加类型错误提示语-数组，默认不能为空
+  public static TypeArray(childType: ParamsType | RequestParams, message?: string): Function {
+    return function (target: any, propertyKey: string) {
+      _checkParamsConfigExist(target, propertyKey)
+      target.constructor[ParamsConfigCache][propertyKey].type = ParamsType.Array
+      target.constructor[ParamsConfigCache][propertyKey].childType = childType
+      target.constructor[ParamsConfigCache][propertyKey].typeMessage = message
       message || propertyKey + '`s data type is error'
     }
   }
@@ -124,25 +135,16 @@ export class RequestParams {
     if (!config) return new RequestParamsResult(true, 'success')
     for (let name in config) {
       if (config.hasOwnProperty(name)) {
-        const hasNull = map[name] === undefined || map[name] === '' || map[name] === null
+        const value = map[name]
+        const hasNull = value === undefined || value === '' || value === null
         if (config[name].required && hasNull) {
           return new RequestParamsResult(false, config[name].requiredMessage)
         }
-        if (!hasNull && config[name].type === ParamsType.Number && isNaN(Number(map[name]))) {
-          return new RequestParamsResult(false, config[name].typeErrorMessage)
+        if (!hasNull) {
+          const _result = _checkParamsResult(config[name], value, config[name].typeMessage)
+          if (!_result.valid) return _result
         }
-        if (!hasNull && config[name].type === ParamsType.Boolean && !isBoolean(map[name])) {
-          return new RequestParamsResult(false, config[name].typeErrorMessage)
-        }
-        if (!hasNull && config[name].type === ParamsType.String && !isString(map[name])) {
-          return new RequestParamsResult(false, config[name].typeErrorMessage)
-        }
-        if (!hasNull && config[name].type instanceof RequestParams) {
-          const model = new config[name]()
-          const result: RequestParamsResult = model.fill(map[name])
-          if (!result) return result
-        }
-        this[name] = map[name]
+        this[name] = value
       }
     }
     return new RequestParamsResult(true, 'success')
@@ -164,4 +166,34 @@ function _checkParamsConfigExist(target: any, propertyKey: string) {
   if (!target.constructor[ParamsConfigCache]) target.constructor[ParamsConfigCache] = {}
   if (!target.constructor[ParamsConfigCache][propertyKey])
     target.constructor[ParamsConfigCache][propertyKey] = {}
+}
+
+/// 检查参数方法
+const _checkParamsFuncMap = {
+  [ParamsType.Number]: function (value) {
+    return !isNaN(Number(value))
+  },
+  [ParamsType.Boolean]: function (value) {
+    return isBoolean(value)
+  },
+  [ParamsType.String]: function (value) {
+    return isString(value)
+  }
+}
+
+function _checkParamsResult(config, value, message): RequestParamsResult {
+  if (isFunction(_checkParamsFuncMap[config.type]) && !_checkParamsFuncMap[config.type](value)) {
+    return new RequestParamsResult(false, message)
+  } else if (config.type === ParamsType.Array) {
+    if (!isArray(value)) return new RequestParamsResult(false, message)
+    for (let i = 0; i < value.length; i++) {
+      const _result = _checkParamsResult(config.childType, value[i], message)
+      if (!_result.valid) return new RequestParamsResult(false, message)
+    }
+  } else if (config.type instanceof RequestParams) {
+    const model = new config.type()
+    const _result: RequestParamsResult = model.fill(value)
+    if (!_result.valid) return new RequestParamsResult(false, message)
+  }
+  return new RequestParamsResult(true, 'success')
 }
