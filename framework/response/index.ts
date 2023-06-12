@@ -1,5 +1,5 @@
 import { ResponseCodeValue, ResponseCodeBean, ResponseDTO } from '../types'
-import { RequestParams } from '@/framework/request'
+import { ParamsModel } from '@/framework/params'
 
 /// 返回类
 export default class Response {
@@ -9,7 +9,7 @@ export default class Response {
   }
 
   /// 返回参数检查装饰器
-  public static Result<T extends RequestParams>(Model: { new (): T }): Function {
+  public static Result<T extends ParamsModel>(Model: { new (): T }): Function {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
       descriptor.value.RESULT_MODE = Model
     }
