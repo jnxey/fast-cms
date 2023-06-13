@@ -56,7 +56,7 @@ export class Jwt {
           const decoded = jsonwebtoken.verify(token, Jwt.JWT_PRIVATE_KEY, {
             algorithm: Jwt.JWT_ALGORITHMS
           })
-          const isRefresh = decoded['exp'] - Date.now() > Jwt.EXPIRE_TIME / 2
+          const isRefresh = decoded['exp'] * 1000 - Date.now() > Jwt.EXPIRE_TIME / 2
           if (isRefresh) Jwt.refresh(ctx, { ...decoded })
           if (isString(auth)) {
             /// ToDo：处理单个权限，用户权限保存在JwtData内
