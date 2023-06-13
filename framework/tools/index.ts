@@ -5,6 +5,9 @@ export const camelCase = _camelCase
 /// 获取json
 export const getJSON = _getJSON
 
+/// 同步方法的属性
+export const syncFunctionProperty = _syncFunctionProperty
+
 /// 判断数据类型
 export const getType = (obj: any): string =>
   Object.prototype.toString.call(obj).slice(8, -1).toLowerCase()
@@ -49,3 +52,14 @@ function _getJSON(value?: string, def?: any) {
     return def
   }
 }
+
+/// 同步方法的属性
+function _syncFunctionProperty(fn1: Function, fn2: Function): void {
+  const names = Object.getOwnPropertyNames(fn1)
+  names.forEach(function (name) {
+    if (!_syncFunctionProperty.NAMES.includes(name)) {
+      fn2[name] = fn1[name]
+    }
+  })
+}
+_syncFunctionProperty.NAMES = Object.getOwnPropertyNames(function () {})

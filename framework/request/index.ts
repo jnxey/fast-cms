@@ -3,6 +3,7 @@ import { ExtendableContext, Next } from 'koa'
 import Response from '@/framework/response'
 import { ControllerExtra } from '@/framework/controller'
 import { ParamsModel, ParamsModelResult } from '@/framework/params'
+import { syncFunctionProperty } from '@/framework/tools'
 
 /// 请求类，用于定义请求方法类型/装饰器，数据类型/装饰器
 export default class Request {
@@ -17,13 +18,6 @@ export default class Request {
   public static Post(): Function {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
       descriptor.value.FW_REQUEST_METHOD = Method.Post
-    }
-  }
-
-  /// Request使用Page
-  public static Page(): Function {
-    return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-      descriptor.value.FW_REQUEST_METHOD = Method.Page
     }
   }
 
@@ -60,7 +54,7 @@ export default class Request {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
       const func: Function = descriptor.value
       const query = new Model()
-      descriptor.value = function (): any {
+      descriptor.value = function () {
         const args = arguments
         const ctx: ExtendableContext = args[0]
         const next: Next = args[1]
@@ -75,20 +69,12 @@ export default class Request {
           return next()
         }
       }
-      const metadata = _getCustomMetadata(func)
-      metadata.forEach(function (name) {
-        descriptor.value[name] = func[name]
-      })
+
       /// 暂存参数模块
       descriptor.value.FW_REQUEST_PARAMS_MODEL = Model
+
+      /// 同步原有属性
+      syncFunctionProperty(func, descriptor.value)
     }
   }
-}
-
-/// 获取方法内的自定义元数据
-function _getCustomMetadata(func) {
-  const names = Object.getOwnPropertyNames(func)
-  return names.filter(function (name) {
-    return name.startsWith('FW_')
-  })
 }

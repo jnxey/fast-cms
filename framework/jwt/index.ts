@@ -1,21 +1,8 @@
-import jwt from 'koa-jwt'
-import { ExtendableContext } from 'koa'
 import jsonwebtoken from 'jsonwebtoken'
-
-class JwtUser {
-  public id?: number
-  public admin_name?: string
-  public admin_role?: number
-  public admin_auth_ids?: string
-
-  constructor(id?: number, admin_name?: string, admin_role?: number, admin_auth_ids?: string) {
-    this.id = id
-    this.admin_name = admin_name
-    this.admin_role = admin_role
-    this.admin_auth_ids = admin_auth_ids
-    return { id, admin_name, admin_role, admin_auth_ids }
-  }
-}
+import { isString, syncFunctionProperty } from '@/framework/tools'
+import { FrameworkContext, FrameworkNext } from '@/framework/types'
+import Response from '@/framework/response'
+import { ControllerExtra } from '@/framework/controller'
 
 /// Jwt构造函数
 export class Jwt {
@@ -28,38 +15,65 @@ export class Jwt {
   /// 设置Token的名字
   public static JWT_GET_KEY = 'Auth-Token'
 
-  /// 设置Token的名字
-  public static JwtUser = JwtUser
-
-  /// 获取state
-  public static getUser(ctx: ExtendableContext): JwtUser {
-    return ctx?.['state']?.['user'] || ({} as JwtUser)
-  }
-
-  /// JWT拦截
-  public static intercept() {
-    return jwt({
-      debug: false,
-      secret: Jwt.JWT_PRIVATE_KEY,
-      algorithms: [Jwt.JWT_ALGORITHMS],
-      getToken(_ctx: ExtendableContext): string | null {
-        return _ctx.cookies.get(Jwt.JWT_GET_KEY) || null
-      }
-    })
-  }
+  /// Token过期时间，2天，当时间过半，权限保护装饰器被调用时，权限时间自动延长
+  public static EXPIRE_TIME = 2 * (1000 * 60 * 60 * 24)
 
   /// 生成token
-  public static sign(payload: any) {
-    return jsonwebtoken.sign(payload, Jwt.JWT_PRIVATE_KEY, {
+  public static sign<T>(ctx: FrameworkContext, payload: T) {
+    const token = jsonwebtoken.sign(payload, Jwt.JWT_PRIVATE_KEY, {
       algorithm: Jwt.JWT_ALGORITHMS,
-      expiresIn: '2h'
+      expiresIn: Jwt.EXPIRE_TIME
     })
+
+    ctx.cookies.set(Jwt.JWT_GET_KEY, token)
   }
 
-  /// JWT装饰器-保护
-  public static protected(): Function {
+  /// 刷新token
+  public static refresh<T>(ctx: FrameworkContext, payload: T) {
+    delete payload['iat']
+    delete payload['exp']
+    delete payload['nbf']
+    delete payload['jti']
+    const token = jsonwebtoken.sign(payload, Jwt.JWT_PRIVATE_KEY, {
+      algorithm: Jwt.JWT_ALGORITHMS,
+      expiresIn: Jwt.EXPIRE_TIME
+    })
+
+    ctx.cookies.set(Jwt.JWT_GET_KEY, token)
+  }
+
+  /// JWT装饰器-权限保护
+  public static protected(auth?: string): Function {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-      descriptor.value.JWT_PROTECTED = true
+      const func: Function = descriptor.value
+      descriptor.value = function () {
+        const args = arguments
+        const ctx: FrameworkContext = args[0]
+        const next: FrameworkNext = args[1]
+        const options: ControllerExtra = args[2]
+        try {
+          const token = ctx.cookies.get(Jwt.JWT_GET_KEY) || null
+          const decoded = jsonwebtoken.verify(token, Jwt.JWT_PRIVATE_KEY, {
+            algorithm: Jwt.JWT_ALGORITHMS
+          })
+          const isRefresh = decoded['exp'] - Date.now() > Jwt.EXPIRE_TIME / 2
+          if (isRefresh) Jwt.refresh(ctx, { ...decoded })
+          if (isString(auth)) {
+            /// ToDo：处理单个权限，用户权限保存在JwtData内
+          }
+          options.setJwtData(decoded)
+          return func.apply(this, args)
+        } catch (e) {
+          ctx.body = Response.Dto({ ...Response.code.error_access })
+          next()
+        }
+      }
+
+      /// 设置权限标识
+      descriptor.value.FW_JWT_PROTECTED = true
+
+      /// 同步原有属性
+      syncFunctionProperty(func, descriptor.value)
     }
   }
 }

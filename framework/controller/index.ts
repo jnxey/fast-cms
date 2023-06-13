@@ -2,7 +2,7 @@ import Router from '@koa/router'
 import { koaBody } from 'koa-body'
 import serve from 'koa-static'
 import Koa, { ExtendableContext, Next } from 'koa'
-import { isObject, kebabCase } from '@/framework/tools'
+import { isObject, isUndefined, kebabCase } from '@/framework/tools'
 import { DataType, Method, ParamsConfigCache } from '@/framework/values'
 import { ParamsModel } from '@/framework/params'
 
@@ -49,7 +49,8 @@ export class Controller {
     const moduleName: string = instance.constructor.name
     const apis: string[] = Object.getOwnPropertyNames(instance.constructor.prototype)
     apis.forEach((name) => {
-      if (name === Controller.ConstructorName || !instance[name].FW_REQUEST_METHOD) return
+      if (name === Controller.ConstructorName || isUndefined(instance[name].FW_REQUEST_METHOD))
+        return
       const module = kebabCase(moduleName)
       const func = kebabCase(name)
       const param = instance[name].ROUTE_PARAM ? '/:' + instance[name].ROUTE_PARAM : ''
@@ -102,7 +103,7 @@ export class Controller {
       }
     })
 
-    console.log(Controller.DocJson, '---------------1')
+    // console.log(Controller.DocJson, '---------------1')
   }
 }
 
