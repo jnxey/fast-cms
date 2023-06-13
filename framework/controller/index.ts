@@ -23,9 +23,6 @@ export class Controller {
   /// Api前缀
   public static ApiPrefix = '/api/'
 
-  /// 页面前缀
-  public static PagePrefix = '/'
-
   /// 构造名称
   public static ConstructorName = 'constructor'
 
@@ -42,7 +39,6 @@ export class Controller {
   public static init(options) {
     if (isObject(options)) {
       if (options.ApiPrefix) Controller.ApiPrefix = options.ApiPrefix
-      if (options.PagePrefix) Controller.PagePrefix = options.PagePrefix
       if (options.Doc) Controller.Doc = options.Doc
     }
   }
@@ -54,14 +50,10 @@ export class Controller {
     const apis: string[] = Object.getOwnPropertyNames(instance.constructor.prototype)
     apis.forEach((name) => {
       if (name === Controller.ConstructorName || !instance[name].FW_REQUEST_METHOD) return
-      const prefix =
-        instance[name].FW_REQUEST_METHOD === Method.Page
-          ? Controller.PagePrefix
-          : Controller.ApiPrefix
       const module = kebabCase(moduleName)
       const func = kebabCase(name)
       const param = instance[name].ROUTE_PARAM ? '/:' + instance[name].ROUTE_PARAM : ''
-      const path: string = prefix + module + '/' + func + param
+      const path: string = Controller.ApiPrefix + module + '/' + func + param
       const handler: Router.Middleware = function (ctx: ExtendableContext, next: Next) {
         try {
           /// 处理
@@ -92,8 +84,6 @@ export class Controller {
           router.post(path, handler)
         }
       } else if (instance[name].FW_REQUEST_METHOD === Method.Get) {
-        router.get(path, handler)
-      } else if (instance[name].FW_REQUEST_METHOD === Method.Page) {
         router.get(path, handler)
       }
 

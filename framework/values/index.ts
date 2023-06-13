@@ -1,8 +1,7 @@
 /// Request方法
 export enum Method {
   Get,
-  Post,
-  Page
+  Post
 }
 
 /// Request数据类型
