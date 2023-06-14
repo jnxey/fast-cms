@@ -1,28 +1,28 @@
 /// Request方法
 export enum Method {
-  Get,
-  Post
+  Get = 'Get',
+  Post = 'Post'
 }
 
 /// Request数据类型
 export enum DataType {
-  Json,
-  Text,
-  FormData
+  Json = 'Json',
+  Text = 'Text',
+  FormData = 'FormData'
 }
 
 /// Request参数来源
 export enum ParamsSource {
-  Query,
-  Body
+  Query = 'Query',
+  Body = 'Body'
 }
 
 /// 参数数据类型
 export enum ParamsType {
-  Number,
-  Boolean,
-  String,
-  Array
+  Number = 'Number',
+  Boolean = 'Boolean',
+  String = 'String',
+  Array = 'Array'
 }
 
 /// 缓存参数配置的键

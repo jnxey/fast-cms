@@ -16,7 +16,7 @@ export class Jwt {
   public static JWT_GET_KEY = 'Auth-Token'
 
   /// Token过期时间，2天，当时间过半，权限保护装饰器被调用时，权限时间自动延长
-  public static EXPIRE_TIME = 2 * (1000 * 60 * 60 * 24)
+  public static EXPIRE_TIME = 2 * (60 * 60 * 24)
 
   /// 生成token
   public static sign<T>(ctx: FrameworkContext, payload: T) {
@@ -56,7 +56,7 @@ export class Jwt {
           const decoded = jsonwebtoken.verify(token, Jwt.JWT_PRIVATE_KEY, {
             algorithm: Jwt.JWT_ALGORITHMS
           })
-          const isRefresh = decoded['exp'] * 1000 - Date.now() > Jwt.EXPIRE_TIME / 2
+          const isRefresh = decoded['exp'] - Date.now() / 1000 > Jwt.EXPIRE_TIME / 2
           if (isRefresh) Jwt.refresh(ctx, { ...decoded })
           if (isString(auth)) {
             /// ToDo：处理单个权限，用户权限保存在JwtData内
@@ -64,6 +64,7 @@ export class Jwt {
           options.setJwtData(decoded)
           return func.apply(this, args)
         } catch (e) {
+          console.log(e, '------------')
           ctx.body = Response.Dto({ ...Response.code.error_access })
           next()
         }

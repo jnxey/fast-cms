@@ -5,6 +5,7 @@ import Koa, { ExtendableContext, Next } from 'koa'
 import { isObject, isUndefined, kebabCase } from '@/framework/tools'
 import { DataType, Method, ParamsConfigCache } from '@/framework/values'
 import { ParamsModel } from '@/framework/params'
+import Response from '@/framework/response'
 
 /// 控制器公共类
 export class Api {}
@@ -97,13 +98,15 @@ export class Controller {
           method: metadata.FW_REQUEST_METHOD,
           dataType: metadata.FW_REQUEST_DATA_TYPE,
           descriptor: metadata.FW_REQUEST_DESCRIPTOR,
-          request: JSON.stringify(_getConfig(metadata.FW_REQUEST_PARAMS_MODEL)),
-          response: JSON.stringify(_getConfig(metadata.FW_RESPONSE_RESULT_MODEL))
+          request: _getConfig(metadata.FW_REQUEST_PARAMS_MODEL),
+          response: _getConfig(metadata.FW_RESPONSE_RESULT_MODEL)
         }
       }
     })
-
-    // console.log(Controller.DocJson, '---------------1')
+    router.get('/api-doc/getJson', function (ctx: ExtendableContext, next: Next) {
+      ctx.body = Response.Dto(Response.code.success, Controller.DocJson)
+      next()
+    })
   }
 }
 
