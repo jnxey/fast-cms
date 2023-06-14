@@ -5,7 +5,8 @@ import Koa, { ExtendableContext, Next } from 'koa'
 import { isObject, isUndefined, kebabCase } from '@/framework/tools'
 import { DataType, Method, ParamsConfigCache } from '@/framework/values'
 import { ParamsModel } from '@/framework/params'
-import Response from '@/framework/response'
+import fs from 'fs'
+import path from 'path'
 
 /// 控制器公共类
 export class Api {}
@@ -98,15 +99,23 @@ export class Controller {
           method: metadata.FW_REQUEST_METHOD,
           dataType: metadata.FW_REQUEST_DATA_TYPE,
           descriptor: metadata.FW_REQUEST_DESCRIPTOR,
+          fromType: metadata.FW_REQUEST_FROM_TYPE,
           request: _getConfig(metadata.FW_REQUEST_PARAMS_MODEL),
           response: _getConfig(metadata.FW_RESPONSE_RESULT_MODEL)
         }
       }
     })
-    router.get('/api-doc/getJson', function (ctx: ExtendableContext, next: Next) {
-      ctx.body = Response.Dto(Response.code.success, Controller.DocJson)
-      next()
-    })
+
+    /// 配置请求
+    if (Controller.Doc) {
+      router.get('/api-doc.html', function (ctx: ExtendableContext, next: Next) {
+        const temp = fs.readFileSync(path.resolve('framework/controller/_temp/api-doc.html'))
+        const json = JSON.stringify(Controller.DocJson)
+        const script = '<script>window.ApiJson=' + json + ';</script>'
+        ctx.body = temp.toString().replace('<!-- REPLACE-SIGN -->', script)
+        next()
+      })
+    }
   }
 }
 

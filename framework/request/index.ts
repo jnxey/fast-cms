@@ -72,6 +72,7 @@ export default class Request {
 
       /// 暂存参数模块
       descriptor.value.FW_REQUEST_PARAMS_MODEL = Model
+      descriptor.value.FW_REQUEST_FROM_TYPE = type
 
       /// 同步原有属性
       syncFunctionProperty(func, descriptor.value)

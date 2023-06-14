@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Api文档</title>
+  <!-- Ejs  -->
+  <script src="https://unpkg.com/ejs@3.1.9/ejs.min.js"></script>
+  <!-- JSON  -->
+  <link href="https://unpkg.com/jsoneditor@9.10.0/dist/jsoneditor.min.css" rel="stylesheet" type="text/css">
+  <script src="https://unpkg.com/jsoneditor@9.10.0/dist/jsoneditor.min.js"></script>
+  <!-- REPLACE-SIGN -->
+</head>
+<body>
+<script>
+  /// utils
+  // 获取所有地址参数
+  function getQueryByUrl(url) {
+    if (typeof url !== 'string') return {};
+    var name, value;
+    var num = url.indexOf('?');
+    url = url.substr(num + 1);
+    var arr = url.split('&');
+    var result = {};
+    for (var i = 0; i < arr.length; i++) {
+      num = arr[i].indexOf('=');
+      if (num > 0) {
+        name = arr[i].substring(0, num);
+        value = arr[i].substr(num + 1);
+        result[name] = value;
+      }
+    }
+    return result;
+  }
+</script>
+<script>
+  (function (json) {
+    Object.keys(json).forEach(function (moduleName) {
+      Object.keys(json[moduleName]).forEach(function (funcName) {
+        formatType(json[moduleName][funcName].request);
+        formatType(json[moduleName][funcName].response);
+      });
+    });
+
+    /// 清除提示语句
+    function formatType(info) {
+      if (typeof info !== 'object' || !info) return;
+      delete info.typeMessage;
+      delete info.requiredMessage;
+      Object.keys(info).forEach(function (name) {
+        formatType(info[name]);
+      });
+    }
+  })(window.ApiJson);
+</script>
+<style id="page-layout">
+  html, body {
+    padding: 0;
+    margin: 0;
+  }
+
+  .page-wrap {
+    width: 100vw;
+    height: 100vh;
+    background-color: #f3f3f3;
+  }
+
+  .page-wrap .page-header {
+    line-height: 100px;
+    font-size: 42px;
+    font-weight: 700;
+    text-align: center;
+    background: linear-gradient(91.49deg, #fa6f43 .34%, #dd6fa2 36.87%, #6f64ee 59.66%, #6334e9 97.2%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .page-wrap .page-content {
+    display: flex;
+    flex-direction: row;
+    padding: 16px;
+  }
+
+  .page-wrap .menu-list {
+    flex-shrink: 0;
+    margin-right: 20px;
+    max-height: calc(100vh - 132px);
+    overflow-y: scroll;
+  }
+
+  .page-wrap .func-detail {
+    flex: 1;
+    flex-shrink: 0;
+    height: calc(100vh - 132px);
+    overflow-y: scroll;
+    background-color: #ffffff;
+  }
+
+  .page-wrap .empty-box {
+    padding: 50px;
+    text-align: center;
+  }
+</style>
+<style id="style-menu">
+  .menu-list {
+    width: 200px
+  }
+
+  .menu-list .menu-item {
+    background-color: #ffffff;
+  }
+
+  .menu-list .menu-item .menu-module {
+    line-height: 40px;
+    text-indent: 10px;
+    font-weight: 700;
+    background-color: #cbe3fd;
+  }
+
+  .menu-list .menu-item .menu-func {
+    display: block;
+    line-height: 40px;
+    text-indent: 10px;
+    cursor: pointer;
+    color: #000000;
+    text-decoration: none;
+  }
+
+  .menu-list .menu-item .menu-func:hover {
+    background-color: #eeeeee;
+  }
+
+  .menu-list .menu-item .menu-func.menu-active {
+    color: #6334e9;
+  }
+</style>
+<style id="style-func">
+  .func-box {
+    padding: 0 16px;
+  }
+
+  .func-box .func-title {
+    line-height: 40px;
+    margin-bottom: 16px;
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .func-box .func-base {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 32px;
+  }
+
+  .func-box .func-method {
+    padding: 3px 5px;
+    line-height: 14px;
+    font-size: 12px;
+    color: #196eed;
+    border-radius: 4px;
+    border: 1px solid #196eed;
+    background-color: #d0dff6;
+    margin-right: 5px;
+  }
+
+  .func-box .func-data-type {
+    padding: 3px 5px;
+    line-height: 14px;
+    font-size: 12px;
+    color: #e608ee;
+    border-radius: 4px;
+    border: 1px solid #e608ee;
+    background-color: #f6e2f6;
+    margin-right: 5px;
+  }
+
+  .func-box .func-request, .func-box .func-response {
+    margin-bottom: 32px;
+  }
+
+  .func-box .func-request-title, .func-box .func-response-title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .func-box .func-from-type {
+    padding: 3px 5px;
+    line-height: 14px;
+    font-size: 12px;
+    color: #f30f22;
+    border-radius: 4px;
+    border: 1px solid #f30f22;
+    background-color: #f6d9dc;
+    margin-left: 5px;
+  }
+</style>
+<script id="template-menu" type="text/template">
+  <% Object.keys(apis).forEach(function(moduleName){ %>
+  <div class="menu-item">
+    <div class="menu-module"><%= moduleName %></div>
+    <% Object.keys(apis[moduleName]).forEach(function(funcName){ %>
+    <a href="<%= root %>?module=<%= moduleName %>&func=<%= funcName %>" class="menu-func"
+       data-sign="<%= moduleName %>-<%= funcName %>">
+      <%= funcName %>
+    </a>
+    <% }); %>
+  </div>
+  <% }); %>
+</script>
+<script id="template-func" type="text/template">
+  <% if (func) { %>
+  <div class="func-box">
+    <div class="func-title">>><%= func.descriptor %></div>
+    <div class="func-base">
+      <span class="func-method"><%= func.method %></span>
+      <span class="func-data-type"><%= func.dataType %></span>
+      <span class="func-path"><%= func.path %></span>
+    </div>
+    <% if (func.request) { %>
+    <div class="func-request">
+      <div class="func-request-title">>>请求参数<span class="func-from-type"><%= func.fromType %></span></div>
+      <div id="func-request-json" style="height: 400px;"></div>
+    </div>
+    <% } %>
+    <% if (func.response) { %>
+    <div class="func-response">
+      <div class="func-response-title">>>返回参数</div>
+      <div id="func-response-json" style="height: 400px;"></div>
+    </div>
+    <% } %>
+  </div>
+  <% } else { %>
+  <div class="empty-box">
+    <svg width="80" height="80" style="fill: currentColor;" viewBox="0 0 1024 1024">
+      <path
+        d="M839.2 101.3H184.9L65.3 539.5 64 922.7h896V549.3l-120.8-448zM241.9 176h540.3L884 549.3H678.7l-74.7 112H420l-74.7-112H140.1L241.9 176z"
+        fill="#aaaaaa"></path>
+    </svg>
+  </div>
+  <% } %>
+</script>
+<div class="page-wrap">
+  <div class="page-header">Api Doc</div>
+  <div class="page-content">
+    <!--    -->
+    <div id="menu-list" class="menu-list"></div>
+    <script>
+      (function () {
+        var target = document.querySelector('#menu-list');
+        var temp = document.querySelector('#template-menu');
+        target.innerHTML = ejs.render(temp.innerHTML, {apis: window.ApiJson, root: '/resource/api-doc.html'});
+      })();
+    </script>
+    <!--    -->
+    <div id="func-detail" class="func-detail"></div>
+    <script>
+      /// 初始化
+      (function () {
+        var query = getQueryByUrl(window.location.href);
+        var moduleName = query.module;
+        var funcName = query.func;
+        var func = moduleName && funcName ? window.ApiJson[moduleName][funcName] : null;
+        var target = document.querySelector('#func-detail');
+        var temp = document.querySelector('#template-func');
+        var current = document.querySelector('[data-sign="' + moduleName + '-' + funcName + '"]');
+        if (current) current.classList.add('menu-active');
+        target.innerHTML = ejs.render(temp.innerHTML, {func: func});
+        if (func) {
+          if (func.request) {
+            var container1 = document.querySelector("#func-request-json");
+            var editor1 = new JSONEditor(container1, {
+              mode: 'code'
+            });
+            editor1.set(func.request)
+          }
+          if (func.response) {
+            var container2 = document.querySelector("#func-response-json");
+            var editor2 = new JSONEditor(container2, {
+              mode: 'code'
+            });
+            editor2.set(func.request)
+          }
+        }
+      })();
+    </script>
+  </div>
+</div>
+</body>
+</html>
